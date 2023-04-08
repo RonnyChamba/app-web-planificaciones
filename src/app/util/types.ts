@@ -1,0 +1,1 @@
+export type typeFilterField = "EMAIL" | "DNI" | "NAME";

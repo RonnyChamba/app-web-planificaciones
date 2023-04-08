@@ -1,0 +1,154 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+        <label for="cedula" class="form-label">C&eacute;dula</label>
+        <input type="text" class="form-control" id="cedula" formControlName="cedula">
+
+        <div *ngIf="
+        formGroup.controls['cedula'].invalid &&
+        (formGroup.controls['cedula'].dirty ||
+        formGroup.controls['cedula'].touched)
+      " class="form-text text-danger">
+            <div *ngFor="let validation of mensajesValidacion.cedula">
+                <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('cedula')?.hasError(validation.type) &&
+            (formGroup.get('cedula')?.dirty ||
+            formGroup.get('cedula')?.touched)
+          ">
+                    {{ validation.message }}
+                </div>
+            </div>
+
+            <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('cedula')?.hasError('fieldExists') &&
+            (formGroup.get('cedula')?.dirty ||
+            formGroup.get('cedula')?.touched)
+          ">
+                {{ formGroup.get("cedula")?.getError("fieldExists") }}
+            </div>
+
+            <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('cedula')?.hasError('incorrectDni') &&
+            (formGroup.get('cedula')?.dirty ||
+            formGroup.get('cedula')?.touched)
+          ">
+                {{ formGroup.get("cedula")?.getError("incorrectDni") }}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="nombres" class="form-label">Nombres</label>
+        <input type="text" class="form-control" id="nombres" formControlName="nombres">
+
+        <div *ngIf="
+        formGroup.controls['nombres'].invalid &&
+        (formGroup.controls['nombres'].dirty ||
+        formGroup.controls['nombres'].touched)
+      " class="form-text text-danger">
+            <div *ngFor="let validation of mensajesValidacion.nombres">
+                <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('nombres')?.hasError(validation.type) &&
+            (formGroup.get('nombres')?.dirty ||
+            formGroup.get('nombres')?.touched)
+          ">
+                    {{ validation.message }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="apellidos" class="form-label">Apellidos</label>
+        <input type="text" class="form-control" id="apellidos" formControlName="apellidos">
+
+        <div *ngIf="
+        formGroup.controls['apellidos'].invalid &&
+        (formGroup.controls['apellidos'].dirty ||
+        formGroup.controls['apellidos'].touched)
+      " class="form-text text-danger">
+            <div *ngFor="let validation of mensajesValidacion.apellidos">
+                <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('nombres')?.hasError(validation.type) &&
+            (formGroup.get('apellidos')?.dirty ||
+            formGroup.get('apellidos')?.touched)
+          ">
+                    {{ validation.message }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mb-3">
+        <label for="correo" class="form-label">Correo</label>
+        <input type="email" class="form-control" id="correo" formControlName="correo">
+
+
+        <div *ngIf="
+        formGroup.controls['correo'].invalid &&
+        (formGroup.controls['correo'].dirty ||
+        formGroup.controls['correo'].touched)
+      " class="form-text text-danger">
+            <div *ngFor="let validation of mensajesValidacion.correo">
+                <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('correo')?.hasError(validation.type) &&
+            (formGroup.get('correo')?.dirty ||
+            formGroup.get('correo')?.touched)
+          ">
+                    {{ validation.message }}
+                </div>
+            </div>
+
+            <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('correo')?.hasError('fieldExists') &&
+            (formGroup.get('correo')?.dirty ||
+            formGroup.get('correo')?.touched)
+          ">
+          {{ formGroup.get("correo")?.getError("fieldExists") }}
+        </div>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <label for="celular" class="form-label">Celular</label>
+        <input type="text" class="form-control" id="celular" formControlName="celular">
+
+
+
+        <div *ngIf="
+        formGroup.controls['celular'].invalid &&
+        (formGroup.controls['celular'].dirty ||
+        formGroup.controls['celular'].touched)
+      " class="form-text text-danger">
+            <div *ngFor="let validation of mensajesValidacion.celular">
+                <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('celular')?.hasError(validation.type) &&
+            (formGroup.get('celular')?.dirty ||
+            formGroup.get('celular')?.touched)
+          ">
+                    {{ validation.message }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <label for="celular" class="form-label">Titulos</label>
+        <div>
+
+            <input type="text" #miInput class="form-control" formControlName="flagTitulo" />
+            <button type="button" (click)="agregarTexto(miInput.value)" class="btn btn-info">Agregar</button>
+        </div>
+
+        <div>
+
+            <p *ngFor="let item of arrayTitulos; index as i"> <span> {{item}}</span>
+                <button (click)="eliminarTitulo(i)" class="btn btn-danger ms-2">X</button>
+            </p>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid">GUARDAR</button>
+</form>
