@@ -1,10 +1,14 @@
-export class ModelTeacher { 
+export interface ModelTeacher { 
 
-    nombres: string;
-    apellidos: string;
-    cedula: string;
-    correo?: string;
-    celular: string;
-    titulos?: string[] = [];
-    id?: number;
+    uid?: string;
+    displayName: string;
+    lastName?: string;
+    dni: string;
+    password?: string;
+    email: string;
+    phoneNumber?: string;
+    emailVerified?: boolean;
+    photoURL?: string;
+    titles?: string[];
+    
 }

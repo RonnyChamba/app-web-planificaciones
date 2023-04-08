@@ -99,6 +99,11 @@ import {
     ],
   
     correo: [
+
+      {
+        type: 'required',
+        message: 'Email es obligatorio.',
+      },
       {
         type: 'pattern',
         message: `Formato email es incorrecto.`,

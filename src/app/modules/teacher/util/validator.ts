@@ -32,9 +32,12 @@ export function dniOrEmailValidator(
             if (type == 'DNI' && field.length == 10) {
 
                 return registerService.findTeacher(field)
-                    .pipe(
-                        map((value) => value ? { fieldExists: 'Cédula ya esta registrada' } : null)
-                    );
+                .pipe(
+                    map((value) => !value.empty ? { fieldExists: 'Cedula ya esta registrado' } : null
+
+
+                    )
+                );
 
             }
 

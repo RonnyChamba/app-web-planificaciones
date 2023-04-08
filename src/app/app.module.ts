@@ -13,6 +13,8 @@ import { environment } from 'src/environments/environment';
 // FIREBASE
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+// module by auth
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
@@ -28,11 +30,8 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule, HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireAuthModule,
     ToastrModule.forRoot(), // ToastrModule added
-
-
-
-
   ],
   providers: [],
   bootstrap: [AppComponent]

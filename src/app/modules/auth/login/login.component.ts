@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { LoginService } from '../services/login.service';
+import { ToastrService } from 'ngx-toastr';
+import { validMessagesError } from 'src/app/util/mensajes-validacion';
+import { MAX_EMAIL, MIN_EMAIL } from 'src/app/util/constantes-values';
 
 @Component({
   selector: 'app-login',
@@ -10,8 +14,10 @@ export class LoginComponent  implements  OnInit{
 
 
   formGroup: FormGroup;
+  mensajesValidacion =  validMessagesError;
 
-  constructor() { }
+  constructor(private loginService: LoginService,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
 
@@ -21,15 +27,34 @@ export class LoginComponent  implements  OnInit{
 
 createForm() {
   this.formGroup = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('',  [ Validators.required,  Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$'),Validators.maxLength(MAX_EMAIL)],),
+    password: new FormControl('', [Validators.required, Validators.minLength(MIN_EMAIL)]),
   });
   
 }
 
 
-  onSubmit() {
+  async  onSubmit() {
+    
     console.log(this.formGroup.value);
+
+    if (this.formGroup.valid) {
+
+      try {
+        
+
+        const res = await this.loginService.login(this.formGroup.value.email, this.formGroup.value.password);
+        console.log(res);
+        this.toastr.success('Bienvenido', 'Login');
+
+      } catch (error) {
+        
+        // console.log(error);
+        this.toastr.error('Error de credenciales', 'Login');
+        
+      }
+    }
+
   }
 
 }

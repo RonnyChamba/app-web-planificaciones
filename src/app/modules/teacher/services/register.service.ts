@@ -27,15 +27,15 @@ export class RegisterService  implements OnInit{
     
     // Save teacher in Firestore with id custom, and not return data
 
-    return this.firestore.collection(COLLECTION_NAME).doc(teacher.cedula).set(teacher);
+    return this.firestore.collection(COLLECTION_NAME).doc(teacher.dni).set(teacher);
   }
 
   findTeacher(cedula: string): Observable<any> {
-    return this.firestore.collection(COLLECTION_NAME).doc(cedula).get();
+    return this.firestore.collection(COLLECTION_NAME, ref => ref.where('dni', '==', cedula)).get();
   }
 
   findTeacherByEmail(email: string): Observable<any> {  
-    return this.firestore.collection(COLLECTION_NAME, ref => ref.where('correo', '==', email)).get();
+    return this.firestore.collection(COLLECTION_NAME, ref => ref.where('email', '==', email)).get();
   }
   
 
@@ -49,7 +49,7 @@ export class RegisterService  implements OnInit{
   }
 
   updateTeacher(teacher: ModelTeacher): Promise<any> {
-    return this.firestore.collection(COLLECTION_NAME).doc(teacher.cedula).update(teacher);
+    return this.firestore.collection(COLLECTION_NAME).doc(teacher.dni).update(teacher);
   }
 
 
