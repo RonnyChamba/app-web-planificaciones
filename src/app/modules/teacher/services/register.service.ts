@@ -2,9 +2,11 @@
 import { Injectable } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ModelTeacher } from '../models/teacher';
+import { ModelBaseTeacher, ModelTeacher } from '../models/teacher';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'teachers';
 @Injectable({
@@ -34,6 +36,7 @@ export class RegisterService  implements OnInit{
     return this.firestore.collection(COLLECTION_NAME, ref => ref.where('dni', '==', cedula)).get();
   }
 
+
   findTeacherByEmail(email: string): Observable<any> {  
     return this.firestore.collection(COLLECTION_NAME, ref => ref.where('email', '==', email)).get();
   }
@@ -45,7 +48,7 @@ export class RegisterService  implements OnInit{
 
 
   findAllTeachers(): Observable<any> {
-    return this.firestore.collection(COLLECTION_NAME).snapshotChanges();
+    return this.firestore.collection(COLLECTION_NAME).get();
   }
 
   updateTeacher(teacher: ModelTeacher): Promise<any> {

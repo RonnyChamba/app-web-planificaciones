@@ -16,12 +16,14 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 // module by auth
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { ToastrModule } from 'ngx-toastr';
+import { FormCourseComponent } from './modules/admin/components/form-course/form-course.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    FormCourseComponent
   ],
   imports: [
     BrowserModule,

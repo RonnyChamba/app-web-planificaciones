@@ -64,6 +64,23 @@ import {
   
     nombres: getMessagesNameAndLastName('Nombres'),
     apellidos: getMessagesNameAndLastName('Apellidos'),
+    parallel:  [
+
+      {
+        type: 'required',
+        message: 'Campo obligatorio.',
+      },
+    ],
+
+    tutor:  [
+
+      {
+        type: 'required',
+        message: 'Campo obligatorio.',
+      },
+    ],
+
+
 
     address: [
       {

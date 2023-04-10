@@ -1,9 +1,13 @@
-export interface ModelTeacher { 
 
+export interface ModelBaseTeacher {
     uid?: string;
     displayName: string;
-    lastName?: string;
     dni: string;
+}
+
+
+export interface ModelTeacher  extends ModelBaseTeacher{ 
+    lastName?: string;
     password?: string;
     email: string;
     phoneNumber?: string;
@@ -12,3 +16,4 @@ export interface ModelTeacher {
     titles?: string[];
     
 }
+
