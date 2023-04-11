@@ -17,13 +17,15 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { ToastrModule } from 'ngx-toastr';
 import { FormCourseComponent } from './modules/admin/components/form-course/form-course.component';
+import { FormPlanificationComponent } from './modules/admin/components/form-planification/form-planification.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    FormCourseComponent
+    FormCourseComponent,
+    FormPlanificationComponent
   ],
   imports: [
     BrowserModule,

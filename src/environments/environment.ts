@@ -8,7 +8,7 @@ export const environment = {
         projectId: "app-planificaciones",
         storageBucket: "app-planificaciones.appspot.com",
         messagingSenderId: "854025901555",
-        appId: "1:854025901555:web:285b23905a0f4b695e2e86"
+        appId: "1:854025901555:web:285b23905a0f4b695e2e86",
     }
 
 }

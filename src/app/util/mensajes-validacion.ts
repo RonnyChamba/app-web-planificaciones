@@ -71,6 +71,24 @@ import {
         message: 'Campo obligatorio.',
       },
     ],
+  
+    title : [
+
+      {
+        type: 'required',
+        message: 'Campo obligatorio.',
+      },
+
+    
+    ],
+
+    details : [
+
+    {
+      type: 'maxlength',
+      message: 'Campo solo puede ingresar hasta 200 caracteres.',
+    }
+    ],
 
     tutor:  [
 

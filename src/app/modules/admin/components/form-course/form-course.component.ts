@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { validMessagesError } from 'src/app/util/mensajes-validacion';
-import { CourseService } from '../../course.service';
+import { CourseService } from '../../services/course.service';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
 import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
 

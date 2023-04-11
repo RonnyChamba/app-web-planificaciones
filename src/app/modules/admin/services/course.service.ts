@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { CourseModel } from './modules/course.model';
+import { CourseModel } from '../models/course.model';
 
 
 const  COLLECTION_NAME = 'courses';
