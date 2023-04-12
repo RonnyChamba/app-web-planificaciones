@@ -55,5 +55,15 @@ export class RegisterService  implements OnInit{
     return this.firestore.collection(COLLECTION_NAME).doc(teacher.dni).update(teacher);
   }
 
+  findTeacherById(id: string): Observable<any> {
+    return this.firestore.collection(COLLECTION_NAME).doc(id).get();
+  }
 
+  findTeacherByInIde(ids: string[]): Observable<any> {
+    // return this.firestore.collection(COLLECTION_NAME).doc(id).get();
+
+    console.log(ids);
+
+    return this.firestore.collection(COLLECTION_NAME, ref => ref.where('uid', 'in', ids)).get();
+  }
 }

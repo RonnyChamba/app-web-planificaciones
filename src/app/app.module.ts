@@ -18,6 +18,12 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { ToastrModule } from 'ngx-toastr';
 import { FormCourseComponent } from './modules/admin/components/form-course/form-course.component';
 import { FormPlanificationComponent } from './modules/admin/components/form-planification/form-planification.component';
+import { AdminComponent } from './modules/admin/page/admin/admin.component';
+import { NavbaComponent } from './components/navba/navba.component';
+import { ListCourseComponent } from './modules/admin/components/list-course/list-course.component';
+import { CourseComponent } from './modules/admin/page/course/course.component';
+import { DetailsCourseComponent } from './modules/admin/components/details-course/details-course.component';
+import { FormatDatePipe } from './modules/pipes/format-date.pipe';
 
 @NgModule({
   declarations: [
@@ -25,7 +31,13 @@ import { FormPlanificationComponent } from './modules/admin/components/form-plan
     LoginComponent,
     RegisterComponent,
     FormCourseComponent,
-    FormPlanificationComponent
+    FormPlanificationComponent,
+    AdminComponent,
+    NavbaComponent,
+    ListCourseComponent,
+    CourseComponent,
+    DetailsCourseComponent,
+    FormatDatePipe
   ],
   imports: [
     BrowserModule,

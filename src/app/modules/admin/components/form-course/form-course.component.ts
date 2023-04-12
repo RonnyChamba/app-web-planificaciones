@@ -5,6 +5,7 @@ import { validMessagesError } from 'src/app/util/mensajes-validacion';
 import { CourseService } from '../../services/course.service';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
 import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-form-course',
@@ -22,7 +23,8 @@ export class FormCourseComponent implements OnInit {
   mensajesValidacion = validMessagesError;
   constructor(  private toastr: ToastrService,
     private  teacherService: RegisterService,
-    private courseService: CourseService) { }
+    private courseService: CourseService,
+    public modal: NgbActiveModal,) { }
 
   ngOnInit(): void {
 
@@ -75,6 +77,7 @@ export class FormCourseComponent implements OnInit {
             console.log(resp);
             this.toastr.success('Curso creado correctamente', 'Curso creado correctamente', { timeOut: 3000, });
             this.formGroup.reset();
+            this.modal.close();
           } else {
             this.toastr.error('El curso ya existe', 'Error', { timeOut: 3000, });
           }

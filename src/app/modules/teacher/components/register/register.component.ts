@@ -72,7 +72,7 @@ export class RegisterComponent implements OnInit {
       try {
         const teacher: ModelTeacher = this.formGroup.value;
 
-        const result = await this.auhtService.createAccount(teacher.email, teacher.password as string);
+        const result = await this.auhtService.createAccount(teacher.email as string, teacher.password as string);
         if (result) {
           
           const newTeacher: ModelTeacher = this.generarUserData(result);

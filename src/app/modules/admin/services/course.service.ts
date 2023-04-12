@@ -29,11 +29,14 @@ export class CourseService  implements OnInit{
   
 
   findAllCourses(): any {
-    
   
-    
     return this.afs.collection(COLLECTION_NAME).snapshotChanges();
   }
+
+  findCourseById(uid: string) {
+    return this.afs.collection(COLLECTION_NAME).doc(uid).get();
+  }
+  
 
 
   

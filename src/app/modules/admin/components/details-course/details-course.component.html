@@ -1,0 +1,195 @@
+<div class=" container mt-3">
+    <div class="row">
+
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div class="d-flex align-items-center  ">
+
+                    <span><i class="fa-solid fa-graduation-cap" style="font-size: 1.8rem;"></i></span>
+                    <h3> <b>Curso</b> <span *ngIf="courseFullModel"> {{courseFullModel.name}}
+                            {{courseFullModel.parallel}}
+                        </span> </h3>
+                    <span class="ms-2" role="button"><i class="fa-solid fa-pen-to-square"></i></span>
+                </div>
+                <div>
+                    <!-- <button class="btn btn-success">Editar</button> -->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12 mt-3">
+
+            <!-- create a list with weeks -->
+
+            <ul *ngIf="courseFullModel" class="d-flex list-unstyled">
+
+                <li *ngFor="let week of courseFullModel.weeks; index as i" class="me-2">
+
+                    <a class="btn btn-danger" role="button"> <i class="fa-solid fa-calendar-week"></i> semana
+                        {{week.numberWeek}}</a>
+                </li>
+                <li>
+
+                    <a class="btn btn-primary" role="button"><i class="fa-sharp fa-solid fa-plus"></i> Nueva Semana</a>
+                </li>
+
+
+
+            </ul>
+
+        </div>
+
+        <!-- column left -->
+        <div class="col-6 bg-warning">
+
+            <div class="d-flex align-items-center bg-secondary p-2">
+
+                <span class="me-3"><i class="fa-solid fa-user" style="font-size: 2rem;"></i></span>
+                <div>
+                    <h4>Tutor</h4>
+                    <ng-template #mensajeNoVisible>
+                        <p>NO ASIGNADO</p>
+                    </ng-template>
+
+                    <div *ngIf="courseFullModel && courseFullModel.tutorTeacher;  else mensajeNoVisible">
+                        <p class="my-1">{{courseFullModel.tutorTeacher.displayName}}
+                            {{courseFullModel.tutorTeacher.lastName}} </p>
+                        <p class="my-1"> {{courseFullModel.tutorTeacher.email}}</p>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+            <div class="mt-3  d-flex align-items-center bg-secondary p-2">
+
+                <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span>
+
+                <div class="flex-grow-1 d-flex justify-content-between  align-items-center">
+                    <div>
+                        <h4>Docentes</h4>
+                        <p>Docentes asignados a este curso</p>
+                    </div>
+                    <div>
+                        <span style="font-size: 2rem;"> {{courseFullModel && courseFullModel.teachers ?
+                            courseFullModel.teachers.length : '0'}}</span><br>
+                        <span>total</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!--   -->
+            <div *ngIf="courseFullModel" class="">
+
+                <div *ngFor="let teacher of courseFullModel.teachers" class="d-flex justify-content-between 
+                    align-items-center  p-2">
+
+                    <div>
+                        <h3>{{teacher.displayName}} {{teacher.lastName}}</h3>
+                        <p>{{teacher.email}}</p>
+                    </div>
+                    <div>
+
+                        <button class="btn btn-primary me-1"><i class="fa-sharp fa-solid fa-circle-info"></i></button>
+                        <button class="btn btn-danger"> <i class="fa-solid fa-arrow-left"></i></button>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+        <!-- column right -->
+
+        <div class="col-6">
+
+            <!-- Detalles del trimestre -->
+            <div class="d-flex align-items-center p-2">
+
+                <span style="font-size: 1.8rem;" class="me-3"> <i class="fa-solid fa-arrow-left"></i></span>
+
+
+
+                <div>
+                    <h4>Detalles Trimestre</h4>
+                    <ng-template #sinDetails>
+                        <p>Este trimestre no tiene detalles</p>
+                    </ng-template>
+
+                    <div *ngIf="courseFullModel && courseFullModel.weeks;  else sinDetails">
+                        <p>{{courseFullModel.weeks[0].details}}</p>
+                        <!-- <p> {{courseFullModel.tutorTeacher.email}}</p> -->
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+            <div class="mt-3  d-flex align-items-center bg-secondary p-2">
+
+                <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span>
+
+                <div class="flex-grow-1 d-flex justify-content-between  align-items-center">
+                    <div>
+                        <h4>Planificaciones</h4>
+                        <p>Planificaciones durante el trimestre</p>
+                    </div>
+                    <div>
+                        <span style="font-size: 2rem;"> {{courseFullModel && courseFullModel.weeks &&
+                            courseFullModel.weeks[0].planifications ?
+                            courseFullModel.weeks[0].planifications.length : '0'}}</span><br>
+                        <span>total</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <ng-template #sinPlanificaciones>
+                <h4></h4>
+                <p>Sin planificaciones</p>
+            </ng-template>
+
+            <div class="mt-3 bg-secondary p-2"
+                *ngIf="courseFullModel && courseFullModel.weeks;  else sinPlanificaciones">
+
+                <div *ngFor=" let plani of  courseFullModel.weeks[0].planifications"
+                    class="d-flex justify-content-between align-items-center">
+                    <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span>
+
+                    <div class="flex-grow-1">
+
+                        <h4>{{plani.title}} </h4>
+                        <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
+
+
+                        <p class="my-1" *ngIf="plani.status"> <i class="fa-solid fa-eye"></i> Publico </p>
+                        <p class="my-1"  *ngIf="!plani.status"><i class="fa-solid fa-eye-slash"></i>Privado</p>
+
+                        <p> <a role="button">Ver detalles</a> </p>
+                    </div>
+
+                    <button class="btn btn-success">Revisar</button>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- {{courseFullModel | json}} -->
+</div>

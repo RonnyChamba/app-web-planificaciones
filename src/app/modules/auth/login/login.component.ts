@@ -4,6 +4,8 @@ import { LoginService } from '../services/login.service';
 import { ToastrService } from 'ngx-toastr';
 import { validMessagesError } from 'src/app/util/mensajes-validacion';
 import { MAX_EMAIL, MIN_EMAIL } from 'src/app/util/constantes-values';
+import { Router } from '@angular/router';
+import { TokenService } from '../services/token.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,9 @@ export class LoginComponent  implements  OnInit{
   mensajesValidacion =  validMessagesError;
 
   constructor(private loginService: LoginService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private tokenService: TokenService,
+    private router: Router) { }
 
   ngOnInit(): void {
 
@@ -46,9 +50,14 @@ createForm() {
         const res = await this.loginService.login(this.formGroup.value.email, this.formGroup.value.password);
         console.log(res);
         this.toastr.success('Bienvenido', 'Login');
+        
+        this.tokenService.setToken(JSON.stringify(res.user));
+
+        this.router.navigate(['/home']);
 
       } catch (error) {
-        
+        this.tokenService.setToken("null");
+
         // console.log(error);
         this.toastr.error('Error de credenciales', 'Login');
         
