@@ -1,3 +1,9 @@
+<!-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">open</button> -->
+
+<app-detail-planification class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" 
+aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
+
+
 <div class=" container mt-3">
     <div class="row">
 
@@ -42,11 +48,6 @@
                     <a class="btn btn-success" role="button" (click)="openModalPlanification()"><i
                             class="fa-sharp fa-solid fa-plus"></i> </a>
                 </li>
-
-
-
-
-
             </ul>
 
         </div>
@@ -184,7 +185,7 @@
 
 
 
-                <div *ngFor=" let plani of  courseFullModel.weeks[indexWeekCurrent].planifications"
+                <div *ngFor=" let plani of  courseFullModel.weeks[indexWeekCurrent].planifications; index as i"
                     class="d-flex justify-content-between align-items-center">
                     <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span>
 
@@ -197,7 +198,9 @@
                         <p class="my-1" *ngIf="plani.status"> <i class="fa-solid fa-eye"></i> Publico </p>
                         <p class="my-1" *ngIf="!plani.status"><i class="fa-solid fa-eye-slash"></i>Privado</p>
 
-                        <p> <a role="button">Ver detalles</a> </p>
+                        <!-- <p> <a role="button" (click)="viewDetailsPlanification(i)" >Ver detalles</a> </p> -->
+                        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" role="button" (click)="viewDetailsPlanification(i)" >Ver Detalles</a>
+                        <!-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">open</button> -->
                     </div>
 
                     <button class="btn btn-success">Revisar</button>

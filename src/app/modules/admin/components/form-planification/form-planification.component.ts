@@ -7,6 +7,9 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { WeekModelBase } from '../../models/week.model';
+import * as dayjs from 'dayjs';
+import { UtilDetailsService } from '../../services/util-details.service';
+import { typeResource } from '../../models/planification.model';
 
 
 @Component({
@@ -32,10 +35,12 @@ export class FormPlanificationComponent implements OnInit {
 
   files: File[] = [];
 
-
-  constructor(private planiService: PlanificationService,
+  resources: typeResource[] = []
+  constructor(
+    private planiService: PlanificationService,
     private toastr: ToastrService,
     public modal: NgbActiveModal,
+    private utilDetailsService: UtilDetailsService,
     private storage: AngularFireStorage) { }
 
   ngOnInit() {
@@ -46,13 +51,14 @@ export class FormPlanificationComponent implements OnInit {
   createForm() {
     this.formGroup = new FormGroup({
 
-      weeeks: new FormControl(this.weekModel.uid, []),
+      week: new FormControl(this.weekModel.uid, []),
       dateCreated: new FormControl(null, []),
       status: new FormControl("true", []),
       deleted: new FormControl(false, []),
       title: new FormControl(null, [Validators.required]),
       details: new FormControl(null, [Validators.maxLength(200)]),
-      resource: new FormControl(null, []),
+      timestamp: new FormControl(null, []),
+      resource: new FormControl([], []),
 
     });
   }
@@ -72,6 +78,9 @@ export class FormPlanificationComponent implements OnInit {
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
 
+      console.log(file?.name)
+      console.log(file?.type)
+
         if (file && file.size > 0) {
           this.files.push(file as File);
         }
@@ -88,11 +97,13 @@ export class FormPlanificationComponent implements OnInit {
     return Promise.all(promises);
   }
 
-  private uploadFile(file: File): Promise<string> {  
+   uploadFile(file: File): Promise<string> {  
+    
     const filePath = `myfiles/${file.name}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
 
+    this.resources.push({name: file.name, url: filePath, type: file.type})
     // observe percentage changes
     this.uploadPercent = task.percentageChanges() as Observable<number>;
 
@@ -131,6 +142,7 @@ export class FormPlanificationComponent implements OnInit {
   // show loader by upload files
   // this.loading = true;
 
+
      const nameFiles  = await  this.onUpload();
      
      console.log(nameFiles);
@@ -138,8 +150,15 @@ export class FormPlanificationComponent implements OnInit {
      
      if (nameFiles)  this.formGroup.value.resource = nameFiles;
 
-      this.formGroup.value.dateCreated = new Date();
+     const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
+
+      this.formGroup.value.dateCreated = dateCurrent
+
       this.formGroup.value.status = this.formGroup.value.status === "true" ? true : false;
+
+      this.formGroup.value.timestamp = Date.now();
+
+  
       // this.formGroup.value.weeeks =  this.weekModel.uid;
 
       console.log(this.formGroup.value);
@@ -149,10 +168,17 @@ export class FormPlanificationComponent implements OnInit {
       if (this.formGroup.valid) {
 
         try {
+
+          
+          // return;
           const resp = await this.planiService.savePlanification(this.formGroup.value);
           this.toastr.success('Planificación creada correctamente', 'Planificación');
+          this.modal.close('ok');
           this.formGroup.reset();
           this.files = [];
+
+          // Emitir un evento para refrescar la lista de planificaciones del trimestre
+          this.utilDetailsService.refreshDataPlanification.next();
 
         } catch (error) {
           this.toastr.error('Error al crear la planificación', 'Planificación');

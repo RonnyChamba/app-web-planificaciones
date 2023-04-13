@@ -16,11 +16,14 @@ export class PlanificationService  implements OnInit{
   }
 
   savePlanification(data: PlanificationModel)  {
+
+    console.log(data);
+    
     return this.afs.collection(COLLECTION_NAME).add(data);
   }
 
   findPlanificationByWeeksId(weeksId: string) {
-    return this.afs.collection(COLLECTION_NAME, ref => ref.where('week', '==', weeksId)).get();
+    return this.afs.collection(COLLECTION_NAME, ref => ref.where('week', '==', weeksId).orderBy('timestamp', 'desc')).get();
   }
 
 

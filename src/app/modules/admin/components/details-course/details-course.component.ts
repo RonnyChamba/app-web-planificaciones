@@ -33,6 +33,11 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
   @Input() uidCourse: string = "";
 
   courseFullModel: CourseFullModel;
+
+
+
+  planification: any;
+
   constructor(private courseService: CourseService,
     private detailCourseService: CourseTeacherService,
     private planificationService: PlanificationService,
@@ -46,6 +51,21 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
     console.log(`Id Customer get : ${this.uidCourse}`);
     this.loadDataPage();
+    this.refreshWeeks();
+    this.refreshPlanifications();
+
+
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  /**
+   * Cada vez que se crea una nueva semana, se debe refrescar la lista de semanas,
+   * en el formulario de crear semana se emite un evento para refrescar la lista de semanas
+   * y aqui se suscribe a ese evento
+   */
+  refreshWeeks() {
 
     // suscribirse al evento de refrescar semanas cuando se crea una nueva semana del curso
     this.subscription.add(this.utilDetailsService.refreshWeeksAsObservable().subscribe(async () => {
@@ -57,27 +77,40 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
       if (this.courseFullModel.weeks.length > 0) {
 
         // Ante de recargar las semanas se guarda la planificacion de la actual semana
-         planificacion = this.courseFullModel.weeks[this.indexWeekCurrent].planifications;
+        planificacion = this.courseFullModel.weeks[this.indexWeekCurrent].planifications;
 
       }  // En caso de quel trimestre sea el primero que se creo, no es conveniente recargar la planificacion de la semana actual ya que no existe
 
 
-      
-        // recargar semanas
-        await this.loadWeeks();
 
-        // recargar planificacion de la semana actual, esto se hace para que no se pierda la planificacion de la semana actual
-        this.courseFullModel.weeks[this.indexWeekCurrent].planifications = planificacion;
+      // recargar semanas
+      await this.loadWeeks();
+
+      // recargar planificacion de la semana actual, esto se hace para que no se pierda la planificacion de la semana actual
+      this.courseFullModel.weeks[this.indexWeekCurrent].planifications = planificacion;
 
 
 
     }));
 
+  }
+
+  /**
+   * Cada vez que se crea una nueva planificacion, se debe refrescar la lista de planificaciones,
+   * en el formulario de crear planificacion se emite un evento para refrescar la lista de planificaciones
+   * y aqui se suscribe a ese evento
+   */
+  refreshPlanifications() {
+
+    this.subscription.add(this.utilDetailsService.refreshPlanificationAsObservable().subscribe(async () => {
+
+      // recargar planificacion de la semana actual
+      await this.loadPlanification();
+
+    }));
 
   }
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+
 
   async loadDataPage() {
 
@@ -271,21 +304,24 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
       // paso un objeto al modal  un objeto de tipo CourseFullModel pero solo con los atributos que necesito del objeto weekCurrent
       // no necesito los atributos de planification por eso no los paso
       ref.componentInstance.weekModel = weekCurrent as WeekModelBase;
-    }else alert("No hay semanas disponibles para planificar");
+    } else alert("No hay semanas disponibles para planificar");
 
 
 
-  
+
   }
 
   async changeNumberWeek(numberWeek: number) {
 
-    this.indexWeekCurrent = numberWeek;
+    if (this.indexWeekCurrent !== numberWeek) {
+      this.indexWeekCurrent = numberWeek;
 
-    console.log("changeNumberWeeks", numberWeek);
+      console.log("changeNumberWeeks", numberWeek);
 
-    await this.loadPlanification();
-    // this.courseFullModel.numberWeeks = numberWeek;
+      await this.loadPlanification();
+      // this.courseFullModel.numberWeeks = numberWeek;
+
+    }else console.log("no se cambio el numero de semana");
   }
 
 
@@ -301,6 +337,16 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
     return (this.courseFullModel && this.courseFullModel.weeks && this.courseFullModel.weeks.length > 0);
 
+  }
+
+  viewDetailsPlanification(index: number) {
+
+    console.log("viewDetailsPlanification", index);
+    const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications[index];
+
+    console.log("lanification", this.planification);
+
+    this.utilDetailsService.refreshDataDetailPlanification.next(planification);
   }
 
   /**
