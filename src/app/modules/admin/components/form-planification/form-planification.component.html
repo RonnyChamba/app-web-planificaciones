@@ -1,108 +1,125 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+<div class="container-user w-100">
+    <div class="content-user p-3 mx-auto border border-2 rounded-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="form-title">{{true? 'Nueva Planificación: ' + (weekModel.title + ' ' + weekModel.numberWeek): 'Actualizar Planificación'}} </h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+        </div>
+
+        <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
 
 
-    <div class="mb-3">
-        <label for="title" class="form-label">Titulo</label>
-        <input type="text" class="form-control" id="title" formControlName="title">
+            <div class="mb-3">
+                <label for="title" class="form-label">Titulo</label>
+                <input type="text" class="form-control" id="title" formControlName="title">
 
 
-        <div *ngIf="
+                <div *ngIf="
         formGroup.controls['title'].invalid &&
         (formGroup.controls['title'].dirty ||
         formGroup.controls['title'].touched)
       " class="form-text text-danger">
-            <div *ngFor="let validation of mensajesValidacion.title">
-                <div style="font-size: smaller !important" *ngIf="
+                    <div *ngFor="let validation of mensajesValidacion.title">
+                        <div style="font-size: smaller !important" *ngIf="
       formGroup.get('title')?.hasError(validation.type) &&
             (formGroup.get('title')?.dirty ||
             formGroup.get('title')?.touched)
           ">
-                    {{ validation.message }}
+                            {{ validation.message }}
+                        </div>
+                    </div>
                 </div>
+
             </div>
-        </div>
-
-    </div>
 
 
-    <div class="mb-3">
-        <label for="details" class="form-label">Detalles</label>
-    
-        <textarea class="form-control" id="details" rows="3" formControlName="details"></textarea>
+            <div class="mb-3">
+                <label for="details" class="form-label">Detalles</label>
+
+                <textarea class="form-control" id="details" rows="3" formControlName="details"></textarea>
 
 
-        <div *ngIf="
+                <div *ngIf="
         formGroup.controls['details'].invalid &&
         (formGroup.controls['details'].dirty ||
         formGroup.controls['details'].touched)
       " class="form-text text-danger">
-            <div *ngFor="let validation of mensajesValidacion.details">
-                <div style="font-size: smaller !important" *ngIf="
+                    <div *ngFor="let validation of mensajesValidacion.details">
+                        <div style="font-size: smaller !important" *ngIf="
       formGroup.get('details')?.hasError(validation.type) &&
             (formGroup.get('details')?.dirty ||
             formGroup.get('details')?.touched)
           ">
-                    {{ validation.message }}
+                            {{ validation.message }}
+                        </div>
+                    </div>
                 </div>
+
             </div>
-        </div>
 
-    </div>
+            <div class="mb-3">
+                <label for="resource" class="form-label">Recursos</label>
+                <div>
 
-    <div class="mb-3">
-        <label for="resource" class="form-label">Recursos</label>
-        <div>
+                    <input type="file" class="form-control" id="resoruces" formControlName="resource"
+                        (change)="onFileSelected($event)">
 
-            <input type="file" class="form-control" id="resoruces" formControlName="resource" (change)="onFileSelected($event)" >
-           
-        </div>
-    
-    
-        <div>
-            <p *ngFor="let item of files; index as i"> <span> {{item.name}}</span>
-                <button class="btn btn-danger ms-2"  (click)="deleteFile(i)" >X</button>
-            </p>
-        </div>
+                </div>
 
 
-        <div *ngIf="
+                <div>
+                    <p *ngFor="let item of files; index as i"> <span> {{item.name}}</span>
+                        <button class="btn btn-danger ms-2" (click)="deleteFile(i)">X</button>
+                    </p>
+                </div>
+
+
+                <div *ngIf="
         formGroup.controls['resource'].invalid &&
         (formGroup.controls['resource'].dirty ||
         formGroup.controls['resource'].touched)
       " class="form-text text-danger">
-            <div *ngFor="let validation of mensajesValidacion.nombres">
-                <div style="font-size: smaller !important" *ngIf="
+                    <div *ngFor="let validation of mensajesValidacion.nombres">
+                        <div style="font-size: smaller !important" *ngIf="
       formGroup.get('details')?.hasError(validation.type) &&
             (formGroup.get('resource')?.dirty ||
             formGroup.get('resource')?.touched)
           ">
-                    {{ validation.message }}
+                            {{ validation.message }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="mb-3">
+
+                <div>
+
+                    <label for="details" class="form-label">Publico</label>
+                </div>
+
+
+                <div class="btn-group" role="group">
+                    <label class="btn btn-outline-primary">
+                        <input type="radio" value="true" checked formControlName="status"> SI
+                    </label>
+                    <label class="btn btn-outline-primary">
+                        <input type="radio" value="false" formControlName="status"> No
+                    </label>
                 </div>
             </div>
-        </div>
+
+
+            <div class="text-end mt-3">
+                <button type="button" class="btn btn-secondary me-2" (click)="modal.close()">
+                    CERRAR
+                </button>
+
+                <!-- [disabled]="formData.invalid"  -->
+                <input type="submit" [disabled]="formGroup.invalid" class="btn btn-primary" value="CREAR PLANIFICACIÓN" />
+            </div>
+        </form>
 
     </div>
-
-
-    <div class="mb-3">
-        
-        <div>
-
-            <label for="details" class="form-label">Publico</label>
-        </div>
-
-
-        <div class="btn-group" role="group">
-            <label class="btn btn-outline-primary">
-                <input type="radio" value="true" checked  formControlName="status"> SI
-            </label>
-            <label class="btn btn-outline-primary">
-                <input type="radio" value="false" formControlName="status"> No
-            </label>
-        </div>
-    </div>
-      
-
-
-    <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid">CREAR PLANIFICACI&Oacute;N</button>
-</form>
+</div>

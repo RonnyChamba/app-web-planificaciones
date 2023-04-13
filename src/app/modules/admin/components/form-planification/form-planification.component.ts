@@ -4,7 +4,10 @@ import { validMessagesError } from 'src/app/util/mensajes-validacion';
 import { PlanificationService } from '../../services/planification.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';;
 import { ToastrService } from 'ngx-toastr';
-import { Observable, finalize } from 'rxjs';
+import { Observable } from 'rxjs';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { WeekModelBase } from '../../models/week.model';
+
 
 @Component({
   selector: 'app-form-planification',
@@ -15,7 +18,12 @@ export class FormPlanificationComponent implements OnInit {
 
 
   formGroup: FormGroup;
-  @Input() idWeeks: string = "9OKIfcODRrpHZKV8KYxm";
+
+  // La semana que se va a asignar la planificación, toda planificación debe estar asociada a una semana
+  @Input() weekModel: WeekModelBase
+
+
+  // @Input() idWeeks: string = "9OKIfcODRrpHZKV8KYxm";
   mensajesValidacion = validMessagesError;
 
   uploadPercent: Observable<number>;
@@ -27,6 +35,7 @@ export class FormPlanificationComponent implements OnInit {
 
   constructor(private planiService: PlanificationService,
     private toastr: ToastrService,
+    public modal: NgbActiveModal,
     private storage: AngularFireStorage) { }
 
   ngOnInit() {
@@ -37,7 +46,7 @@ export class FormPlanificationComponent implements OnInit {
   createForm() {
     this.formGroup = new FormGroup({
 
-      weeeks: new FormControl(null, []),
+      weeeks: new FormControl(this.weekModel.uid, []),
       dateCreated: new FormControl(null, []),
       status: new FormControl("true", []),
       deleted: new FormControl(false, []),
@@ -131,7 +140,7 @@ export class FormPlanificationComponent implements OnInit {
 
       this.formGroup.value.dateCreated = new Date();
       this.formGroup.value.status = this.formGroup.value.status === "true" ? true : false;
-      this.formGroup.value.weeeks =  this.idWeeks;
+      // this.formGroup.value.weeeks =  this.weekModel.uid;
 
       console.log(this.formGroup.value);
 

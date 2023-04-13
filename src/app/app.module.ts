@@ -24,6 +24,7 @@ import { ListCourseComponent } from './modules/admin/components/list-course/list
 import { CourseComponent } from './modules/admin/page/course/course.component';
 import { DetailsCourseComponent } from './modules/admin/components/details-course/details-course.component';
 import { FormatDatePipe } from './modules/pipes/format-date.pipe';
+import { WeekComponent } from './modules/admin/components/week/week.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { FormatDatePipe } from './modules/pipes/format-date.pipe';
     ListCourseComponent,
     CourseComponent,
     DetailsCourseComponent,
-    FormatDatePipe
+    FormatDatePipe,
+    WeekComponent
   ],
   imports: [
     BrowserModule,

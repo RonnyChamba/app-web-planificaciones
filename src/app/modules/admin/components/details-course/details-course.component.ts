@@ -1,22 +1,34 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CourseService } from '../../services/course.service';
-import { CourseFullModel, DetailsCourseModel } from '../../models/course.model';
+import { CourseFullModel, CourseModel, DetailsCourseModel } from '../../models/course.model';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
 import { ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { CourseTeacherService } from '../../services/course-teacher.service';
 
-import { firstValueFrom } from 'rxjs';
-import { WeekModel } from '../../models/week.model';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { WeekModel, WeekModelBase } from '../../models/week.model';
 import { PlanificationService } from '../../services/planification.service';
 import { PlanificationModel } from '../../models/planification.model';
+import { WeekService } from '../../services/week.service';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { WeekComponent } from '../week/week.component';
+import { UtilDetailsService } from '../../services/util-details.service';
+import { FormPlanificationComponent } from '../form-planification/form-planification.component';
 
 @Component({
   selector: 'app-details-course',
   templateUrl: './details-course.component.html',
   styleUrls: ['./details-course.component.scss']
 })
-export class DetailsCourseComponent implements OnInit {
+export class DetailsCourseComponent implements OnInit, OnDestroy {
 
+
+  // here add suscriptiones
+  private subscription: Subscription = new Subscription();
+
+  // represent the current week, this is used to show the planification of the current week
+  indexWeekCurrent: number = 0;
 
   @Input() uidCourse: string = "";
 
@@ -24,13 +36,47 @@ export class DetailsCourseComponent implements OnInit {
   constructor(private courseService: CourseService,
     private detailCourseService: CourseTeacherService,
     private planificationService: PlanificationService,
-    private teacherService: RegisterService) { }
+    private modal: NgbModal,
+
+    private weekService: WeekService,
+    private teacherService: RegisterService,
+    private utilDetailsService: UtilDetailsService,) { }
 
   ngOnInit(): void {
 
     console.log(`Id Customer get : ${this.uidCourse}`);
-
     this.loadDataPage();
+
+    // suscribirse al evento de refrescar semanas cuando se crea una nueva semana del curso
+    this.subscription.add(this.utilDetailsService.refreshWeeksAsObservable().subscribe(async () => {
+
+
+      let planificacion: any = [];
+
+      // verificar si antes de que fuera creado el trimerste, ya existan trimestres , osea que no sea la primera semana que fuera creanda
+      if (this.courseFullModel.weeks.length > 0) {
+
+        // Ante de recargar las semanas se guarda la planificacion de la actual semana
+         planificacion = this.courseFullModel.weeks[this.indexWeekCurrent].planifications;
+
+      }  // En caso de quel trimestre sea el primero que se creo, no es conveniente recargar la planificacion de la semana actual ya que no existe
+
+
+      
+        // recargar semanas
+        await this.loadWeeks();
+
+        // recargar planificacion de la semana actual, esto se hace para que no se pierda la planificacion de la semana actual
+        this.courseFullModel.weeks[this.indexWeekCurrent].planifications = planificacion;
+
+
+
+    }));
+
+
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   async loadDataPage() {
@@ -67,7 +113,10 @@ export class DetailsCourseComponent implements OnInit {
     // get course
     const respCourse = await firstValueFrom(this.courseService.findCourseById(this.uidCourse));
     this.courseFullModel = respCourse.data() as CourseFullModel;
+
+
     this.courseFullModel.uid = respCourse.id;
+
     console.log("cursos cargado");
 
   }
@@ -110,7 +159,7 @@ export class DetailsCourseComponent implements OnInit {
         teachers.push(teacher);
 
       });
-    }else console.log("No hay teachers");
+    } else console.log("No hay teachers");
 
     this.courseFullModel.teachers = teachers;
     //  console.log(teachers);
@@ -138,7 +187,7 @@ export class DetailsCourseComponent implements OnInit {
   async loadWeeks() {
 
 
-    const respWeeks = await firstValueFrom(this.detailCourseService.findWeeksByCourseId(this.courseFullModel.uid as string));
+    const respWeeks = await firstValueFrom(this.weekService.findWeeksByCourseId(this.courseFullModel.uid as string));
 
     // console.log(respWeeks.docs);
 
@@ -154,6 +203,8 @@ export class DetailsCourseComponent implements OnInit {
 
     });
 
+
+
     this.courseFullModel.weeks = weeks;
   }
 
@@ -164,7 +215,7 @@ export class DetailsCourseComponent implements OnInit {
     if (this.courseFullModel.weeks.length > 0) {
 
       // Obtener planificacion de la primera semana , es la que se carga por defecto
-      const uidFirstWeek = this.courseFullModel.weeks[0].uid || "";
+      const uidFirstWeek = this.courseFullModel.weeks[this.indexWeekCurrent].uid || "";
 
 
       // console.log("uidFirstWeek", uidFirstWeek);
@@ -188,13 +239,69 @@ export class DetailsCourseComponent implements OnInit {
       });
 
       // Asignar planificacion a la primera semana
-      this.courseFullModel.weeks[0].planifications = planification;
+      this.courseFullModel.weeks[this.indexWeekCurrent].planifications = planification;
 
     } else console.log("No hay semanas disponibles para planificar");
 
   }
 
 
+  openModalWeeks() {
+
+    console.log("openModalWeeks");
+    // this.modal.open(WeekComponent, { size: 'xl', centered: true, scrollable: true, backdrop: 'static', keyboard: false, windowClass: 'modal-weeks' })
+    const ref = this.modal.open(WeekComponent, { size: 'md' })
+
+    // paso un objeto al modal  un objeto de tipo CourseFullModel pero solo con los atributos que necesito del objeto
+    ref.componentInstance.courseModel = this.courseFullModel as CourseModel
+  }
+
+  openModalPlanification() {
+
+    if (this.verifyIfExistWeeks) {
+      // alert("semanas disponibles para planificar");
+
+      // Obtengo   la semana actual, cada planificacion se guarda por semana
+      const weekCurrent = this.courseFullModel.weeks[this.indexWeekCurrent];
+
+      console.log("uidWeekCurrent", weekCurrent);
+
+      const ref = this.modal.open(FormPlanificationComponent, { size: 'md' })
+
+      // paso un objeto al modal  un objeto de tipo CourseFullModel pero solo con los atributos que necesito del objeto weekCurrent
+      // no necesito los atributos de planification por eso no los paso
+      ref.componentInstance.weekModel = weekCurrent as WeekModelBase;
+    }else alert("No hay semanas disponibles para planificar");
+
+
+
+  
+  }
+
+  async changeNumberWeek(numberWeek: number) {
+
+    this.indexWeekCurrent = numberWeek;
+
+    console.log("changeNumberWeeks", numberWeek);
+
+    await this.loadPlanification();
+    // this.courseFullModel.numberWeeks = numberWeek;
+  }
+
+
+  get planificationExistByCurrentWeek() {
+
+    return (this.verifyIfExistWeeks && (this.courseFullModel.weeks[this.indexWeekCurrent] &&
+      this.courseFullModel.weeks[this.indexWeekCurrent].planifications
+      && this.courseFullModel.weeks[this.indexWeekCurrent].planifications.length > 0));
+  }
+
+
+  get verifyIfExistWeeks() {
+
+    return (this.courseFullModel && this.courseFullModel.weeks && this.courseFullModel.weeks.length > 0);
+
+  }
 
   /**
    * async loadDateCourse() {

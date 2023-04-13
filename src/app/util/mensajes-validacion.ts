@@ -199,6 +199,22 @@ import {
         message: `Formato fecha incorrecto`,
       },
     ]
+    ,
+
+    // Valores para week
+    numberWeek: [
+      {
+        type: 'required',
+        message: `Campo obligatorio.`,
+      },
+       {
+        type: 'pattern',
+        message: `Formato incorrecto.`,
+      },
+       
+    ],
+
+
   };
   
   
