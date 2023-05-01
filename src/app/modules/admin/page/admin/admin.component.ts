@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
-import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
 import { FormCourseComponent } from '../../components/form-course/form-course.component';
 
 @Component({
@@ -12,6 +11,8 @@ import { FormCourseComponent } from '../../components/form-course/form-course.co
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent  implements OnInit{
+
+  flagClose = true;
 
   constructor(private tokenService: TokenService,
     private router: Router,
@@ -33,6 +34,12 @@ export class AdminComponent  implements OnInit{
     this.modalService.open(FormCourseComponent, { size: 'lg' });
   }
 
+  onClickMenu(value:boolean){  
+
+    this.flagClose = value;
+
+    // this.tokenService.setFlagClose(this.flagClose);
+  }
 
 
 

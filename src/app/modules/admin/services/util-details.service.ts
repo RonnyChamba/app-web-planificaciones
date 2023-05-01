@@ -19,6 +19,9 @@ export class UtilDetailsService implements OnInit {
 
   // Para la observacion del componente review
   private subjectReviewPlanification = new Subject<any>();
+
+  // Para la observacion del componente teacher
+  private subjectTeacher = new Subject<any>();
   
   constructor() { }
 
@@ -42,6 +45,12 @@ export class UtilDetailsService implements OnInit {
   get refreshDataReview () : Subject<any> {
     return this.subjectReviewPlanification;
   }
+
+  get refreshDataTeacher () : Subject<any> {
+
+    return this.subjectTeacher;
+  }
+
   refreshWeeksAsObservable() :Observable<void> {
      return this.subjectWeeks.asObservable();
   }

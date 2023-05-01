@@ -1,0 +1,89 @@
+.home-header {
+    padding: 0 20px;
+    height: 60px;
+    position: relative;
+  
+    .profile {
+      height: 45px;
+      width: 45px;
+      margin-right: 10px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  
+    .bx-menu {
+      color: #11101d;
+      font-size: 35px;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+  
+    .text {
+      font-size: 25px;
+      font-weight: 700;
+      color: #11101d;
+  
+      &-user {
+        font-weight: 300;
+      }
+    }
+  }
+  
+  // .data-profile{
+  
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 0;
+  //   overflow: hidden;
+  //   background-color: red;
+  //   transition: all 0.5s ease-in-out;
+  
+  //   ul {
+  //     list-style-type: none;
+  //     height: 15px;
+  //     padding: 5px;
+  //   }
+  // }
+  
+  // .show-profile:checked ~ .data-profile{
+  //   background-color: red;
+  //   height: 100px;
+  //   overflow: visible;  
+  // }
+  
+  
+  .data-profile {
+  
+    position: absolute;
+    width: 100%;
+    // background-color: red;
+  
+    ul {
+      list-style-type: none;
+      padding:0;
+      margin: 0;
+  
+      li {
+        transition: all 0.3s ease-in-out;
+        // height: 0;
+        // padding: 5px;
+        max-height: 0;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.8);
+        cursor: pointer;
+        color: #fff;
+      }
+    }
+  }
+  
+  .show-profile:checked~.data-profile ul li {
+    // background-color: red;
+    max-height: 1000px;
+    overflow: visible;
+    padding: 5px;
+  
+  
+  }
+  
+  
+  //  transform: rotate(-180deg);

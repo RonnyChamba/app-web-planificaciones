@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
 import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
 
@@ -10,6 +10,9 @@ import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
 export class NavbaComponent  implements OnInit{
   
   userData: ModelBaseTeacher;
+  flagClose = true;
+
+  @Output() newItemEvent = new EventEmitter<boolean>();
   
   // Inyect the service in the constructor tokenService
   constructor(private tokenService: TokenService) { }
@@ -19,6 +22,14 @@ export class NavbaComponent  implements OnInit{
       this.userData = JSON.parse(this.tokenService.getToken() as  string);
     }
 
+
+    onClickMenu(){
+      
+      this.flagClose = !this.flagClose;
+      this.newItemEvent.emit(this.flagClose);
+
+
+    }
     
 
 }

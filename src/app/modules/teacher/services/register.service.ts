@@ -2,11 +2,9 @@
 import { Injectable } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ModelBaseTeacher, ModelTeacher } from '../models/teacher';
+import {  ModelTeacher } from '../models/teacher';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'teachers';
 @Injectable({

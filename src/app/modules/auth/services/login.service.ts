@@ -2,7 +2,6 @@ import { Injectable, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ModelTeacher } from '../../teacher/models/teacher';
-import { TokenService } from './token.service';
 const COLLECTION_NAME = 'teachers';
 @Injectable({
   providedIn: 'root'
@@ -68,6 +67,15 @@ export class LoginService implements OnInit {
       throw new Error(error.message);
     }
 
-
   }
+
+  getUserCurrent() {
+    return this.afAuth.currentUser;
+  }
+
+  deleteUser(uid: any){
+    
+
+  } 
+
 }

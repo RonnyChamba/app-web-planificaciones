@@ -53,7 +53,7 @@ createForm() {
         
         this.tokenService.setToken(JSON.stringify(res.user));
 
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
 
       } catch (error) {
         this.tokenService.setToken("null");

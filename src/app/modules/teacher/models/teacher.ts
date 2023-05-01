@@ -14,6 +14,7 @@ export interface ModelTeacher  extends ModelBaseTeacher{
     emailVerified?: boolean;
     photoURL?: string;
     titles?: string[];
+    status?: boolean;
     
 }
 

@@ -17,6 +17,8 @@ import { validatorDni } from 'src/app/util/group-validacion';
 import { dniOrEmailValidator } from '../../util/validator';
 import { LoginService } from 'src/app/modules/auth/services/login.service';
 import { ModelTeacher } from '../../models/teacher';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { UtilDetailsService } from 'src/app/modules/admin/services/util-details.service';
 
 @Component({
   selector: 'app-register',
@@ -30,8 +32,11 @@ export class RegisterComponent implements OnInit {
 
   mensajesValidacion = validMessagesError;
 
-  constructor(private registerService: RegisterService,
+  constructor(
+    public modal: NgbActiveModal,
+    private registerService: RegisterService,
     private auhtService: LoginService,
+    private utilService: UtilDetailsService,
     private toastr: ToastrService) { }
 
   ngOnInit() {
@@ -67,8 +72,8 @@ export class RegisterComponent implements OnInit {
 
     console.log(this.formGroup.value);
     if (this.formGroup.valid) {
-
-
+     
+    
       try {
         const teacher: ModelTeacher = this.formGroup.value;
 
@@ -78,10 +83,16 @@ export class RegisterComponent implements OnInit {
           const newTeacher: ModelTeacher = this.generarUserData(result);
          await this.auhtService.saveUserData(newTeacher);
 
-          this.toastr.success("Usuario registrado con exito", 'Registro exitoso', { timeOut: 3000, });
+         this.modal.close();
+
+          this.toastr.info("Docente registrado con exito");
+
+          // paso el uid del docente para que se actualice la lista de docentes en el componente list-teacher
+          this.utilService.refreshDataTeacher.next(result.user?.uid);
+
 
         }
-        console.log(result);
+        // console.log(result);
 
       } catch (error: any) {
 

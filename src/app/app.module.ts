@@ -33,6 +33,9 @@ import { DetailsTeacherComponent } from './modules/admin/components/details-cour
 import { ListPlanificationComponent } from './modules/admin/components/details-course/components/list-planification/list-planification.component';
 import { ReviewListComponent } from './modules/admin/components/review-list/review-list.component';
 import { ReviewNoteComponent } from './modules/admin/components/review-note/review-note.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { TeacherComponent } from './modules/teacher/page/teacher/teacher.component';
+import { ListTeacherComponent } from './modules/teacher/components/list-teacher/list-teacher.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +59,10 @@ import { ReviewNoteComponent } from './modules/admin/components/review-note/revi
     DetailsTeacherComponent,
     ListPlanificationComponent,
     ReviewListComponent,
-    ReviewNoteComponent
+    ReviewNoteComponent,
+    SidebarComponent,
+    TeacherComponent,
+    ListTeacherComponent
   ],
   imports: [
     BrowserModule,
