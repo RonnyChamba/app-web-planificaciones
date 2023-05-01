@@ -15,11 +15,11 @@ export class UtilDetailsService implements OnInit {
 
   private subjectWeeks = new Subject<void>();
   private subjectPlanification = new Subject<void>();
-
   private subjectDetailPlanification = new Subject<PlanificationModel>();
+
+  // Para la observacion del componente review
+  private subjectReviewPlanification = new Subject<any>();
   
-
-
   constructor() { }
 
   ngOnInit(): void {
@@ -39,8 +39,9 @@ export class UtilDetailsService implements OnInit {
   }
 
 
-
-
+  get refreshDataReview () : Subject<any> {
+    return this.subjectReviewPlanification;
+  }
   refreshWeeksAsObservable() :Observable<void> {
      return this.subjectWeeks.asObservable();
   }
@@ -50,7 +51,6 @@ export class UtilDetailsService implements OnInit {
     return this.subjectPlanification.asObservable();
   }
   
-
 
   refreshDetailPlanificationAsObservable() :Observable<PlanificationModel> {
 

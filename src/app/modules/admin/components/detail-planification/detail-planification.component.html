@@ -1,24 +1,26 @@
 
 <!-- <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel"> -->
-<div style="max-width: 350px; min-width: 350px;" class="m-auto card">
+<div style="max-width: 450px; min-width: 350px;" class="m-auto card">
   <div class="offcanvas-header card-header">
     <h5 id="offcanvasTopLabel">Detalles  Planificación</h5>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body card-body" *ngIf="planification">
 
-        <h4>Detalles</h4>
+        <h6>Descripci&oacute;n</h6>
         <p *ngIf="planification.details"> {{planification.details}} </p>
         <p *ngIf="!planification.details"> Esta planificación no tiene detalles</p>
-        
-        <h4>Recursos</h4>
-        <div >
-            <p *ngIf="!planification.resource">No tiens recursos</p>
+
+        <h6>Recursos</h6>
+        <div>
+            <p *ngIf="!planification.resource ||  planification.resource.length<1" >No tiens recursos</p>
 
             <p *ngFor="let item of planification.resource; index as i">
-                {{item | json}}
-                <span><i class="fa-solid fa-file-pdf"></i>
-                    <a  href="{{item}}" target="_blank" >Documento {{i+1}}</a>
+                <!-- {{item | json}} -->
+                <span>
+                    <i class="fa-solid fa-file-pdf text-danger" *ngIf="item.type=='pdf'"></i>
+                    <i class="fa-sharp fa-solid fa-file-word text-primary"  *ngIf="item.type !='pdf'" ></i>
+                    <a    [href]="item.url" download="{{item.name}}"  target="_blank" class="ms-2">{{item.name}}</a>
                 </span>
             </p>
         </div>

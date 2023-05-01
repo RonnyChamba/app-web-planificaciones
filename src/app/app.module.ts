@@ -23,9 +23,16 @@ import { NavbaComponent } from './components/navba/navba.component';
 import { ListCourseComponent } from './modules/admin/components/list-course/list-course.component';
 import { CourseComponent } from './modules/admin/page/course/course.component';
 import { DetailsCourseComponent } from './modules/admin/components/details-course/details-course.component';
-import { FormatDatePipe } from './modules/pipes/format-date.pipe';
+import { FormatDatePipe, TrimText } from './modules/pipes/format-date.pipe';
 import { WeekComponent } from './modules/admin/components/week/week.component';
 import { DetailPlanificationComponent } from './modules/admin/components/detail-planification/detail-planification.component';
+import { ReviewComponent } from './modules/admin/page/review/review.component';
+import { ListWeekComponent } from './modules/admin/components/list-week/list-week.component';
+import { HeaderComponent } from './modules/admin/components/details-course/components/header/header.component';
+import { DetailsTeacherComponent } from './modules/admin/components/details-course/components/details-teacher/details-teacher.component';
+import { ListPlanificationComponent } from './modules/admin/components/details-course/components/list-planification/list-planification.component';
+import { ReviewListComponent } from './modules/admin/components/review-list/review-list.component';
+import { ReviewNoteComponent } from './modules/admin/components/review-note/review-note.component';
 
 @NgModule({
   declarations: [
@@ -40,8 +47,16 @@ import { DetailPlanificationComponent } from './modules/admin/components/detail-
     CourseComponent,
     DetailsCourseComponent,
     FormatDatePipe,
+    TrimText,
     WeekComponent,
-    DetailPlanificationComponent
+    DetailPlanificationComponent,
+    ReviewComponent,
+    ListWeekComponent,
+    HeaderComponent,
+    DetailsTeacherComponent,
+    ListPlanificationComponent,
+    ReviewListComponent,
+    ReviewNoteComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,29 @@
+<div class="card">
+
+    <div class="card-header">
+        <h4>Observación</h4>
+
+    </div>
+    <div class="card-body">
+
+        <h5>{{note.title}}</h5>
+        <!-- <p>Aqui va el nombre de la planificacion  jejejej</p> -->
+
+        <div class="form-floating">
+            <textarea class="form-control"   
+            #textArea
+            style="height: 100px" placeholder="Leave a comment here" id="floatingTextarea" 
+            [value]="note.observation"
+            ></textarea>
+            <label for="floatingTextarea">Escriba una observaci&oacute;n</label>
+          </div>
+
+    </div>
+
+    <div class="card-footer d-flex  justify-content-end align-items-center">
+
+        <button class="btn btn-secondary me-2" (click)="closeModal()" >Cancelar</button>
+        <button class="btn btn-primary" (click)="save(textArea.value)" >Guardar</button>
+    </div>
+
+</div>

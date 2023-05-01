@@ -1,129 +1,26 @@
 <!-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">open</button> -->
 
-<app-detail-planification class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" 
-aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
+<app-detail-planification class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop"
+    aria-labelledby="offcanvasTopLabel"></app-detail-planification>
 
 
 <div class=" container mt-3">
     <div class="row">
+        <app-header [courseFullModel]="courseFullModel"></app-header>
 
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div class="d-flex align-items-center  ">
-
-                    <span><i class="fa-solid fa-graduation-cap" style="font-size: 1.8rem;"></i></span>
-                    <h3> <b></b> <span *ngIf="courseFullModel"> {{courseFullModel.name}}
-                            {{courseFullModel.parallel}}
-                        </span> </h3>
-                    <!-- <span class="ms-2" role="button"><i class="fa-solid fa-pen-to-square"></i></span> -->
-                </div>
-                <div>
-                    <!-- <button class="btn btn-success">Editar</button> -->
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-12 mt-3">
-
-            <!-- create a list with weeks -->
-
-            <ul *ngIf="courseFullModel" class="d-flex list-unstyled">
-
-                <li *ngFor="let week of courseFullModel.weeks; index as i" class="me-2">
-
-                    <a class="btn btn-danger" role="button" (click)="changeNumberWeek(i)"> <i
-                            class="fa-solid fa-calendar-week"></i> {{week.title}}
-                        {{week.numberWeek}}</a>
-                </li>
-                <li>
-
-                    <a class="btn btn-primary" role="button" (click)="openModalWeeks()"><i
-                            class="fa-sharp fa-solid fa-plus"></i> </a>
-                </li>
-
-                <li>
-
-                    <a class="btn btn-success" role="button" (click)="openModalPlanification()"><i
-                            class="fa-sharp fa-solid fa-plus"></i> </a>
-                </li>
-            </ul>
-
-        </div>
+        <app-list-week *ngIf="courseFullModel" [weeks]="courseFullModel.weeks" (openModal)="openModalWeeks($event)"
+            (weekSelected)="changeNumberWeek($event)"></app-list-week>
 
         <!-- column left -->
-        <div class="col-6 bg-warning">
+        <app-details-teacher [courseFullModel]="courseFullModel" class="col-6"></app-details-teacher>
 
-            <div class="d-flex align-items-center bg-secondary p-2">
-
-                <span class="me-3"><i class="fa-solid fa-user" style="font-size: 2rem;"></i></span>
-                <div>
-                    <h4>Tutor</h4>
-                    <ng-template #mensajeNoVisible>
-                        <p>NO ASIGNADO</p>
-                    </ng-template>
-
-                    <div *ngIf="courseFullModel && courseFullModel.tutorTeacher;  else mensajeNoVisible">
-                        <p class="my-1">{{courseFullModel.tutorTeacher.displayName}}
-                            {{courseFullModel.tutorTeacher.lastName}} </p>
-                        <p class="my-1"> {{courseFullModel.tutorTeacher.email}}</p>
-                    </div>
-
-
-
-                </div>
-
-            </div>
-
-            <div class="mt-3  d-flex align-items-center bg-secondary p-2">
-
-                <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span>
-
-                <div class="flex-grow-1 d-flex justify-content-between  align-items-center">
-                    <div>
-                        <h4>Docentes</h4>
-                        <p>Docentes asignados a este curso</p>
-                    </div>
-                    <div>
-                        <span style="font-size: 2rem;"> {{courseFullModel && courseFullModel.teachers ?
-                            courseFullModel.teachers.length : '0'}}</span><br>
-                        <span>total</span>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <!--   -->
-            <div *ngIf="courseFullModel" class="">
-
-                <div *ngFor="let teacher of courseFullModel.teachers" class="d-flex justify-content-between 
-                    align-items-center  p-2">
-
-                    <div>
-                        <h3>{{teacher.displayName}} {{teacher.lastName}}</h3>
-                        <p>{{teacher.email}}</p>
-                    </div>
-                    <div>
-
-                        <button class="btn btn-primary me-1"><i class="fa-sharp fa-solid fa-circle-info"></i></button>
-                        <button class="btn btn-danger"> <i class="fa-solid fa-arrow-left"></i></button>
-                    </div>
-                </div>
-
-
-            </div>
-
-
-
-        </div>
+        <!-- <app-list-planification  [courseFullModel]="courseFullModel" class="col-6"></app-list-planification> -->
 
         <!-- column right -->
 
-        <div class="col-6">
+         <div class="col-6">
 
-            <!-- Detalles del trimestre -->
+        
             <div class="d-flex align-items-center p-2">
 
                 <span style="font-size: 1.8rem;" class="me-3"> <i class="fa-solid fa-arrow-left"></i></span>
@@ -132,16 +29,16 @@ aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
                     <div>
 
                         <h4>Detalles Trimestre</h4>
-                        <p>El curso  no tiene ningun trimestre </p>
+                        <p>El curso no tiene ningun trimestre </p>
                     </div>
                 </ng-template>
 
-                <div *ngIf="verifyIfExistWeeks; else sinTrimestre" >
+                <div *ngIf="verifyIfExistWeeks; else sinTrimestre">
                     <h4>Detalles Trimestre</h4>
-              
+
                     <div>
                         <p>{{courseFullModel.weeks[indexWeekCurrent].details}}</p>
-                        <!-- <p> {{courseFullModel.tutorTeacher.email}}</p> -->
+                        
                     </div>
                 </div>
 
@@ -156,7 +53,7 @@ aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
                         <h4>Planificaciones</h4>
                         <p>Planificaciones durante el trimestre</p>
                     </div>
-                    <!-- {{courseFullModel | json}} -->
+                
 
                     <ng-template #sinRegistro>
                         <div>
@@ -166,7 +63,8 @@ aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
                     </ng-template>
 
                     <div *ngIf="planificationExistByCurrentWeek; else sinRegistro">
-                        <span style="font-size: 2rem;"> {{courseFullModel.weeks[indexWeekCurrent].planifications.length}}</span><br>
+                        <span style="font-size: 2rem;">
+                            {{courseFullModel.weeks[indexWeekCurrent].planifications.length}}</span><br>
                         <span>total</span>
                     </div>
                 </div>
@@ -179,11 +77,6 @@ aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
             </ng-template>
 
             <div class="mt-3 bg-secondary p-2" *ngIf="planificationExistByCurrentWeek;  else sinPlanificaciones">
-
-                <!-- {{courseFullModel.weeks | json}}  -->
-                <!-- {{courseFullModel.weeks[indexWeekCurrent].planifications.length| json}} -->
-
-
 
                 <div *ngFor=" let plani of  courseFullModel.weeks[indexWeekCurrent].planifications; index as i"
                     class="d-flex justify-content-between align-items-center">
@@ -198,12 +91,13 @@ aria-labelledby="offcanvasTopLabel" ></app-detail-planification>
                         <p class="my-1" *ngIf="plani.status"> <i class="fa-solid fa-eye"></i> Publico </p>
                         <p class="my-1" *ngIf="!plani.status"><i class="fa-solid fa-eye-slash"></i>Privado</p>
 
-                        <!-- <p> <a role="button" (click)="viewDetailsPlanification(i)" >Ver detalles</a> </p> -->
-                        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" role="button" (click)="viewDetailsPlanification(i)" >Ver Detalles</a>
-                        <!-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">open</button> -->
+                    
+                        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                            role="button" (click)="viewDetailsPlanification(i)">Ver Detalles</a>
+                    
                     </div>
 
-                    <button class="btn btn-success">Revisar</button>
+                    <button class="btn btn-success" (click)="reviewPlanification(plani.uid)">Revisar</button>
                 </div>
 
 

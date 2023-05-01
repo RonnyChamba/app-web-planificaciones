@@ -1,0 +1,68 @@
+<div class="mt-2">
+
+
+    <div class="card">
+
+        <div class="card-header">
+            <h5>Planificaciones recibidas</h5>
+        </div>
+
+        <div class="card-body">
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nro</th>
+                        <th>Foto</th>
+                        <th>Fecha</th>
+                        <th>Docente</th>
+                        <th>Recurso</th>
+                        <th>Observaci&oacute;n</th>
+                        <th class="text-end">Observaci&oacute;n</th>
+                    </tr>
+                </thead>
+        
+                <tbody>
+                
+                    <tr *ngFor="let item of listDetailsPlanification; index as i">
+
+                        <td>{{i+1}}</td>
+                        <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
+                        <td>{{item.dateCreated | date:'dd/MM/yyyy'}}</td>
+                        <td>{{item.teacher.fullName}}</td>
+                        <td>
+
+                            <a class="btn btn-primary me-2" title="Abrir recurso" role="button"
+                                href="https://firebasestorage.googleapis.com/v0/b/app-planificaciones.appspot.com/o/myfiles%2FTesis%20Vera%20Daniel%20(3)_rene.pdf?alt=media&token=f0ad71ce-45cc-47ee-b1b7-eb2c5d48398f"
+                                target="_blank">
+
+                                <i class="fa-solid fa-link"></i> Abrir
+                            </a>
+                            <a class="btn btn-danger" role="button" target="_blank" href="">
+                                <i class="fa-solid fa-file-arrow-down"></i> Descargar
+
+                            </a>
+
+
+                            
+                        </td>
+                        <td> {{ item.observation +'' | trimText: 20 }} </td>
+                        <td class="text-end">
+                            <button class="btn btn-primary" (click)="openObservation(item)"><i
+                                    class="fa-solid fa-plus"></i> </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-warning" *ngIf="listDetailsPlanification.length <1">
+                <p>No hay planificaciones recibadas a&uacute;n</p>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>

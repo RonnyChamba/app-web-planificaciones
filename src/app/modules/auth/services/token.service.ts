@@ -29,4 +29,13 @@ export class TokenService implements OnInit{
     this.setToken('null');
   }
 
+
+  setCourse(course: any) {
+    localStorage.setItem('course', JSON.stringify(course));
+  }
+
+  getCourse() {
+    return localStorage.getItem('course');
+  }
+
 }

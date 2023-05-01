@@ -26,6 +26,10 @@ export class PlanificationService  implements OnInit{
     return this.afs.collection(COLLECTION_NAME, ref => ref.where('week', '==', weeksId).orderBy('timestamp', 'desc')).get();
   }
 
+  getPlanificationById(uid: string) {
+    return this.afs.collection(COLLECTION_NAME).doc(uid).get();
+  }
+
 
 
 }

@@ -11,3 +11,23 @@ export class FormatDatePipe implements PipeTransform {
   }
 
 }
+
+
+
+@Pipe({
+  name: 'trimText'
+})
+export class TrimText implements PipeTransform {
+
+  transform(text: string, size?: number): string {
+
+    size = size || 10;
+
+    if (text.length > size) {
+      return text.substring(0, size) + '...';
+    }
+    return text;
+  
+  }
+
+}

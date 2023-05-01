@@ -22,6 +22,16 @@ export interface PlanificationModel {
 
     // esta fecha es para ordenar las planificaciones por fecha de creación
     timestamp?: number
+}
 
+export interface DetailsPlanification{
+
+    uid?: string;
+    dateCreated?: string;
+    status?: boolean;
+    teacher?: any;
+    observation?: string;
+    planification?: string;
+    resource?:string
 
 }

@@ -34,8 +34,6 @@ export class FormPlanificationComponent implements OnInit {
 
 
   files: File[] = [];
-
-  resources: typeResource[] = []
   constructor(
     private planiService: PlanificationService,
     private toastr: ToastrService,
@@ -68,27 +66,63 @@ export class FormPlanificationComponent implements OnInit {
   // función para seleccionar un archivo
   onFileSelected(event: any) {
 
+      const file= event.target.files[0];
+
+      console.log(file)
+      if (file && file.size > 0) {
+
+        const extension = this.extractFileExtension(file.name);
+
+        if (this.validFileType(extension)) {
+
+          this.files.push(file as File);
+          this.formGroup.get('resource')?.reset();
+
+        } else {
+          this.toastr.error('El archivo seleccionado no es válido', 'Error');
+        }
+      }else console.log('no hay archivo')
+
+
     // console.log(event)
 
-    const files: FileList = event.target.files;
+    // const files: FileList = event.target.files;
 
-    console.log(files)
+    // console.log(files)
 
-    // valid file size not empty
-    for (let i = 0; i < files.length; i++) {
-      const file = files.item(i);
+    // // valid file size not empty
+    // for (let i = 0; i < files.length; i++) {
+    //   const file = files.item(i);
 
-      console.log(file?.name)
-      console.log(file?.type)
+    //   console.log(file?.name)
+    //   console.log(file?.type)
 
-        if (file && file.size > 0) {
-          this.files.push(file as File);
-        }
-    }
+    //   // valid file size not empty
+    //   if (file && file.size > 0) {
+        
+    //     // valid file type
+
+    //     this.files.push(file as File);
+    //   }
+    // }
+  }
+
+
+  extractFileExtension(filename: string): string {
+
+    return filename.split('.').pop() || '';
+  }
+
+
+  // función para validar el tipo de archivo
+  validFileType(extension: string): boolean {
+    
+    return  ['pdf', 'doc', 'docx'].includes(extension);
+
   }
 
   // función para subir un archivo
-  onUpload() : Promise<string[]> {
+  onUpload(): Promise<typeResource[]> {
 
 
 
@@ -97,38 +131,41 @@ export class FormPlanificationComponent implements OnInit {
     return Promise.all(promises);
   }
 
-   uploadFile(file: File): Promise<string> {  
-    
+  async uploadFile(file: File): Promise<typeResource> {
+
     const filePath = `myfiles/${file.name}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
 
-    this.resources.push({name: file.name, url: filePath, type: file.type})
     // observe percentage changes
+
     this.uploadPercent = task.percentageChanges() as Observable<number>;
 
     return new Promise((resolve, reject) => {
-      
-        // obtiene la url de descarga
-        task.snapshotChanges().subscribe(
-          (snapshot) => {
-            // Manejar los cambios del estado de la subida
-            if (snapshot?.state === 'success') {
-              // Obtener la referencia del archivo subido
-              fileRef.getDownloadURL().subscribe((url) => {
-  
-  
-                console.log(`File uploaded successfully: ${url}`);
 
-                resolve(url);
-              });
-            }
-          },
-          (error) => {
-            console.error(`Error uploading file ${file.name}: ${error.message}`);
-            reject(error);
+      // obtiene la url de descarga
+      task.snapshotChanges().subscribe(
+        (snapshot) => {
+          // Manejar los cambios del estado de la subida
+          if (snapshot?.state === 'success') {
+            // Obtener la referencia del archivo subido
+            fileRef.getDownloadURL().subscribe((url) => {
+
+
+              console.log(`File uploaded successfully: ${url}`);
+
+              // Retorno la infomación del archivo subido para guardar en la base de datos
+              const resource = { name: file.name, type: this.extractFileExtension(file.name) , url };
+
+              resolve( resource);
+            });
           }
-        );
+        },
+        (error) => {
+          console.error(`Error uploading file ${file.name}: ${error.message}`);
+          reject(error);
+        }
+      );
 
 
     });
@@ -137,55 +174,55 @@ export class FormPlanificationComponent implements OnInit {
 
   async onSubmit() {
 
-  console.log(this.files);
+    console.log(this.files);
 
-  // show loader by upload files
-  // this.loading = true;
+    // show loader by upload files
+    // this.loading = true;
 
 
-     const nameFiles  = await  this.onUpload();
-     
-     console.log(nameFiles);
-  
-     
-     if (nameFiles)  this.formGroup.value.resource = nameFiles;
+    const resources = await this.onUpload();
 
-     const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    console.log(resources);
 
-      this.formGroup.value.dateCreated = dateCurrent
 
-      this.formGroup.value.status = this.formGroup.value.status === "true" ? true : false;
+    if (resources) this.formGroup.value.resource = resources;
 
-      this.formGroup.value.timestamp = Date.now();
+    const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
-  
-      // this.formGroup.value.weeeks =  this.weekModel.uid;
+    this.formGroup.value.dateCreated = dateCurrent
 
-      console.log(this.formGroup.value);
+    this.formGroup.value.status = this.formGroup.value.status === "true" ? true : false;
+
+    this.formGroup.value.timestamp = Date.now();
+
+
+    // this.formGroup.value.weeeks =  this.weekModel.uid;
+
+    console.log(this.formGroup.value);
 
     // validate form before submit
 
-      if (this.formGroup.valid) {
+    if (this.formGroup.valid) {
 
-        try {
-
-          
-          // return;
-          const resp = await this.planiService.savePlanification(this.formGroup.value);
-          this.toastr.success('Planificación creada correctamente', 'Planificación');
-          this.modal.close('ok');
-          this.formGroup.reset();
-          this.files = [];
-
-          // Emitir un evento para refrescar la lista de planificaciones del trimestre
-          this.utilDetailsService.refreshDataPlanification.next();
-
-        } catch (error) {
-          this.toastr.error('Error al crear la planificación', 'Planificación');
+      try {
 
 
-        }  
-    }else {
+        // return;
+        const resp = await this.planiService.savePlanification(this.formGroup.value);
+        this.toastr.success('Planificación creada correctamente', 'Planificación');
+        this.modal.close('ok');
+        this.formGroup.reset();
+        this.files = [];
+
+        // Emitir un evento para refrescar la lista de planificaciones del trimestre
+        this.utilDetailsService.refreshDataPlanification.next();
+
+      } catch (error) {
+        this.toastr.error('Error al crear la planificación', 'Planificación');
+
+
+      }
+    } else {
       this.toastr.error('Formulario no válido', 'Planificación');
     }
 

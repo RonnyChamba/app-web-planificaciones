@@ -15,6 +15,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WeekComponent } from '../week/week.component';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { FormPlanificationComponent } from '../form-planification/form-planification.component';
+import { Router } from '@angular/router';
+import { TokenService } from 'src/app/modules/auth/services/token.service';
 
 @Component({
   selector: 'app-details-course',
@@ -38,13 +40,15 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   planification: any;
 
-  constructor(private courseService: CourseService,
+  constructor(
+    private courseService: CourseService,
     private detailCourseService: CourseTeacherService,
     private planificationService: PlanificationService,
     private modal: NgbModal,
-
+    private router: Router,
     private weekService: WeekService,
     private teacherService: RegisterService,
+    private tokenService: TokenService,
     private utilDetailsService: UtilDetailsService,) { }
 
   ngOnInit(): void {
@@ -247,7 +251,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     // get Planification by  fisrt week | si no hay semana disponible no se puede planificar
     if (this.courseFullModel.weeks.length > 0) {
 
-      // Obtener planificacion de la primera semana , es la que se carga por defecto
+      // Obtener  uid  del trimestre actual
       const uidFirstWeek = this.courseFullModel.weeks[this.indexWeekCurrent].uid || "";
 
 
@@ -257,6 +261,8 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
       // console.log(respPlanification.docs);
 
+      // console.log("planificacion cargada", respPlanification);
+
       // arreglo de planificacion
       const planification: PlanificationModel[] = [];
 
@@ -264,6 +270,8 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
         // console.log(item.data());
 
         const plan = item.data() as PlanificationModel;
+
+        // asignar uid de la planificacion
         plan.uid = item.id;
 
         // agregar cada planificacion al arreglo
@@ -271,15 +279,15 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
       });
 
-      // Asignar planificacion a la primera semana
+      // Asignar planificacion al trimestre actual
       this.courseFullModel.weeks[this.indexWeekCurrent].planifications = planification;
 
-    } else console.log("No hay semanas disponibles para planificar");
+    } else console.log("No hay trimestre disponibles para planificar");
 
   }
 
 
-  openModalWeeks() {
+  openModalWeeks(value: any ) {
 
     console.log("openModalWeeks");
     // this.modal.open(WeekComponent, { size: 'xl', centered: true, scrollable: true, backdrop: 'static', keyboard: false, windowClass: 'modal-weeks' })
@@ -294,17 +302,17 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     if (this.verifyIfExistWeeks) {
       // alert("semanas disponibles para planificar");
 
-      // Obtengo   la semana actual, cada planificacion se guarda por semana
+      // Obtengo  el trimestre actual, cada planificacion se guarda por trimestre
       const weekCurrent = this.courseFullModel.weeks[this.indexWeekCurrent];
 
-      console.log("uidWeekCurrent", weekCurrent);
+      // console.log("uidWeekCurrent", weekCurrent);
 
       const ref = this.modal.open(FormPlanificationComponent, { size: 'md' })
 
       // paso un objeto al modal  un objeto de tipo CourseFullModel pero solo con los atributos que necesito del objeto weekCurrent
       // no necesito los atributos de planification por eso no los paso
       ref.componentInstance.weekModel = weekCurrent as WeekModelBase;
-    } else alert("No hay semanas disponibles para planificar");
+    } else alert("No hay trimestres disponibles para planificar");
 
 
 
@@ -313,10 +321,12 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   async changeNumberWeek(numberWeek: number) {
 
+    console.log("changeNumberWeeks", numberWeek);
+
     if (this.indexWeekCurrent !== numberWeek) {
       this.indexWeekCurrent = numberWeek;
 
-      console.log("changeNumberWeeks", numberWeek);
+      // console.log("changeNumberWeeks", numberWeek);
 
       await this.loadPlanification();
       // this.courseFullModel.numberWeeks = numberWeek;
@@ -341,139 +351,25 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   viewDetailsPlanification(index: number) {
 
-    console.log("viewDetailsPlanification", index);
+    // console.log("viewDetailsPlanification", index);
     const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications[index];
 
-    console.log("lanification", this.planification);
+    // console.log("lanification", this.planification);
 
     this.utilDetailsService.refreshDataDetailPlanification.next(planification);
   }
 
-  /**
-   * async loadDateCourse() {
+  reviewPlanification(uid: any) {
 
+    this.router.navigate(['/planification', uid]);
 
-
-    const respCourse = await firstValueFrom(this.courseService.findCourseById(this.uidCourse));
-
-    this.courseFullModel = respCourse.data() as CourseFullModel;
-    this.courseFullModel.uid = respCourse.id;
-
-    //  get detauls course
-    const respDetailsCourse = await firstValueFrom(this.detailCourseService.findTeacherByCourseId(this.courseFullModel.uid || ""));
-
-    // console.log(respDetailsCourse.docs);
-
-    this.courseFullModel.detailsCourse = [];
-
-    respDetailsCourse.docs.forEach((item: any) => {
-      
-      const detailsCourse = item.data();
-      detailsCourse.uid = item.id;
-
-      this.courseFullModel.detailsCourse.push(detailsCourse);
-
-      // console.log(detailsCourse);
-
-    });
-
-  
-    // get teachers
-    const teachers: ModelTeacher[] = [];
-    const resp = await firstValueFrom(this.teacherService.findTeacherByInIde(this.courseFullModel.detailsCourse.map((item) => item.teacher)));
-
-
-    console.log(resp);
-
-    resp.docs.forEach((item: any) => {
-
-      const teacher = item.data() as ModelTeacher;
-      teacher.uid = item.id;
-
-      console.log(teacher);
-      
-      teachers.push(teacher);
-
-    });
-
-    this.courseFullModel.teachers = teachers;
-
-    console.log(teachers);
-    
-    // get tutor
-    const existTutorInTeachers = this.courseFullModel.teachers.find((item) => item.uid === this.courseFullModel.tutor);
-
-    if (existTutorInTeachers) {
-
-      this.courseFullModel.tutorTeacher = existTutorInTeachers;
-    }
-    else {
-    
-      const respTutor = await firstValueFrom(this.teacherService.findTeacherById(this.courseFullModel.tutor));
-      this.courseFullModel.tutorTeacher = respTutor.data() as ModelTeacher;
-      this.courseFullModel.tutorTeacher.uid = respTutor.id;
-
+    const course ={
+      uid: this.courseFullModel.uid,
+      name: `${this.courseFullModel.name} ${this.courseFullModel.parallel}`
     }
 
-
-
-    // Get Weeks by course
-    const respWeeks = await firstValueFrom(this.detailCourseService.findWeeksByCourseId(this.courseFullModel.uid));
-
-    // console.log(respWeeks.docs);
-
-
-    const weeks: WeekModel[] = [];
-    respWeeks.docs.forEach((item: any) => {
-
-      const week = item.data();
-      week.uid = item.id;
-
-      // this.courseFullModel.weeks.push(week);
-      weeks.push(week);
-      
-    });
-
-    this.courseFullModel.weeks = weeks;
-
-
-    // get Planification by  fisrt week | si no hay semana disponible no se puede planificar
-    if (this.courseFullModel.weeks.length > 0) {
-      // console.log("Hay semanas disponibles para planificar");
-
-
-    // Obtener planificacion de la primera semana
-
-    const uidFirstWeek = this.courseFullModel.weeks[0].uid || "";
-
-    console.log("uidFirstWeek", uidFirstWeek);
-    
-    const respPlanification = await firstValueFrom(this.planificationService.findPlanificationByWeeksId(uidFirstWeek ));
-
-    console.log(respPlanification.docs);
-
-    // arreglo de planificacion
-    const planification: PlanificationModel[] = [];
-
-    respPlanification.docs.forEach((item: any) => {
-      // console.log(item.data());
-        
-        const plan = item.data() as PlanificationModel;
-        plan.uid = item.id;
-  
-        // agregar cada planificacion al arreglo
-        planification.push(plan);
-  
-      });
-
-      // Asignar planificacion a la primera semana
-      this.courseFullModel.weeks[0].planifications = planification;
-
-    }else console.log("No hay semanas disponibles para planificar");
-
-    console.log(this.courseFullModel);
-
+    this.tokenService.setCourse(course);
   }
-   */
+
 
 }
