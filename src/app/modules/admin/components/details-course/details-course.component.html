@@ -4,7 +4,7 @@
     aria-labelledby="offcanvasTopLabel"></app-detail-planification>
 
 
-<div class=" container mt-3">
+<div class="mt-3">
     <div class="row">
         <app-header [courseFullModel]="courseFullModel"></app-header>
 
@@ -98,6 +98,10 @@
                     </div>
 
                     <button class="btn btn-success" (click)="reviewPlanification(plani.uid)">Revisar</button>
+                    <!-- <button class="btn btn-success" (click)="uploadFilePlanification(i)">Subir</button> -->
+
+                    <a  class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                            role="button" (click)="uploadFilePlanification(i)">Subir</a>
                 </div>
 
 

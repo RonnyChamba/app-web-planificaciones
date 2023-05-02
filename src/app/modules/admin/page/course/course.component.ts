@@ -9,6 +9,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 export class CourseComponent   implements OnInit {
 
   uidCourse: string = "";
+  flagClose = true;
   constructor( private activePath: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -27,6 +28,11 @@ export class CourseComponent   implements OnInit {
 
   }
 
+  onClickMenu(value:boolean){  
 
+    this.flagClose = value;
+
+    // this.tokenService.setFlagClose(this.flagClose);
+  }
 
 }

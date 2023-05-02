@@ -35,4 +35,10 @@ export class ReviewService implements OnInit{
       return this.afs.collection(COLLECTION_NAME).doc(uid).get();
     }
 
+    saveDetailsPlanification(detailsPlanification: any) {
+        
+        return this.afs.collection(COLLECTION_NAME).add(detailsPlanification);
+      }
+      
+
 }

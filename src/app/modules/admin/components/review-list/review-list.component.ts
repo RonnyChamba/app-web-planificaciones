@@ -145,4 +145,25 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     }
   }
 
+  async dowloadFile(resource: any) {
+
+    console.log(resource);
+
+    try {
+      const response = await fetch(resource.url);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('target', "_blank");
+      link.download = `${resource.name}`;
+      link.click();
+    } catch (error) {
+      console.log('Error al descargar el archivo:', error);
+      this.toaster.error('Error al descargar el archivo');
+    }
+
+
+  }
 }

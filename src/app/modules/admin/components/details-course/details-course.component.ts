@@ -351,12 +351,27 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   viewDetailsPlanification(index: number) {
 
-    // console.log("viewDetailsPlanification", index);
+  
+    // obtener planificacion seleccionada
     const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications[index];
 
-    // console.log("lanification", this.planification);
+    this.utilDetailsService.refreshDataDetailPlanification.next({
+      action: "details",
+      planification: planification
+    });
+  }
 
-    this.utilDetailsService.refreshDataDetailPlanification.next(planification);
+  uploadFilePlanification(index: number) {
+
+    
+    
+    const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications[index];
+    console.log("planification", planification);
+
+    this.utilDetailsService.refreshDataDetailPlanification.next({
+      action: "upload",
+      planification: planification
+    });
   }
 
   reviewPlanification(uid: any) {

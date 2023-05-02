@@ -15,7 +15,7 @@ export class UtilDetailsService implements OnInit {
 
   private subjectWeeks = new Subject<void>();
   private subjectPlanification = new Subject<void>();
-  private subjectDetailPlanification = new Subject<PlanificationModel>();
+  private subjectDetailPlanification = new Subject<any>();
 
   // Para la observacion del componente review
   private subjectReviewPlanification = new Subject<any>();
@@ -37,7 +37,7 @@ export class UtilDetailsService implements OnInit {
     return this.subjectPlanification;
   }
 
-  get refreshDataDetailPlanification () : Subject<PlanificationModel> {
+  get refreshDataDetailPlanification () : Subject<any> {
     return this.subjectDetailPlanification;
   }
 

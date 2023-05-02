@@ -10,6 +10,7 @@ import { WeekModelBase } from '../../models/week.model';
 import * as dayjs from 'dayjs';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { typeResource } from '../../models/planification.model';
+import { UploadFileService } from 'src/app/services/upload-file.service';
 
 
 @Component({
@@ -38,6 +39,7 @@ export class FormPlanificationComponent implements OnInit {
     private planiService: PlanificationService,
     private toastr: ToastrService,
     public modal: NgbActiveModal,
+    private uploadFileService: UploadFileService,
     private utilDetailsService: UtilDetailsService,
     private storage: AngularFireStorage) { }
 
@@ -126,51 +128,51 @@ export class FormPlanificationComponent implements OnInit {
 
 
 
-    const promises = this.files.map(file => this.uploadFile(file));
+    const promises = this.files.map(file => this.uploadFileService.uploadFile(file));
 
     return Promise.all(promises);
   }
 
-  async uploadFile(file: File): Promise<typeResource> {
+  // async uploadFile(file: File): Promise<typeResource> {
 
-    const filePath = `myfiles/${file.name}`;
-    const fileRef = this.storage.ref(filePath);
-    const task = this.storage.upload(filePath, file);
+  //   const filePath = `myfiles/${file.name}`;
+  //   const fileRef = this.storage.ref(filePath);
+  //   const task = this.storage.upload(filePath, file);
 
-    // observe percentage changes
+  //   // observe percentage changes
 
-    this.uploadPercent = task.percentageChanges() as Observable<number>;
+  //   this.uploadPercent = task.percentageChanges() as Observable<number>;
 
-    return new Promise((resolve, reject) => {
+  //   return new Promise((resolve, reject) => {
 
-      // obtiene la url de descarga
-      task.snapshotChanges().subscribe(
-        (snapshot) => {
-          // Manejar los cambios del estado de la subida
-          if (snapshot?.state === 'success') {
-            // Obtener la referencia del archivo subido
-            fileRef.getDownloadURL().subscribe((url) => {
-
-
-              console.log(`File uploaded successfully: ${url}`);
-
-              // Retorno la infomación del archivo subido para guardar en la base de datos
-              const resource = { name: file.name, type: this.extractFileExtension(file.name) , url };
-
-              resolve( resource);
-            });
-          }
-        },
-        (error) => {
-          console.error(`Error uploading file ${file.name}: ${error.message}`);
-          reject(error);
-        }
-      );
+  //     // obtiene la url de descarga
+  //     task.snapshotChanges().subscribe(
+  //       (snapshot) => {
+  //         // Manejar los cambios del estado de la subida
+  //         if (snapshot?.state === 'success') {
+  //           // Obtener la referencia del archivo subido
+  //           fileRef.getDownloadURL().subscribe((url) => {
 
 
-    });
+  //             console.log(`File uploaded successfully: ${url}`);
 
-  }
+  //             // Retorno la infomación del archivo subido para guardar en la base de datos
+  //             const resource = { name: file.name, type: this.extractFileExtension(file.name) , url };
+
+  //             resolve( resource);
+  //           });
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error(`Error uploading file ${file.name}: ${error.message}`);
+  //         reject(error);
+  //       }
+  //     );
+
+
+  //   });
+
+  // }
 
   async onSubmit() {
 

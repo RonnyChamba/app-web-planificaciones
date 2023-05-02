@@ -1,11 +1,24 @@
-
+<!-- 
 <div class="">
 
     <app-navba></app-navba>
     
     <app-details-course [uidCourse]="uidCourse"  ></app-details-course>
 
-    <!-- <app-list-course></app-list-course> -->
+    
 
-</div>
+</div> -->
+<app-sidebar class="nav-component"  [ngClass]="{ close: flagClose, '': !flagClose }" [open]="flagClose"> </app-sidebar>
 
+<section class="home-section">
+
+    <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
+    <div class="home-body">
+        <div class="home-content p-3">
+
+            <app-details-course [uidCourse]="uidCourse"  ></app-details-course>
+    
+        </div>
+    </div>
+
+</section>

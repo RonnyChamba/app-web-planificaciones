@@ -19,10 +19,10 @@ export class ReviewComponent implements OnInit, OnDestroy {
   // para guardar los datos de la planificación que se esta revisando
   planificationModel: PlanificationModel;
   subscription = new Subscription();
-
-
   nameCourse: string = "";
   uidCourseCurrent: string = "";
+
+  flagClose = true;
 
   constructor(
 
@@ -31,7 +31,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     private router: Router,
     private tokenService: TokenService,
     private toaster: ToastrService
-  ) { 
+  ) {
 
 
     this.setNameCourse();
@@ -98,21 +98,28 @@ export class ReviewComponent implements OnInit, OnDestroy {
         })
       ).subscribe();
 
+  }
+
+  private setNameCourse() {
+    const course = this.tokenService.getCourse();
+
+    console.log(course);
+    if (course) {
+
+      const data = JSON.parse(course);
+      this.nameCourse = data.name;
+      this.uidCourseCurrent = data.uid;
+
+
     }
+  }
 
-    private setNameCourse() {
-      const course = this.tokenService.getCourse();
+  onClickMenu(value: boolean) {
 
-      console.log(course);
-      if (course) {
-        
-        const data= JSON.parse(course);
-        this.nameCourse = data.name;
-        this.uidCourseCurrent = data.uid;
+    this.flagClose = value;
 
-      
-      }
-    }
+    // this.tokenService.setFlagClose(this.flagClose);
+  }
 
   // this.planificationService.getPlanificationById(this.uidPlanification)
 }

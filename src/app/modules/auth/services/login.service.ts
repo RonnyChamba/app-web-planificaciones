@@ -75,7 +75,8 @@ export class LoginService implements OnInit {
 
   deleteUser(uid: any){
     
-
   } 
+
+
 
 }

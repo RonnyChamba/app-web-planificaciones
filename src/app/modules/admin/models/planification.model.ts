@@ -32,6 +32,6 @@ export interface DetailsPlanification{
     teacher?: any;
     observation?: string;
     planification?: string;
-    resource?:string
+    resource?:any
 
 }
