@@ -36,8 +36,6 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   courseFullModel: CourseFullModel;
 
-
-
   planification: any;
 
   constructor(
@@ -129,7 +127,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     await this.loadTeachers();
 
     // get tutor, no es necesario  esperar  porque se puede obtener del teacher que se obtiene en el paso anterior
-    this.loadTutor();
+    // this.loadTutor();
 
     // Get Weeks by course
     await this.loadWeeks();
@@ -204,22 +202,22 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     console.log("teachers cargado");
   }
 
-  async loadTutor() {
+  // async loadTutor() {
 
-    const existTutorInTeachers = this.courseFullModel.teachers.find((item) => item.uid === this.courseFullModel.tutor);
+  //   const existTutorInTeachers = this.courseFullModel.teachers.find((item) => item.uid === this.courseFullModel.tutor);
 
-    if (existTutorInTeachers) {
-      this.courseFullModel.tutorTeacher = existTutorInTeachers;
-    }
-    else {
+  //   if (existTutorInTeachers) {
+  //     this.courseFullModel.tutorTeacher = existTutorInTeachers;
+  //   }
+  //   else {
 
-      const respTutor = await firstValueFrom(this.teacherService.findTeacherById(this.courseFullModel.tutor));
-      this.courseFullModel.tutorTeacher = respTutor.data() as ModelTeacher;
-      this.courseFullModel.tutorTeacher.uid = respTutor.id;
+  //     const respTutor = await firstValueFrom(this.teacherService.findTeacherById(this.courseFullModel.tutor));
+  //     this.courseFullModel.tutorTeacher = respTutor.data() as ModelTeacher;
+  //     this.courseFullModel.tutorTeacher.uid = respTutor.id;
 
-    }
+  //   }
 
-  }
+  // }
 
   async loadWeeks() {
 

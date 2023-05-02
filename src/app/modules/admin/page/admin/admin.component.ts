@@ -31,7 +31,7 @@ export class AdminComponent  implements OnInit{
   openCourse() {
    
    
-    this.modalService.open(FormCourseComponent, { size: 'lg' });
+    this.modalService.open(FormCourseComponent, { size: 'md' });
   }
 
   onClickMenu(value:boolean){  

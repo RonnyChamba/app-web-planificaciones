@@ -4,7 +4,7 @@
     <ul class="nav nav-tabs">
 
         <li class="nav-item" *ngFor="let week of weeks; index as i">
-            <a class="nav-link"  [ngClass]="{active: i==1}" role="button" (click)="changeNumberWeek(i)" >
+            <a class="nav-link"  [ngClass]="{active: linkActive[i]}" role="button" (click)="changeNumberWeek(i)" >
                 {{week.title}} {{week.numberWeek}}
             </a>
         </li>

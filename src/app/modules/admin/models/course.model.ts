@@ -1,11 +1,12 @@
-import { ModelBaseTeacher, ModelTeacher } from "../../teacher/models/teacher";
+import {  ModelTeacher } from "../../teacher/models/teacher";
 import { WeekModel } from "./week.model";
 
 export interface CourseModel {
     uid?: string;
     name: string;
     parallel: string;
-    tutor: string;
+    // sera un objeto  con los datos del profesor, fullName y su uid
+    tutor?: any;
 }
 
 
@@ -16,7 +17,7 @@ export interface DetailsCourseModel {
 }
 
 export interface CourseFullModel extends CourseModel {
-    tutorTeacher: ModelTeacher;
+    // tutorTeacher: ModelTeacher;
     weeks: WeekModel[];
 
     detailsCourse: DetailsCourseModel[];

@@ -8,10 +8,10 @@
                 <p>NO ASIGNADO</p>
             </ng-template>
 
-            <div *ngIf="courseFullModel && courseFullModel.tutorTeacher;  else mensajeNoVisible">
-                <p class="my-1">{{courseFullModel.tutorTeacher.displayName}}
-                    {{courseFullModel.tutorTeacher.lastName}} </p>
-                <p class="my-1"> {{courseFullModel.tutorTeacher.email}}</p>
+            <div *ngIf="courseFullModel && courseFullModel.tutor;  else mensajeNoVisible">
+                <p class="my-1">{{courseFullModel.tutor.fullName}}
+                     </p>
+                <!-- <p class="my-1"> {{courseFullModel.tutorTeacher.email}}</p> -->
             </div>
 
 

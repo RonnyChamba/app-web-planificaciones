@@ -4,8 +4,9 @@ import { ToastrService } from 'ngx-toastr';
 import { validMessagesError } from 'src/app/util/mensajes-validacion';
 import { CourseService } from '../../services/course.service';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
-import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
+import { ModelBaseTeacher, ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { CourseModel } from '../../models/course.model';
 
 @Component({
   selector: 'app-form-course',
@@ -17,12 +18,13 @@ export class FormCourseComponent implements OnInit {
 
   formGroup: FormGroup;
 
-  teachers: ModelBaseTeacher[] = [];
+  teachers: ModelTeacher[] = [];
 
 
   mensajesValidacion = validMessagesError;
-  constructor(  private toastr: ToastrService,
-    private  teacherService: RegisterService,
+  constructor(
+    private toastr: ToastrService,
+    private teacherService: RegisterService,
     private courseService: CourseService,
     public modal: NgbActiveModal,) { }
 
@@ -30,22 +32,44 @@ export class FormCourseComponent implements OnInit {
 
     this.createForm();
     this.loadTeachers();
+    this.onValueChange();
   }
 
   loadTeachers() {
-    this.teacherService.findAllTeachers().subscribe( (resp) => {
+    this.teacherService.findAllTeachers().subscribe((resp) => {
 
-        console.log(resp);
-      
-      resp.docs.forEach( (item: any) => {
-        this.teachers.push(item.data() as ModelBaseTeacher);
+      // console.log(resp);
+
+      resp.docs.forEach((item: any) => {
+        this.teachers.push(item.data() as ModelTeacher);
       });
 
-      this.teachers.unshift( { displayName:  "Seleccione un tutor para el curso ...", dni: ""})
-    
-    
+
+      // Asi se agrega un elemento al inicio del arreglo, el dni no tiene importancia ya que no se usara 
+      this.teachers.unshift({ displayName: "Seleccione un tutor para el curso ...", uid: "", dni: "" })
+
+
     });
   }
+
+  onValueChange() {
+
+
+    this.formGroup.get('name')?.valueChanges.subscribe((value) => {
+
+
+      // Actualizamos el valor del input con el valor en mayusculas, pero sin emitir el evento para evitar un bucle infinito
+      this.formGroup.get('name')?.setValue(value.toUpperCase(), { emitEvent: false });
+    }
+    );
+
+    this.formGroup.get('parallel')?.valueChanges.subscribe((value) => {
+      // Actualizamos el valor del input con el valor en mayusculas, pero sin emitir el evento para evitar un bucle infinito
+      this.formGroup.get('parallel')?.setValue(value.toUpperCase(), { emitEvent: false });
+    }
+    );
+  }
+
 
   createForm() {
     this.formGroup = new FormGroup({
@@ -56,32 +80,51 @@ export class FormCourseComponent implements OnInit {
   }
 
 
-   onSubmit() {
+  onSubmit() {
 
-    console.log(this.formGroup.value);
+    // console.log(this.formGroup.value);
     if (this.formGroup.valid) {
 
 
       try {
-      
-      
-        this.courseService.findCouseByNameAndParalelo((this.formGroup.value.name as string).toUpperCase(), 
-        (this.formGroup.value.parallel as string).toUpperCase())
-        .subscribe( async  (resp) => {
-          console.log(resp);
-          if (resp.empty) {
 
-            this.formGroup.value.name = (this.formGroup.value.name as string).toUpperCase();
-            this.formGroup.value.parallel = (this.formGroup.value.parallel as string).toUpperCase();
-            const resp =  await this.courseService.saveCourse(this.formGroup.value);
+
+        this.courseService.findCouseByNameAndParalelo(this.formGroup.value.name, this.formGroup.value.parallel)
+          .subscribe(async (resp) => {
             console.log(resp);
-            this.toastr.success('Curso creado correctamente', 'Curso creado correctamente', { timeOut: 3000, });
-            this.formGroup.reset();
-            this.modal.close();
-          } else {
-            this.toastr.error('El curso ya existe', 'Error', { timeOut: 3000, });
-          }
-        });
+            if (resp.empty) {
+
+              // this.formGroup.value.name = (this.formGroup.value.name as string).toUpperCase();
+              // this.formGroup.value.parallel = (this.formGroup.value.parallel as string).toUpperCase();
+
+
+              const course: CourseModel = this.formGroup.value;
+
+              if (this.formGroup.value.tutor != '') {
+                
+                const teacher = this.teachers.find((item) => item.uid === this.formGroup.value.tutor);
+                course.tutor = {
+                  uid: teacher?.uid,
+                  fullName: `${teacher?.displayName} ${teacher?.lastName} `,
+                };
+              }else {
+
+                // asi se inicializa un objeto vacio, indica que el curso no tiene tutor
+                course.tutor = {
+                  uid: '',
+                  fullName: '',
+                };
+              }
+
+
+              const resp = await this.courseService.saveCourse(course);
+              console.log(resp);
+              this.toastr.success('Curso creado correctamente', 'Curso creado correctamente', { timeOut: 3000, });
+              this.modal.close();
+            } else {
+              this.toastr.error('El curso ya existe', 'Error', { timeOut: 3000, });
+            }
+          });
       } catch (error: any) {
 
         this.toastr.error(error.message, 'Error', { timeOut: 3000, });
