@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { DetailsPlanification, PlanificationModel } from '../../models/planification.model';
+import { DataDetails, DetailsPlanification, PlanificationModel } from '../../models/planification.model';
 import { Subscription } from 'rxjs';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { LoginService } from 'src/app/modules/auth/services/login.service';
 import { UploadFileService } from 'src/app/services/upload-file.service';
 import { ReviewService } from '../../services/review.service';
 import * as dayjs from 'dayjs';
+import { PlanificationService } from '../../services/planification.service';
 
 @Component({
   selector: 'app-detail-planification',
@@ -32,7 +33,8 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
     private toaster: ToastrService,
     private reviewService: ReviewService,
     private uploadFileService: UploadFileService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private planificationService: PlanificationService,
   ) { }
 
 
@@ -125,7 +127,17 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
 
           const respose = await this.reviewService.saveDetailsPlanification(detailsPlanification);
 
-          console.log("respose", respose);
+          const  detailPlani: DataDetails  = {
+            details_uid: respose.id,
+            teacher_uid: user?.uid!
+          }
+
+          await this.planificationService.updateDetailsPlanification(this.planification.uid as string, detailPlani );
+          
+
+          // actualiza la planificación con el detalle de la planificación
+
+          console.log("respose detalle", respose); 
 
           this.toaster.success("Planificación subida correctamente");
         } catch (error) {
@@ -156,5 +168,6 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
 
     return true;
   }
+
 
 }

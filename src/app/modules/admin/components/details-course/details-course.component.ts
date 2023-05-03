@@ -5,7 +5,7 @@ import { RegisterService } from 'src/app/modules/teacher/services/register.servi
 import { ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { CourseTeacherService } from '../../services/course-teacher.service';
 
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription, catchError, firstValueFrom, map, of, tap, throwError } from 'rxjs';
 import { WeekModel, WeekModelBase } from '../../models/week.model';
 import { PlanificationService } from '../../services/planification.service';
 import { PlanificationModel } from '../../models/planification.model';
@@ -17,6 +17,9 @@ import { UtilDetailsService } from '../../services/util-details.service';
 import { FormPlanificationComponent } from '../form-planification/form-planification.component';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
+import { ToastrService } from 'ngx-toastr';
+import { ReviewService } from '../../services/review.service';
+import { UploadFileService } from 'src/app/services/upload-file.service';
 
 @Component({
   selector: 'app-details-course',
@@ -38,16 +41,24 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   planification: any;
 
+  isAdmin: boolean = false;
+
   constructor(
     private courseService: CourseService,
     private detailCourseService: CourseTeacherService,
     private planificationService: PlanificationService,
+    private uploadFileService: UploadFileService,
+    private reviewService: ReviewService,
     private modal: NgbModal,
     private router: Router,
     private weekService: WeekService,
     private teacherService: RegisterService,
+    private toaster: ToastrService,
     private tokenService: TokenService,
-    private utilDetailsService: UtilDetailsService,) { }
+    private utilDetailsService: UtilDetailsService,) {
+
+    this.isAdmin = this.tokenService.isLoggedAdmin();
+  }
 
   ngOnInit(): void {
 
@@ -285,7 +296,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
   }
 
 
-  openModalWeeks(value: any ) {
+  openModalWeeks(value: any) {
 
     console.log("openModalWeeks");
     // this.modal.open(WeekComponent, { size: 'xl', centered: true, scrollable: true, backdrop: 'static', keyboard: false, windowClass: 'modal-weeks' })
@@ -329,7 +340,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
       await this.loadPlanification();
       // this.courseFullModel.numberWeeks = numberWeek;
 
-    }else console.log("no se cambio el numero de semana");
+    } else console.log("no se cambio el numero de semana");
   }
 
 
@@ -349,7 +360,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   viewDetailsPlanification(index: number) {
 
-  
+
     // obtener planificacion seleccionada
     const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications[index];
 
@@ -361,8 +372,8 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   uploadFilePlanification(index: number) {
 
-    
-    
+
+
     const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications[index];
     console.log("planification", planification);
 
@@ -376,7 +387,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
     this.router.navigate(['/planification', uid]);
 
-    const course ={
+    const course = {
       uid: this.courseFullModel.uid,
       name: `${this.courseFullModel.name} ${this.courseFullModel.parallel}`
     }
@@ -385,4 +396,139 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
   }
 
 
+
+  teacherAlreadyUploadPlanification(uidPlani: any): boolean {
+
+    // Obtengo un arreglo con los uid de los profesores que ya subieron planificacion, para saber si el profesor actual logeado ya subio planificacion
+    // y asi no permitirle subir otra planificacion y mostrarle otros botones
+
+    const extractData = this.extractUidDetailsPlanification(uidPlani);
+    const details_Upload = extractData.details_Upload;
+    const uidTeacher = extractData.teacher_uid;
+
+    // console.log("planificatio subidia", details_Upload);
+
+    return details_Upload?.find((item: any) => item.teacher_uid === uidTeacher) ? true : false;
+
+  }
+
+  /**
+   * Eliminar o descargar planificacion del profesor actual logeado
+   */
+  deleteOrDownloadPlanification(uidPlani: any, action: string) {
+
+    const uidDetailsPlanification = this.getUidDetailsPlanification(uidPlani);
+
+    if (uidDetailsPlanification) {
+
+      // console.log("uidDetailsPlanification", uidDetailsPlanification);
+
+      if (action === "DELETE") {
+        this.deleteDetailsPlanification(uidDetailsPlanification, uidPlani);
+      } else if (action === "DOWNLOAD") {
+
+        this.reviewService.findDetailsPlaniByUid(uidDetailsPlanification)
+          .pipe(
+
+            tap(async (resp: any) => {
+              const data = resp.data();
+
+              await this.dowloadFile(data?.resource);
+
+            }),
+            catchError((err: any) => {
+              console.log("err", err);
+              this.toaster.error("No se encontro el detalle de la planificacion para descargar");
+              return of(null);
+            })
+          ).subscribe();
+
+      }
+
+    } else this.toaster.warning("No se encontro el detalle de la planificacion");
+
+  }
+
+
+  private getUidDetailsPlanification(uidPlani: any): string | null {
+
+    const extractData = this.extractUidDetailsPlanification(uidPlani);
+
+    const details_Upload = extractData.details_Upload;
+    const uidTeacher = extractData.teacher_uid;
+
+    const detailsRow = details_Upload?.find((item: any) => item.teacher_uid === uidTeacher);
+
+    return detailsRow ? detailsRow.details_uid : null;
+
+  }
+
+  private extractUidDetailsPlanification(uidPlani: any): any {
+
+    // Obtengo los details de la planificacion actual o sleccionada
+    const details_Upload = this.courseFullModel.weeks[this.indexWeekCurrent].
+      planifications.find((item: any) => item.uid === uidPlani)?.details_planification;
+
+    // obtengo el uid del profesor actual logeado para saber si ya subio planificacion y asi no permitirle subir otra
+    const userCurrent = JSON.parse(this.tokenService.getToken() || "{}");
+    const teacher_uid = userCurrent.uid;
+
+    return {
+      details_Upload, // aqui viene una lista de los detalles de la planificacion
+      teacher_uid // el uid del profesor actual logeado
+    };
+  }
+
+
+  deleteDetailsPlanification(uidDetails: any, uidPlani: any) {
+
+    console.log("uidDetails", uidDetails);
+
+    // Obtengo la planificacion actual o sleccionada de la cual se va a eliminar el detalle de la planificacion
+    const planification = this.courseFullModel.weeks[this.indexWeekCurrent].planifications.find((item: any) => item.uid === uidPlani);
+
+    console.log("planification before", planification);
+
+    this.reviewService.deleteDetailsPlanification(uidDetails)
+      .then(async () => {
+
+        // Filtro los detalles de la planificacion actual o sleccionada y elimino el detalle de la planificacion que fue eliminado
+        planification!.details_planification = planification!.details_planification!.filter((item: any) => item.details_uid !== uidDetails);
+        console.log("planification after ", planification);
+
+
+        // actualizo los detalles de la planificacion
+        await this.planificationService.updateDetailsPlaniByPlanification(uidPlani, planification?.details_planification)
+
+
+        this.toaster.info("Detalle de la planificacion eliminado correctamente");
+
+
+      })
+      .catch((err: any) => {
+        console.log("err", err);
+        this.toaster.error("Error al eliminar el detalle de la planificacion");
+      });
+
+
+
+
+  }
+
+  async dowloadFile(resource: any) {
+
+    // console.log(resource);
+
+    try {
+
+      const resp = await this.uploadFileService.dowloadFile(resource);
+      console.log("Archivo descargado correctamente");
+
+    } catch (error) {
+
+      this.toaster.error('Error al descargar el archivo');
+    }
+
+
+  }
 }

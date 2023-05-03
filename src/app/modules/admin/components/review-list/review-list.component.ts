@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewNoteComponent } from '../review-note/review-note.component';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { ToastrService } from 'ngx-toastr';
+import { UploadFileService } from 'src/app/services/upload-file.service';
 
 @Component({
   selector: 'app-review-list',
@@ -26,6 +27,7 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     private reviewService: ReviewService,
     private modal: NgbModal,
     private utilDetailsService: UtilDetailsService,
+    private uploadFileService: UploadFileService,
     private toaster: ToastrService
   ) { }
 
@@ -147,20 +149,14 @@ export class ReviewListComponent implements OnInit, OnDestroy {
 
   async dowloadFile(resource: any) {
 
-    console.log(resource);
+    // console.log(resource);
 
     try {
-      const response = await fetch(resource.url);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
+     
+      const resp = await this.uploadFileService.dowloadFile(resource);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('target', "_blank");
-      link.download = `${resource.name}`;
-      link.click();
     } catch (error) {
-      console.log('Error al descargar el archivo:', error);
+    
       this.toaster.error('Error al descargar el archivo');
     }
 

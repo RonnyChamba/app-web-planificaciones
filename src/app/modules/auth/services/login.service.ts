@@ -76,7 +76,10 @@ export class LoginService implements OnInit {
   deleteUser(uid: any){
     
   } 
+  logOut() {
 
+    return this.afAuth.signOut();
 
+  }
 
 }

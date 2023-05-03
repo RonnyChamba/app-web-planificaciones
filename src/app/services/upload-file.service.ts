@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Observable } from 'rxjs';
-import { typeResource } from '../util/types';
 
 
 const PATH_FILES = 'files';
@@ -62,6 +61,29 @@ export class UploadFileService {
   extractFileExtension(filename: string): string {
 
     return filename.split('.').pop() || '';
+  }
+
+  async dowloadFile(resource: any) {
+
+    console.log(resource);
+
+    try {
+      const response = await fetch(resource.url);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('target', "_blank");
+      link.download = `${resource.name}`;
+      link.click();
+      return Promise.resolve(true);
+    } catch (error) {
+      console.log('Error al descargar el archivo:', error);
+      return Promise.reject(error);
+    }
+
+
   }
 
 }

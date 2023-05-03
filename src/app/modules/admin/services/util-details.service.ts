@@ -1,7 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
-import { WeekModel } from '../models/week.model';
 import { PlanificationModel } from '../models/planification.model';
 
 /**

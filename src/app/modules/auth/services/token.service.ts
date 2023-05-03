@@ -38,4 +38,28 @@ export class TokenService implements OnInit{
     return localStorage.getItem('course');
   }
 
+  clearLocalStorage() {
+    localStorage.clear();
+  }
+
+  isLogged() {
+    return localStorage.getItem('user') ? true : false;
+  }
+
+  isLoggedAdmin() {
+      
+    if (this.isLogged()) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    console.log(user)
+    return user.rol == 'ADMIN' ? true : false;
+    }
+
+    return false;
+
+    }
+
+
+
+
+
 }

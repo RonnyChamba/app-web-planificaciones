@@ -18,9 +18,9 @@
 
         <!-- column right -->
 
-         <div class="col-6">
+        <div class="col-6">
 
-        
+
             <div class="d-flex align-items-center p-2">
 
                 <span style="font-size: 1.8rem;" class="me-3"> <i class="fa-solid fa-arrow-left"></i></span>
@@ -38,7 +38,7 @@
 
                     <div>
                         <p>{{courseFullModel.weeks[indexWeekCurrent].details}}</p>
-                        
+
                     </div>
                 </div>
 
@@ -53,7 +53,7 @@
                         <h4>Planificaciones</h4>
                         <p>Planificaciones durante el trimestre</p>
                     </div>
-                
+
 
                     <ng-template #sinRegistro>
                         <div>
@@ -84,24 +84,34 @@
 
                     <div class="flex-grow-1">
 
-                        <h4>{{plani.title}} </h4>
+                        <h4>{{plani.title}}</h4>
                         <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
 
+                        <p *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)" 
+                        
+                        (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')"
+                        class="my-1"
+                        style="text-decoration: underline; cursor: pointer;">
+                            <i class="fa-solid fa-file-arrow-down"></i>  Descargar
+                        </p>
 
-                        <p class="my-1" *ngIf="plani.status"> <i class="fa-solid fa-eye"></i> Publico </p>
-                        <p class="my-1" *ngIf="!plani.status"><i class="fa-solid fa-eye-slash"></i>Privado</p>
 
-                    
                         <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
                             role="button" (click)="viewDetailsPlanification(i)">Ver Detalles</a>
-                    
+
                     </div>
 
-                    <button class="btn btn-success" (click)="reviewPlanification(plani.uid)">Revisar</button>
+                    <button *ngIf="isAdmin" class="btn btn-success"
+                        (click)="reviewPlanification(plani.uid)">Revisar</button>
                     <!-- <button class="btn btn-success" (click)="uploadFilePlanification(i)">Subir</button> -->
 
-                    <a  class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
-                            role="button" (click)="uploadFilePlanification(i)">Subir</a>
+
+                    <a *ngIf="!isAdmin && !teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-primary"
+                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                        role="button" (click)="uploadFilePlanification(i)">Subir</a>
+
+                    <a *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-danger"
+                        role="button" (click)="deleteOrDownloadPlanification(plani.uid, 'DELETE')">ELIMINAR</a>
                 </div>
 
 

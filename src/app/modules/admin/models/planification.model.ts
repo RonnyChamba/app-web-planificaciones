@@ -9,6 +9,15 @@ export interface  typeResource {
 }
 
 
+/**
+ * Representa una planificación de un docente subida al sistema que sera un campo de la colección de planificaciones
+ */
+export interface DataDetails {
+
+    details_uid: string;
+    teacher_uid: string;
+
+}
 export interface PlanificationModel {
     uid?: string;
     week: string;
@@ -19,9 +28,10 @@ export interface PlanificationModel {
     title: string;
     details: string;
     resource: typeResource[];
-
     // esta fecha es para ordenar las planificaciones por fecha de creación
     timestamp?: number
+
+    details_planification?: DataDetails[]
 }
 
 export interface DetailsPlanification{

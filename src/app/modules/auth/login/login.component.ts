@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { RegisterService } from '../../teacher/services/register.service';
 import { catchError, of, tap } from 'rxjs';
-import { ModelBaseTeacher, ModelTeacher } from '../../teacher/models/teacher';
+import { AuthCredential } from '../models/auth.model';
+import { ModelTeacher } from '../../teacher/models/teacher';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
 
   formGroup: FormGroup;
   mensajesValidacion = validMessagesError;
+  token: AuthCredential;
 
   constructor(private loginService: LoginService,
     private toastr: ToastrService,
@@ -44,7 +46,7 @@ export class LoginComponent implements OnInit {
 
   async onSubmit() {
 
-    console.log(this.formGroup.value);
+    // console.log(this.formGroup.value);
 
     if (this.formGroup.valid) {
 
@@ -52,20 +54,44 @@ export class LoginComponent implements OnInit {
 
 
         const res = await this.loginService.login(this.formGroup.value.email, this.formGroup.value.password);
-        console.log(res);
-        this.toastr.success('Bienvenido', 'Login');
+        // Obtener los roles del usuario
+        const teacher = this.registerService.findTeacherById(res.user?.uid!);
 
-        this.tokenService.setToken(JSON.stringify(res.user));
+      await teacher.forEach(async (resp) => {
 
-        this.updateProfile();
+          if (resp.exists) {
+            const data = resp.data();
+            console.log(data);
+            this.token = {
+              uid: res.user?.uid!,
+              email: res.user?.email!,
+              rol: data.rol,
+            }
+          } else {
+
+            // Si no existe el usuario en la base de datos se cierra la sesión que fue abierta
+            await this.loginService.logOut();
+            this.tokenService.clearLocalStorage();
+            this.toastr.error('Error de credenciales', 'Login');
+            this.router.navigate(['/auth']);
+
+            return;
+          }
+        })
+
+
+        // console.log(this.token);
       
+        this.tokenService.setToken(JSON.stringify(this.token));
+        this.toastr.success('Bienvenido', 'Login');
+        this.updateProfile();
+        
         this.router.navigate(['/']);
 
 
       } catch (error) {
-        this.tokenService.setToken("null");
-
-        // console.log(error);
+        this.tokenService.clearLocalStorage();
+        // this.tokenService.setToken("null");
         this.toastr.error('Error de credenciales', 'Login');
 
       }
@@ -73,19 +99,16 @@ export class LoginComponent implements OnInit {
 
   }
 
-
+/**
+ * Cuando se loguea por primera el usuario no va a tener un displayName
+ * por lo que se va a consultar a la base de datos para obtener el nombre
+ * y se va a actualizar el usuario, solo si no tiene un displayName
+ */
   async updateProfile() {
 
     const user = await this.loginService.getUserCurrent();
-
-    console.log(user);
-
+    // console.log(user);
     if (user) {
-
-      // Cuando se loguea por primera el usuario no va a tener un displayName
-      // por lo que se va a consultar a la base de datos para obtener el nombre
-      // y se va a actualizar el usuario, solo si no tiene un displayName
-
       if (!user.displayName) {
         this.registerService.findTeacherById(user.uid)
           .pipe(
@@ -94,9 +117,9 @@ export class LoginComponent implements OnInit {
 
               const teacher = resp.data() as ModelTeacher;
               // console.log(teacher);
-              
+
               if (teacher) {
-                
+
                 user.updateProfile({
                   displayName: teacher.displayName + " " + teacher.lastName,
                 }).then(() => {
@@ -117,7 +140,7 @@ export class LoginComponent implements OnInit {
 
       }
 
-    }else  this.toastr.error('No se pudo obtener el usuario', 'Login');
+    } else this.toastr.error('No se pudo obtener el usuario', 'Login');
   }
 
 }
