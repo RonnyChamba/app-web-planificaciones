@@ -13,7 +13,7 @@
     <div class="details" *ngIf="action=='details'">
       <h6>Recursos</h6>
       <!-- <div> -->
-      <p *ngIf="!planification.resource ||  planification.resource.length<1">No tiens recursos</p>
+      <p *ngIf="!planification.resource ||  planification.resource.length<1">No tiene recursos</p>
 
       <p *ngFor="let item of planification.resource; index as i">
         <!-- {{item | json}} -->

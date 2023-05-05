@@ -1,3 +1,15 @@
 .offcanvas{
     background:none !important;
 }
+.title-plani >span {
+
+    // color: red;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    &:hover{
+        text-decoration: underline;
+        transition: all 0.3s ease-in-out;
+        // border-bottom: 1px solid blue;
+
+    }
+}

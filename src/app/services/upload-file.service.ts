@@ -86,4 +86,12 @@ export class UploadFileService {
 
   }
 
+  deleteFile(url: any) {
+
+    const filePath = `myfiles/${url}`;
+    const fileRef = this.storage.ref(filePath);
+    return  fileRef.delete();
+  
+  }
+
 }

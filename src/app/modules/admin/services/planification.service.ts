@@ -76,31 +76,15 @@ export class PlanificationService implements OnInit {
       return Promise.reject(error);
 
     }
+  }
 
+  updatePlanification(uid: string, data: any) {
+    return this.afs.collection(COLLECTION_NAME).doc(uid).update( {
 
-    //   const planiDocRef = this.afs.collection(COLLECTION_NAME).doc(planIde);
-    //   // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
-    //   this.afs.firestore.runTransaction(async (transaction) => {
-
-    //    const userDoc = await transaction.get(planiDocRef.ref);
-
-    //    // Obtener el arreglo actual, se pasa el campo a leer 
-    //    const items = userDoc.get('details_planification') || [];
-
-    //   //  const items = userDoc.data()?.details_planification || [];
-
-    //    // Agregar el nuevo elemento al arreglo
-    //    items.push(newItem);
-
-    //    // Actualizar el documento con el nuevo arreglo
-    //    transaction.update(planiDocRef.ref, { items });
-    //  })
-    //  .then(() => {
-    //    console.log('Nuevo elemento agregado al arreglo');
-    //  })
-    //  .catch((error) => {
-    //    console.error('Error al agregar un nuevo elemento al arreglo', error);
-    //  });
+      title: data.title,
+      details: data.details,
+      resource: data.resource,
+    });
   }
 
 

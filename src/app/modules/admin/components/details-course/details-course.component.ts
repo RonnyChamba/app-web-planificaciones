@@ -115,7 +115,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
    */
   refreshPlanifications() {
 
-    this.subscription.add(this.utilDetailsService.refreshPlanificationAsObservable().subscribe(async () => {
+    this.subscription.add(this.utilDetailsService.refreshDataPlanification.asObservable().subscribe(async () => {
 
       // recargar planificacion de la semana actual
       await this.loadPlanification();
@@ -213,22 +213,6 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     console.log("teachers cargado");
   }
 
-  // async loadTutor() {
-
-  //   const existTutorInTeachers = this.courseFullModel.teachers.find((item) => item.uid === this.courseFullModel.tutor);
-
-  //   if (existTutorInTeachers) {
-  //     this.courseFullModel.tutorTeacher = existTutorInTeachers;
-  //   }
-  //   else {
-
-  //     const respTutor = await firstValueFrom(this.teacherService.findTeacherById(this.courseFullModel.tutor));
-  //     this.courseFullModel.tutorTeacher = respTutor.data() as ModelTeacher;
-  //     this.courseFullModel.tutorTeacher.uid = respTutor.id;
-
-  //   }
-
-  // }
 
   async loadWeeks() {
 
@@ -320,7 +304,12 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
       // paso un objeto al modal  un objeto de tipo CourseFullModel pero solo con los atributos que necesito del objeto weekCurrent
       // no necesito los atributos de planification por eso no los paso
-      ref.componentInstance.weekModel = weekCurrent as WeekModelBase;
+      // ref.componentInstance.weekModel = weekCurrent as WeekModelBase;
+
+      ref.componentInstance.dataInput = {
+        action: "NEW",
+        data: weekCurrent as WeekModelBase
+      };
     } else alert("No hay trimestres disponibles para planificar");
 
 
@@ -528,6 +517,23 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
       this.toaster.error('Error al descargar el archivo');
     }
+
+
+  }
+
+  edit(plani: any){
+
+    if (this.verifyIfExistWeeks) {
+    
+
+      const ref = this.modal.open(FormPlanificationComponent, { size: 'md' })
+
+      ref.componentInstance.dataInput = {
+        action: "EDIT",
+        data: plani
+      };
+
+    } else alert("No hay trimestres disponibles para planificar");
 
 
   }

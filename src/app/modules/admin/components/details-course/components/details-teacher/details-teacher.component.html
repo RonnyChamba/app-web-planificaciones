@@ -4,12 +4,12 @@
         <span class="me-3"><i class="fa-solid fa-user" style="font-size: 2rem;"></i></span>
         <div>
             <h4>Tutor</h4>
-            <ng-template #mensajeNoVisible>
+            <!-- <ng-template #mensajeNoVisible>
                 <p>NO ASIGNADO</p>
-            </ng-template>
+            </ng-template> -->
 
-            <div *ngIf="courseFullModel && courseFullModel.tutor;  else mensajeNoVisible">
-                <p class="my-1">{{courseFullModel.tutor.fullName}}
+            <div *ngIf="courseFullModel && courseFullModel.tutor">
+                <p class="my-1">{{courseFullModel.tutor.fullName || 'NO ASIGNADO'}}
                      </p>
                 <!-- <p class="my-1"> {{courseFullModel.tutorTeacher.email}}</p> -->
             </div>

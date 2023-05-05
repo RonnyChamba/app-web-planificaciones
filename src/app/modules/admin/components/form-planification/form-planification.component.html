@@ -1,7 +1,8 @@
 <div class="container-user w-100">
     <div class="content-user p-3 mx-auto border border-2 rounded-3">
         <div class="d-flex justify-content-between align-items-center">
-            <h4 class="form-title">{{true? 'Nueva Planificación: ' + (weekModel.title + ' ' + weekModel.numberWeek): 'Actualizar Planificación'}} </h4>
+            <h4 class="form-title">{{ (dataInput.action =='EDIT' ? 'Editar Planificación': 'Nueva Planificación' ) }}
+            </h4>
             <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
         </div>
 
@@ -64,9 +65,18 @@
                         (change)="onFileSelected($event)" accept=".pdf,.doc,.docx">
 
                 </div>
+        
+                <p *ngIf="dataInput.action =='EDIT' && !asyncronico " class="mt-2">
+                    
+                    <span  class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                    <b class="ms-2">Cargando recursos...</b>
+
+                </p>
 
 
-                <div class="mt-2">
+                <div class="mt-2" *ngIf="asyncronico ">
                     <p *ngFor="let item of files; index as i"> <span> {{item.name}}</span>
                         <button class="btn btn-danger ms-2 " (click)="deleteFile(i)">X</button>
                     </p>
@@ -91,7 +101,7 @@
 
             </div>
 
-
+            <!-- 
             <div class="mb-3">
 
                 <div>
@@ -108,7 +118,7 @@
                         <input type="radio" value="false" formControlName="status"> No
                     </label>
                 </div>
-            </div>
+            </div> -->
 
 
             <div class="text-end mt-3">
@@ -117,7 +127,10 @@
                 </button>
 
                 <!-- [disabled]="formData.invalid"  -->
-                <input type="submit" [disabled]="formGroup.invalid" class="btn btn-primary" value="CREAR PLANIFICACIÓN" />
+                <button type="submit" [disabled]="formGroup.invalid" class="btn btn-primary">
+
+                    {{dataInput.action =='EDIT' ? 'GUARDAR CAMBIOS': 'CREAR PLANIFICACIÓN'}}
+                </button>
             </div>
         </form>
 

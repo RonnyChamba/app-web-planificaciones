@@ -3,10 +3,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { validMessagesError } from 'src/app/util/mensajes-validacion';
 import { CourseService } from '../../services/course.service';
+import {WeekService } from '../../services/week.service';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
-import { ModelBaseTeacher, ModelTeacher } from 'src/app/modules/teacher/models/teacher';
+import { ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CourseModel } from '../../models/course.model';
+import { WeekModelBase } from '../../models/week.model';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-form-course',
@@ -26,6 +29,7 @@ export class FormCourseComponent implements OnInit {
     private toastr: ToastrService,
     private teacherService: RegisterService,
     private courseService: CourseService,
+    private weekService: WeekService,
     public modal: NgbActiveModal,) { }
 
   ngOnInit(): void {
@@ -118,7 +122,33 @@ export class FormCourseComponent implements OnInit {
 
 
               const resp = await this.courseService.saveCourse(course);
-              console.log(resp);
+              console.log(resp, resp.id);
+
+
+              const weeks: WeekModelBase[] = [];
+
+              for (let i = 0; i < 3; i++) {
+
+                const timestamp = dayjs().add(i+1, 'minute').valueOf();
+
+                const week: WeekModelBase = {
+                  title: 'Trimestre ' + (i + 1),
+                  details: 'Sin detalles',
+                  numberWeek: i + 1,
+                  course: resp.id,
+                  timestamp
+                };
+
+                weeks.push(week);
+              }
+
+
+              for (const item of weeks) {
+              
+                await this.weekService.saveWeek(item);
+              }
+
+
               this.toastr.success('Curso creado correctamente', 'Curso creado correctamente', { timeOut: 3000, });
               this.modal.close();
             } else {
