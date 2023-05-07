@@ -103,7 +103,7 @@ export class LoginComponent implements OnInit {
 
         
         this.updateProfile(teacherData);
-        this.toastr.success('Bienvenido', 'Login');
+        // this.toastr.success('Bienvenido', 'Login');
 
         this.router.navigate(['/']);
 

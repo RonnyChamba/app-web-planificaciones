@@ -39,7 +39,9 @@ import { ListTeacherComponent } from './modules/teacher/components/list-teacher/
 import { ResetPasswordComponent } from './modules/auth/components/reset-password/reset-password.component';
 import { SelectTeacherComponent } from './modules/admin/components/details-course/components/select-teacher/select-teacher.component';
 import { ProfileComponent } from './modules/profile/page/profile.component';
-import { PersonalInfoComponent } from './modules/profile/components/personal-info/personal-info.component'; 
+import { PersonalInfoComponent } from './modules/profile/components/personal-info/personal-info.component';
+import { InformationComponent } from './modules/information/page/information.component';
+import { ChangePasswordComponent } from './modules/auth/components/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,9 @@ import { PersonalInfoComponent } from './modules/profile/components/personal-inf
     ResetPasswordComponent,
     SelectTeacherComponent,
     ProfileComponent,
-    PersonalInfoComponent
+    PersonalInfoComponent,
+    InformationComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
