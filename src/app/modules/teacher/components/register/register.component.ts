@@ -96,8 +96,10 @@ export class RegisterComponent implements OnInit {
         [dniOrEmailValidator(this.registerService, 'EMAIL')],
       ),
       phoneNumber: new FormControl('', [Validators.pattern(`^[0-9]{${MAX_TELEPHONE}}$`)]),
+      role: new FormControl('USER', [Validators.required]),
 
       flagTitulo: new FormControl('', []),
+
       titles: new FormControl([], []),
 
     });

@@ -9,6 +9,8 @@ import { TokenService } from '../services/token.service';
 import { RegisterService } from '../../teacher/services/register.service';
 import { AuthCredential } from '../models/auth.model';
 import { ModelTeacher } from '../../teacher/models/teacher';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ResetPasswordComponent } from '../components/reset-password/reset-password.component';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +28,9 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService,
     private tokenService: TokenService,
     private registerService: RegisterService,
-    private router: Router) { }
+    private router: Router,
+    private modal: NgbModal
+    ) { }
 
   ngOnInit(): void {
 
@@ -148,7 +152,15 @@ export class LoginComponent implements OnInit {
        this.toastr.error(error, 'Login');
        this.registerService.passwordSession = '';
        this.router.navigate(['/auth']);
-      
+  }
+
+  resetPassword(){
+
+    // alert("Se envio un correo para restablecer la contraseña");
+
+    this.modal.open( ResetPasswordComponent, { size: 'md' });
+
+    
 
   }
 }

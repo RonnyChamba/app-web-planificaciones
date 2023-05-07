@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UtilDetailsService } from 'src/app/modules/admin/services/util-details.service';
 import { LoginService } from 'src/app/modules/auth/services/login.service';
 import Swal from 'sweetalert2';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-list-teacher',
@@ -15,12 +16,14 @@ import Swal from 'sweetalert2';
 export class ListTeacherComponent implements OnInit, OnDestroy {
 
   listData: ModelTeacher[] = [];
+  listDataFilter: ModelTeacher[] = [];
 
   private subscription = new Subscription();
 
+  searchValue =  new FormControl('');
+
   constructor(
     private teacherService: RegisterService,
-    private utilService: UtilDetailsService,
     private toaster: ToastrService,
     private loginService: LoginService
 
@@ -30,6 +33,29 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.findAllTeachers();
+
+    this.searchValue.valueChanges.subscribe(value => {
+
+      const newValue = value?.toUpperCase()  || '';
+      
+      this.listDataFilter = this.listData;
+
+
+      this.searchValue.setValue(newValue, { emitEvent: false });
+
+      this.listDataFilter = this.listData.filter(teacher =>
+        
+        (teacher.displayName?.toUpperCase().includes(newValue)
+        
+        || teacher.lastName?.toUpperCase().includes(newValue)
+
+        || teacher.dni?.toUpperCase().includes(newValue)
+        )
+        
+        
+        );
+    }
+    );
   }
 
   ngOnDestroy(): void {
@@ -45,15 +71,25 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
     this.subscription = this.teacherService.findAllTeachersOnChanges()
       .pipe(
-        tap(data => {
+        tap( async ( data) => {
 
           this.listData = [];
+          const userCurrent = await this.loginService.getUserCurrent();
+
+          const uid = userCurrent?.uid;
+
           data.forEach((element: any) => {
             const teacher: ModelTeacher = element.payload.doc.data() as ModelTeacher;
             teacher.uid = element.payload.doc.id;
-            this.listData.push(teacher);
+
+            if (teacher.uid != uid) {
+              this.listData.push(teacher);
+            }
+
+            // this.listData.push( );
           });
-          this.truncateUserCurrent();
+
+          this.listDataFilter = this.listData;
         })
         ,
         catchError(err => {
@@ -65,40 +101,6 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
         )
 
       ).subscribe();
-
-  }
-
-
-  /**
-   * Elimina el usuario actual para que no se muestre en la tabla
-   */
-  async truncateUserCurrent() {
-
-
-    try {
-
-      const userCurrent = await this.loginService.getUserCurrent();
-
-      console.log('userCurrent', userCurrent);
-
-      this.listData = this.listData.filter(teacher => teacher.uid != userCurrent?.uid);
-
-
-      // const index = this.listData.findIndex(teacher => teacher.uid == userCurrent?.uid);
-
-      // console.log('index', index);
-
-      // if (index != -1) {
-      //   this.listData.splice(index, 1);
-      // }
-
-
-
-    } catch (error) {
-
-      console.log(error);
-    }
-
 
   }
   delete(uid: any, status: any) {

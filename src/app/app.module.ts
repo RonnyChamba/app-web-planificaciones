@@ -36,6 +36,7 @@ import { ReviewNoteComponent } from './modules/admin/components/review-note/revi
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TeacherComponent } from './modules/teacher/page/teacher/teacher.component';
 import { ListTeacherComponent } from './modules/teacher/components/list-teacher/list-teacher.component';
+import { ResetPasswordComponent } from './modules/auth/components/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { ListTeacherComponent } from './modules/teacher/components/list-teacher/
     ReviewNoteComponent,
     SidebarComponent,
     TeacherComponent,
-    ListTeacherComponent
+    ListTeacherComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

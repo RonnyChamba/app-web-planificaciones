@@ -55,7 +55,7 @@ export class LoginService implements OnInit {
 
     try {
 
-      
+
       const result = await this.afAuth.createUserWithEmailAndPassword(
         email, password as string);
 
@@ -75,13 +75,18 @@ export class LoginService implements OnInit {
     return this.afAuth.currentUser;
   }
 
-  deleteUser(uid: any){
-    
-  } 
+  deleteUser(uid: any) {
+
+  }
   logOut() {
 
     return this.afAuth.signOut();
 
+  }
+
+  resetPassword(email: string) {
+
+    return this.afAuth.sendPasswordResetEmail(email);
   }
 
 }
