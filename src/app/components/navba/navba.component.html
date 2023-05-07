@@ -17,7 +17,7 @@
               {{userData.email}}
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Perfil</a></li>
+              <li><button class="dropdown-item" (click)="editProfile()" >Perfil</button></li>
               <li><a class="dropdown-item" href="#">Cambiar Clave</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><button class="dropdown-item" href="" (click)="logOut()" >Salir</button></li>

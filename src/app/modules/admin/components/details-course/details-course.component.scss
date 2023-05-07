@@ -1,9 +1,7 @@
 .offcanvas{
     background:none !important;
 }
-.title-plani >span {
-
-    // color: red;
+.title-plani__edit {
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     &:hover{

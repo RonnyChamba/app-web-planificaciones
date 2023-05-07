@@ -15,6 +15,7 @@ export interface ModelTeacher  extends ModelBaseTeacher{
     photoURL?: string;
     titles?: string[];
     status?: boolean;
+    rol?: string;
     
 }
 

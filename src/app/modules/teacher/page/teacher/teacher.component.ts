@@ -29,8 +29,10 @@ export class TeacherComponent  implements OnInit{
   openModal(){
 
 
-    this.modal.open(RegisterComponent, {
+     const ref = this.modal.open(RegisterComponent, {
       size: 'md',
     });
+
+    ref.componentInstance.action = 'REGISTER';
   }
 }

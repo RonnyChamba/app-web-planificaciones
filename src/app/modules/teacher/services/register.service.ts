@@ -13,11 +13,14 @@ const COLLECTION_NAME = 'teachers';
 export class RegisterService  implements OnInit{
 
 
+  passwordSession = '';
+
   constructor(private firestore: AngularFirestore) { }
 
+
+
   ngOnInit() {
-  
-    
+
   }
 
 
@@ -45,6 +48,11 @@ export class RegisterService  implements OnInit{
   }
 
 
+  findAllTeachersOnChanges(): Observable<any> {
+    
+    return this.firestore.collection(COLLECTION_NAME).snapshotChanges();
+  }
+
   findAllTeachers(): Observable<any> {
     return this.firestore.collection(COLLECTION_NAME).get();
   }
@@ -52,6 +60,23 @@ export class RegisterService  implements OnInit{
   updateTeacher(teacher: ModelTeacher): Promise<any> {
     return this.firestore.collection(COLLECTION_NAME).doc(teacher.dni).update(teacher);
   }
+
+  updateTeacherPart(teacher: ModelTeacher, uid: string): Promise<any> {
+    return this.firestore.collection(COLLECTION_NAME).doc(uid).update({
+      displayName: teacher.displayName,
+      lastName: teacher.lastName,
+      phoneNumber: teacher.phoneNumber,
+      titles: teacher.titles,
+
+    } );
+  }
+
+  updateStatusTeacher(uid: string, status: boolean): Promise<any> {
+    
+    return this.firestore.collection(COLLECTION_NAME).doc(uid).update({ status });
+  }
+
+  
 
   findTeacherById(id: string): Observable<any> {
     return this.firestore.collection(COLLECTION_NAME).doc(id).get();
@@ -64,4 +89,18 @@ export class RegisterService  implements OnInit{
 
     return this.firestore.collection(COLLECTION_NAME, ref => ref.where('uid', 'in', ids)).get();
   }
+
+
+  get password(): string {
+
+    return this.passwordSession;
+  }
+
+  set password(password: string) {
+
+    this.passwordSession = password;
+  }
+  
+
+
 }

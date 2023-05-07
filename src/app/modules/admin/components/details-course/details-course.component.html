@@ -79,7 +79,10 @@
 
                     <div class="flex-grow-1">
 
-                        <h4 class="title-plani"> <span (click)="edit(plani)" >{{plani.title}}</span></h4>
+                        <h4 class="title-plani"> 
+                            <span  *ngIf="!isAdmin">{{plani.title}}</span>
+                            <span (click)="edit(plani)"*ngIf="isAdmin"  class="title-plani__edit">{{plani.title}}</span>
+                        </h4>
                         <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
 
                         <p *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)"

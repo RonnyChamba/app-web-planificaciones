@@ -2,7 +2,7 @@
 
 
     <div class="card-header d-flex    d-flex justify-content-between align-items-center">
-        <h4 class="card-title">Registro de Docente</h4>
+        <h4 class="card-title"> {{action=='REGISTER'?'Registro de Docente': 'Actualizar Perfil'}}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
     </div>
     <div class="card-body">
@@ -164,7 +164,7 @@
                 </div>
     
     
-                <div class="mb-3 col-sm-6">
+                <div class="mb-3 col-sm-6" *ngIf="action=='REGISTER'">
                     <label for="password" class="form-label">Contraseña <span style="color: red;">*</span></label>
                     <input type="password" class="form-control" id="password" formControlName="password">
     

@@ -54,6 +54,8 @@ export class LoginService implements OnInit {
   async createAccount(email: string, password: string) {
 
     try {
+
+      
       const result = await this.afAuth.createUserWithEmailAndPassword(
         email, password as string);
 

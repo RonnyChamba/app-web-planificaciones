@@ -5,6 +5,7 @@ import { Subscription, catchError, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { UtilDetailsService } from 'src/app/modules/admin/services/util-details.service';
 import { LoginService } from 'src/app/modules/auth/services/login.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-teacher',
@@ -16,6 +17,7 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
   listData: ModelTeacher[] = [];
 
   private subscription = new Subscription();
+
   constructor(
     private teacherService: RegisterService,
     private utilService: UtilDetailsService,
@@ -28,73 +30,40 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.findAllTeachers();
-
-    this.addSubscription();
-
   }
 
   ngOnDestroy(): void {
 
-    this.subscription.unsubscribe();
-  }
-
-  private addSubscription(): void {
-
-    this.subscription.add(
-      this.utilService.refreshDataTeacher.subscribe(res => {
-
-        if (res) {
-
-          console.log('refrescando uid del nuevo teacher', res);
-
-          this.teacherService.findTeacherById(res)
-            .pipe(
-              tap(data => {
-                const teacher: ModelTeacher = data.data();
-                this.listData.push(teacher);
-              }),
-              catchError(err => {
-                console.log(err);
-                this.toaster.error('No se pudo actualizar la tabla', 'Error');
-                // return [];
-                return of(null);
-              })
-            ).subscribe();
-
-
-
-          // this.findAllTeachers();
-        }
-      }
-      )
-    );
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
 
-  async findAllTeachers() {
 
-    this.teacherService.findAllTeachers()
+  findAllTeachers() {
+
+    this.subscription = this.teacherService.findAllTeachersOnChanges()
       .pipe(
-
         tap(data => {
 
           this.listData = [];
           data.forEach((element: any) => {
-            const teacher: ModelTeacher = element.data();
-
+            const teacher: ModelTeacher = element.payload.doc.data() as ModelTeacher;
+            teacher.uid = element.payload.doc.id;
             this.listData.push(teacher);
           });
-
           this.truncateUserCurrent();
-
-
-        }),
+        })
+        ,
         catchError(err => {
           console.log(err);
           this.toaster.error('Error al cargar los docentes', 'Error');
           // return [];
           return of(null);
-        })
+        }
+        )
+
       ).subscribe();
 
   }
@@ -112,13 +81,16 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
       console.log('userCurrent', userCurrent);
 
-      const index = this.listData.findIndex(teacher => teacher.uid == userCurrent?.uid);
+      this.listData = this.listData.filter(teacher => teacher.uid != userCurrent?.uid);
 
-      console.log('index', index);
 
-      if (index != -1) {
-        this.listData.splice(index, 1);
-      }
+      // const index = this.listData.findIndex(teacher => teacher.uid == userCurrent?.uid);
+
+      // console.log('index', index);
+
+      // if (index != -1) {
+      //   this.listData.splice(index, 1);
+      // }
 
 
 
@@ -129,48 +101,63 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
 
   }
-  async delete(uid: any) {
+  delete(uid: any, status: any) {
 
-    console.log('uid', uid);
-
-
+    // console.log('uid', uid);
     try {
 
 
-      // const userCurrent = await this.loginService.getUserCurrent();
-     // console.log('userCurrent', userCurrent);
 
-     alert('¿falta de implementar, se debe revisar el estad?');
+      Swal.fire({
+        title: '¿Estas seguro?',
+        text: `Estas seguro de ${status ? 'desactivar' : 'activar'} el docente`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+
+        confirmButtonText: `${status ? 'Desactivar' : 'Activar'}`,
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+
+
+          const foundTeacher = this.teacherService.findTeacherById(uid);
+
+          foundTeacher.pipe(
+            tap(data => {
+              // console.log('data', data);
+              const teacher: ModelTeacher = data.data();
+
+              this.teacherService.updateStatusTeacher(uid, teacher.status ? false : true)
+                .then(() => {
+                  this.toaster.info('Estado actualizado', 'Exito');
+
+                })
+                .catch(err => {
+                  // console.log(err);
+
+                  this.toaster.error('No se pudo actualizar el estado', 'Error');
+                });
+              // console.log('teacher', teacher);
+            }),
+            catchError(err => {
+              console.log(err);
+              this.toaster.warning('El docente no existe', 'Error');
+              // return [];
+              return of(null);
+            })
+          ).subscribe();
+
+        }
+      });
+
+
+
     } catch (err) {
       console.log(err);
 
     }
-
-
-
-    // this.loginService.getUserCurrent().then(res => {
-
-    //     console.log('res', res);
-
-    //     if(res.uid === uid){
-    //       this.toaster.error('No se puede eliminar el usuario actual', 'Error');
-    //       return;
-
-    //     }else{
-
-
-    //       this.teacherService.deleteTeacher(uid)
-    //       .then(() => {
-    //         this.toaster.success('Docente eliminado', 'Éxito');
-    //       })
-    //       .catch(err => {
-    //         console.log(err);
-    //         this.toaster.error('Error al eliminar docente', 'Error');
-    //       });
-    //     }
-    //   })
-
-
   }
 
 
