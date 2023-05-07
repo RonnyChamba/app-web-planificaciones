@@ -14,10 +14,15 @@ export class AdminComponent  implements OnInit{
 
   flagClose = true;
 
-  constructor(private tokenService: TokenService,
+  isAdmin: boolean = false;
+  constructor(
+    private tokenService: TokenService,
     private router: Router,
     private toaster: ToastrService,
-    private modalService: NgbModal,) { }
+    private modalService: NgbModal,) {
+
+    this.isAdmin = this.tokenService.isLoggedAdmin();
+     }
 
   ngOnInit(): void {
 

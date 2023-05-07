@@ -32,6 +32,8 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
   // here add suscriptiones
   private subscription: Subscription = new Subscription();
 
+  private subsLoadTeacher: Subscription = new Subscription();
+
   // represent the current week, this is used to show the planification of the current week
   indexWeekCurrent: number = 0;
 
@@ -71,6 +73,10 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+
+    if (this.subsLoadTeacher) {
+      this.subsLoadTeacher.unsubscribe();
+    }
   }
 
   /**
@@ -132,10 +138,10 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
 
     //  get details course
-    await this.loadDetailsCourse();
+    // await this.loadDetailsCourse();
 
     // get teachers
-    await this.loadTeachers();
+     this.loadTeachers();
 
     // get tutor, no es necesario  esperar  porque se puede obtener del teacher que se obtiene en el paso anterior
     // this.loadTutor();
@@ -167,6 +173,12 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * Este metodo ya no usa, ya que cada teacher ya incluye uj campo de tipo arreglo con los uid de los cursos a los que pertenece
+   * 
+   * 
+   */
+
   async loadDetailsCourse() {
 
     //  get detauls course
@@ -188,28 +200,45 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     console.log("details course cargado");
   }
 
-  async loadTeachers() {
+   loadTeachers() {
 
     console.log("loadTeachers", this.courseFullModel);
 
     // get teachers
-    const teachers: ModelTeacher[] = [];
+   
 
-    if (this.courseFullModel.detailsCourse.length > 0) {
-      const resp = await firstValueFrom(this.teacherService.findTeacherByInIde(this.courseFullModel.detailsCourse.map((item) => item.teacher)));
+    this.subsLoadTeacher =   this.teacherService.findAllTeachersOnChanges()
 
-      resp.docs.forEach((item: any) => {
+      .pipe(
+        tap((resp: any) => {
 
-        const teacher = item.data() as ModelTeacher;
-        teacher.uid = item.id;
-        teachers.push(teacher);
+          // this.courseFullModel.teachers = [];
+     
+          const  teachers: ModelTeacher[] = [];
+            
+            resp.forEach((element: any) => {
+  
+              const teacher: ModelTeacher = element.payload.doc.data() as ModelTeacher;
+              teacher.uid = element.payload.doc.id;
 
-      });
-    } else console.log("No hay teachers");
+              if (teacher.courses?.includes(this.courseFullModel.uid || "")) {
 
-    this.courseFullModel.teachers = teachers;
-    //  console.log(teachers);
+                teachers.push(teacher);
 
+              }
+  
+            });
+
+            this.courseFullModel.teachers = teachers;
+  
+            // console.log(teachers);
+
+        }),
+        catchError((err: any) => {
+          console.log("err", err);
+          return of(null);
+        })
+      ).subscribe();
     console.log("teachers cargado");
   }
 

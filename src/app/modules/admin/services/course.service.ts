@@ -33,7 +33,7 @@ export class CourseService implements OnInit {
     // snapshotChanges EMIte un evento cada vez que hay un cambio en la base de datos, HAY QUE TENER CUIDADO CON ESTO Y HACER UNSUBSCRIBE
     return this.afs.collection(COLLECTION_NAME).snapshotChanges();
   }
-
+  
   findCourseById(uid: string) {
     return this.afs.collection(COLLECTION_NAME).doc(uid).get();
   }

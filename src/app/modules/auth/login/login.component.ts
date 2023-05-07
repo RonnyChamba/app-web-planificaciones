@@ -125,7 +125,8 @@ export class LoginComponent implements OnInit {
   async updateProfile(teacherData: ModelTeacher) {
 
     const user = await this.loginService.getUserCurrent();
-    // console.log(user);
+  
+    console.log(user);
     if (user) {
       console.log(user.displayName);
       if (!user.displayName) {

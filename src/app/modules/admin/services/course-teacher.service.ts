@@ -21,4 +21,11 @@ export class CourseTeacherService  implements OnInit{
 
    }
 
+
+   setCourseTeacher(courseId: string, teacherId: string) {
+
+    return this.afs.collection(COLLECTION_NAME).add({ course: courseId, teacher: teacherId });
+
+   }
+
 }

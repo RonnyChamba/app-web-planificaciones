@@ -50,7 +50,7 @@ export class TokenService implements OnInit{
       
     if (this.isLogged()) {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    console.log(user)
+    // console.log(user)
     return user.rol == 'ADMIN' ? true : false;
     }
 

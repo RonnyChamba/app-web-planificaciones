@@ -5,10 +5,12 @@
     <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
     <div class="home-body">
         <div class="home-content p-3">
-            <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button>
-            <app-list-course></app-list-course>
+            <!-- <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button> -->
+            
+            <app-personal-info></app-personal-info>
     
         </div>
     </div>
 
 </section>
+ 

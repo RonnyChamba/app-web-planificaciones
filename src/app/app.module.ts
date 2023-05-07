@@ -37,6 +37,9 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TeacherComponent } from './modules/teacher/page/teacher/teacher.component';
 import { ListTeacherComponent } from './modules/teacher/components/list-teacher/list-teacher.component';
 import { ResetPasswordComponent } from './modules/auth/components/reset-password/reset-password.component';
+import { SelectTeacherComponent } from './modules/admin/components/details-course/components/select-teacher/select-teacher.component';
+import { ProfileComponent } from './modules/profile/page/profile.component';
+import { PersonalInfoComponent } from './modules/profile/components/personal-info/personal-info.component'; 
 
 @NgModule({
   declarations: [
@@ -64,7 +67,10 @@ import { ResetPasswordComponent } from './modules/auth/components/reset-password
     SidebarComponent,
     TeacherComponent,
     ListTeacherComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    SelectTeacherComponent,
+    ProfileComponent,
+    PersonalInfoComponent
   ],
   imports: [
     BrowserModule,

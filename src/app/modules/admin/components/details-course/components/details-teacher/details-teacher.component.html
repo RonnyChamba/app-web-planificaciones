@@ -46,13 +46,13 @@
         align-items-center  p-2">
 
             <div>
-                <h3>{{teacher.displayName}} {{teacher.lastName}}</h3>
+                <h6>{{teacher.displayName}} {{teacher.lastName}}</h6>
                 <p>{{teacher.email}}</p>
             </div>
-            <div>
+            <div *ngIf="isAdmin">
 
-                <button class="btn btn-primary me-1"><i class="fa-sharp fa-solid fa-circle-info"></i></button>
-                <button class="btn btn-danger"> <i class="fa-solid fa-arrow-left"></i></button>
+                <!-- <button class="btn btn-primary me-1"><i class="fa-sharp fa-solid fa-circle-info"></i></button> -->
+                <button class="btn btn-danger"  (click)="leftTeacher(teacher.uid)" > <i class="fa-solid fa-arrow-left" ></i></button>
             </div>
         </div>
 

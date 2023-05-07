@@ -53,6 +53,12 @@ export class RegisterService  implements OnInit{
     return this.firestore.collection(COLLECTION_NAME).snapshotChanges();
   }
 
+  findAllTeachersByCourseOnChanges(course: any): Observable<any> {
+    
+  
+    return this.firestore.collection(COLLECTION_NAME, ref => ref.where('courses', 'in', [course])).snapshotChanges();
+  }
+
   findAllTeachers(): Observable<any> {
     return this.firestore.collection(COLLECTION_NAME).get();
   }
@@ -101,6 +107,73 @@ export class RegisterService  implements OnInit{
     this.passwordSession = password;
   }
   
+
+  async updateCoursesTeacher(uidTeacher: string, newCourse: any) {
+
+
+    try {
+      const teacherDocRef = this.firestore.collection(COLLECTION_NAME).doc(uidTeacher);
+      // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
+      await this.firestore.firestore.runTransaction(async (transaction) => {
+
+        const userDoc = await transaction.get(teacherDocRef.ref);
+
+        // Obtener el arreglo actual de curso del docente, se pasa el campo a leer 
+        const items = userDoc.get('courses') || [];
+
+        // Agregar el nuevo curso al arreglo
+        items.push(newCourse);
+
+        // Actualizar el documento con el nuevo arreglo de cursos del docente
+        transaction.update(teacherDocRef.ref, { courses: items});
+
+
+      })
+      return Promise.resolve(true);
+
+    } catch (error) {
+      return Promise.reject(error);
+
+    }
+  }
+
+  async updateRemoveCoursesTeacher(uidTeacher: string, uidCourse: any) {
+
+
+    try {
+      const teacherDocRef = this.firestore.collection(COLLECTION_NAME).doc(uidTeacher);
+      // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
+      await this.firestore.firestore.runTransaction(async (transaction) => {
+
+        const userDoc = await transaction.get(teacherDocRef.ref);
+
+        // Obtener el arreglo actual de curso del docente, se pasa el campo a leer 
+        const items = userDoc.get('courses') || [];
+        
+        // Agregar el nuevo curso al arreglo
+
+
+        const index = items.indexOf(uidCourse);
+
+        if (index > -1) {
+
+          items.splice(index, 1);
+        }
+
+        // items.push(newCourse);
+
+        // Actualizar el documento con el nuevo arreglo de cursos del docente
+        transaction.update(teacherDocRef.ref, { courses: items});
+
+
+      })
+      return Promise.resolve(true);
+
+    } catch (error) {
+      return Promise.reject(error);
+
+    }
+  }
 
 
 }

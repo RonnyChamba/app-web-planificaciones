@@ -4,6 +4,19 @@
       <span class="logo_name" >EDUCATIVA</span>
     </div>
     <ul class="nav-links">
+      
+      
+      <li>
+        <a href="#" [routerLink]="['/perfil']" >
+          <!-- <i class="bx bx-grid-alt"></i> -->
+          <i class="fa-solid fa-user"></i>
+          <span class="link_name">{{menuOptions.get('PROFILE')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['/perfil']" >{{menuOptions.get('PROFILE')}}</a></li>
+        </ul>
+      </li>
+      
       <li>
         <a href="#" [routerLink]="['']" >
           <!-- <i class="bx bx-grid-alt"></i> -->
@@ -15,7 +28,7 @@
         </ul>
       </li>
 
-      <li  >
+      <li *ngIf="isAdmin">
         <a href="#" [routerLink]="['/docentes']">
           
             <i class="fa-solid fa-chalkboard-user"></i>
@@ -23,6 +36,18 @@
         </a>
         <ul class="sub-menu blank">
           <li><a class="link_name" href="#" [routerLink]="['/docentes']" >{{menuOptions.get('DOCENTES')}}</a></li>
+        </ul>
+      </li>
+
+      <li >
+        <a href="#" [routerLink]="['/informacion']">
+          
+            <!-- <i class="fa-solid fa-chalkboard-user"></i> -->
+            <i class="fa-solid fa-circle-info"></i>
+          <span class="link_name">{{menuOptions.get('ABOUT')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['/informacion']" >{{menuOptions.get('ABOUT')}}</a></li>
         </ul>
       </li>
     

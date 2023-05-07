@@ -29,7 +29,7 @@
                         <h4>Detalles Trimestre</h4>
                         <!-- <p>{{courseFullModel.weeks[indexWeekCurrent].details}}</p> -->
                     </div>
-                    <button class="btn btn-success"  (click)="openModalPlanification()">+</button>
+                    <button class="btn btn-success"  (click)="openModalPlanification()" *ngIf="isAdmin">+</button>
 
                 </div>
 

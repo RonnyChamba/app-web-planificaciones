@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Renderer2 } from '@angular/core';
+import { TokenService } from 'src/app/modules/auth/services/token.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,7 +19,11 @@ export class SidebarComponent  implements OnInit {
   constructor(
 
     private renderer: Renderer2,
-  ) { }
+    private tokenService: TokenService
+  ) { 
+      
+      this.isAdmin = this.tokenService.isLoggedAdmin();
+  }
 
   ngOnInit(): void {
 
@@ -29,6 +34,8 @@ export class SidebarComponent  implements OnInit {
 
     this.menuOptions.set("HOME", "Cursos");
     this.menuOptions.set("DOCENTES", "Docentes");
+    this.menuOptions.set("PROFILE", "Perfil");
+    this.menuOptions.set("ABOUT", "Información");
   }
 
 

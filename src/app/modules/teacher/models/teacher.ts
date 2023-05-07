@@ -16,6 +16,7 @@ export interface ModelTeacher  extends ModelBaseTeacher{
     titles?: string[];
     status?: boolean;
     rol?: string;
+    courses?: string[];
     
 }
 

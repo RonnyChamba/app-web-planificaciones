@@ -5,13 +5,14 @@ import { AdminComponent } from './modules/admin/page/admin/admin.component';
 import { CourseComponent } from './modules/admin/page/course/course.component';
 import { ReviewComponent } from './modules/admin/page/review/review.component';
 import { TeacherComponent } from './modules/teacher/page/teacher/teacher.component';
+import { ProfileComponent } from './modules/profile/page/profile.component';
 
 const routes: Routes = [
   {path: "auth",component: LoginComponent},
   {path: "docentes",component: TeacherComponent},
   {path: "course/:uid",component: CourseComponent},
-  // {path: "planification",component: FormPlanificationComponent},
   {path: "planification/:uid",component: ReviewComponent},
+  {path: "perfil",component: ProfileComponent},
   {path: "",component: AdminComponent},
 
   {path: "**", redirectTo: "auth"}
