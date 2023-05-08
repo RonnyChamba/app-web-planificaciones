@@ -17,7 +17,8 @@
                         <th>Docente</th>
                         <th>Recurso</th>
                         <th>Observaci&oacute;n</th>
-                        <th class="text-end">Observaci&oacute;n</th>
+                        <th>Aprobado</th>
+                        <th class="text-end"></th>
                     </tr>
                 </thead>
         
@@ -46,6 +47,11 @@
                             
                         </td>
                         <td> {{ item.observation +'' | trimText: 20 }} </td>
+                        <td> 
+                        
+                            <input type="checkbox" class="form-check-input" [checked]="item.status" (change)="onChangeStatus($event, item)"  >
+                            <!-- {{ item.status }}  -->
+                        </td>
                         <td class="text-end">
                             <button class="btn btn-primary" (click)="openObservation(item)"><i
                                     class="fa-solid fa-plus"></i> </button>

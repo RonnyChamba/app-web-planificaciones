@@ -6,6 +6,10 @@
     <div class="home-body">
         <div class="home-content p-3">
             <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button>
+
+            <p *ngIf="!isAdmin" style="font-weight: 500;">
+                A continuación se muestra la lista de cursos asignados por el administrador
+            </p>
             <app-list-course></app-list-course>
     
         </div>

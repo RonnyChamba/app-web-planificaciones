@@ -29,7 +29,7 @@
                         <h4>Detalles Trimestre</h4>
                         <!-- <p>{{courseFullModel.weeks[indexWeekCurrent].details}}</p> -->
                     </div>
-                    <button class="btn btn-success"  (click)="openModalPlanification()" *ngIf="isAdmin">+</button>
+                    <button class="btn btn-success" (click)="openModalPlanification()" *ngIf="isAdmin">+</button>
 
                 </div>
 
@@ -66,9 +66,9 @@
             <ng-template #sinPlanificaciones>
                 <!-- <div class="alert alert-info"> -->
 
-                    <!-- <h4></h4> -->
-                    <p class="alert alert-info"> <b>No hay planificaciones</b></p>
-                <!-- </div> -->  
+                <!-- <h4></h4> -->
+                <p class="alert alert-info"> <b>No hay planificaciones</b></p>
+                <!-- </div> -->
             </ng-template>
 
             <div class="mt-3 bg-secondary p-2" *ngIf="planificationExistByCurrentWeek;  else sinPlanificaciones">
@@ -79,17 +79,26 @@
 
                     <div class="flex-grow-1">
 
-                        <h4 class="title-plani"> 
-                            <span  *ngIf="!isAdmin">{{plani.title}}</span>
-                            <span (click)="edit(plani)"*ngIf="isAdmin"  class="title-plani__edit">{{plani.title}}</span>
+                        <h4 class="title-plani">
+                            <span *ngIf="!isAdmin">{{plani.title}}</span>
+                            <span (click)="edit(plani)" *ngIf="isAdmin" class="title-plani__edit">{{plani.title}}</span>
                         </h4>
                         <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
 
-                        <p *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)"
-                            (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')" class="my-1"
-                            style="text-decoration: underline; cursor: pointer;">
-                            <i class="fa-solid fa-file-arrow-down"></i> Descargar
-                        </p>
+                        <div *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)">
+
+                            <span (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')" class="me-3"
+                                style="text-decoration: underline; cursor: pointer;">
+                                <i class="fa-solid fa-file-arrow-down"></i> 
+                            </span>
+                            <span  
+                            style="text-decoration: underline; cursor: pointer;"
+                            (click)="viewDetailPani(plani)">
+                            
+                            <i class="fa-solid fa-circle-info"></i> </span>
+
+                        </div>
+
 
 
                         <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"

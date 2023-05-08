@@ -14,21 +14,24 @@
   .logo-details {
     height: 60px;
     width: 100%;
+    padding: 1px;
     display: flex;
+    justify-content: center;
     align-items: center;
-    i {
-      font-size: 30px;
-      color: #fff;
-      height: 50px;
-      min-width: $sidebar-width-close;
-      //  min-width: 78px;
-      text-align: center;
-      line-height: 50px;
-    }
+    flex-wrap: nowrap;
+    // i {
+    //   font-size: 30px;
+    //   color: #fff;
+    //   height: 50px;
+    //   min-width: $sidebar-width-close;
+    //   //  min-width: 78px;
+    //   text-align: center;
+    //   line-height: 50px;
+    // }
     .logo_name {
       font-size: 22px;
       color: #fff;
-      font-weight: 600;
+      font-weight: 400;
       transition: 0.3s ease;
       transition-delay: 0.1s;
     }

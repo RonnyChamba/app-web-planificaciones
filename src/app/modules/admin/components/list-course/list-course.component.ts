@@ -77,7 +77,7 @@ export class ListCourseComponent implements OnInit, OnDestroy {
               this.courses.push(course);
             }
 
-            console.log("course ---");
+            // console.log("course ---");
           });
         }),
         catchError((err) => {
@@ -91,7 +91,7 @@ export class ListCourseComponent implements OnInit, OnDestroy {
   }
 
   viewCourse(uid: string) {
-    console.log(uid);
+    // console.log(uid);
     this.roter.navigate(['/course', uid]);
   }
 
@@ -103,7 +103,7 @@ export class ListCourseComponent implements OnInit, OnDestroy {
 
       const userCurrent = await this.auth.getUserCurrent();
 
-      console.log("userCurrent", userCurrent);
+      // console.log("userCurrent", userCurrent);
       return userCurrent?.uid;
 
     } catch (error) {

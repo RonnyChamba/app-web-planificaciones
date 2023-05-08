@@ -38,11 +38,11 @@ export class ReviewNoteComponent  implements OnInit{
       this.modal.close('Save');
       this.toaster.info('Observación actualizada con éxito');
 
-      // Ahora se actualiza el unicamente el registro  que fue actualizado en la lista de detalles,
-      this.utilDetailsService.refreshDataReview.next({
-        type: 'observation', // para indicar que dbe actualizar la observación
-        detailsPlani: this.note.uidPlani, // el uid del detalle de la planificación que se debe actualizar
-      });
+      // // Ahora se actualiza el unicamente el registro  que fue actualizado en la lista de detalles,
+      // this.utilDetailsService.refreshDataReview.next({
+      //   type: 'observation', // para indicar que dbe actualizar la observación
+      //   detailsPlani: this.note.uidPlani, // el uid del detalle de la planificación que se debe actualizar
+      // });
     })
     .catch((error) => {
       this.toaster.error('Error al actualizar la observación');

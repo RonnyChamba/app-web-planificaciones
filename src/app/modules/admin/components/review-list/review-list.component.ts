@@ -34,70 +34,18 @@ export class ReviewListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getDetailsPlanification();
 
-    this.addSubscription();
+    // this.addSubscription();
   }
 
   ngOnDestroy(): void {
 
+
+
     this.subcription.unsubscribe();
-  }
-
-
-  private addSubscription() {
-
-    this.subcription.add(
-
-
-      this.utilDetailsService.refreshDataReview.subscribe(
-        (res: any) => {
-          // console.log(res);
-          if (res) {
-
-            this.updateObservation(res);
-          }
-
-        }
-
-
-      ));
-  }
-
-
-  private updateObservation(data: any) {
-
-
-    this.reviewService.findDetailsPlaniByUid(data.detailsPlani)
-      .pipe(
-
-        tap(details => {
-          if (details.exists) {
-
-            const itemDetails = details.data() as DetailsPlanification;
-            itemDetails.uid = details.id;
-
-            // console.log(itemDetails);
-
-            // Buscamos el indice del item que se actualizo
-            const foundIndex = this.listDetailsPlanification.findIndex(item => item.uid === itemDetails.uid);
-
-            // Si se encontro el indice se actualiza el item
-            if (foundIndex !== -1) {
-              // se actualiza el item
-              this.listDetailsPlanification[foundIndex] = itemDetails;
-
-            }
-
-          } else this.toaster.error('No se encontro el detalle de la planificación', 'Error');
-        }
-        ),
-        catchError(error => of(`Error : ${error}`))
-
-      ).subscribe();
-
   }
   getDetailsPlanification() {
 
-    this.reviewService.findDetailsPlanificationByUid(this.planificationModel.uid as string)
+  this.subcription =     this.reviewService.findDetailsPlanificationByUid(this.planificationModel.uid as string)
       .pipe(
 
         tap(details => {
@@ -106,15 +54,17 @@ export class ReviewListComponent implements OnInit, OnDestroy {
           // console.log(details.empty)
           // console.log(details.docs)
 
-          if (details.empty) {
-            // console.log('No matching documents.');
-            return;
-          }
+          // if (details.empty) {
+          //   // console.log('No matching documents.');
+          //   return;
+          // }
+
+          this.listDetailsPlanification = [];
 
           details.forEach(doc => {
 
-            const data = doc.data() as DetailsPlanification;
-            data.uid = doc.id;
+            const data = doc.payload.doc.data()  as DetailsPlanification;
+            data.uid =  doc.payload.doc.id;
             // const id = doc.id;
 
             // console.log(doc.id, '=>', doc.data());
@@ -159,7 +109,24 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     
       this.toaster.error('Error al descargar el archivo');
     }
+  }
 
+  async onChangeStatus(  event: any,   itemDetails: any) {
+  
+    
+    const uid = itemDetails.uid;
+    const status = event.target.checked;
+    // console.log(uid);
 
+    try {
+  
+       await this.reviewService.updateStatus(uid, status);
+       this.toaster.info('Se actualizo el estado correctamente');
+    } catch (error) {
+      
+      this.toaster.error('Error al actualizar el estado');
+    }
+    
+    
   }
 }

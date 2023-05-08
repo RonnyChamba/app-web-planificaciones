@@ -20,6 +20,7 @@ import { TokenService } from 'src/app/modules/auth/services/token.service';
 import { ToastrService } from 'ngx-toastr';
 import { ReviewService } from '../../services/review.service';
 import { UploadFileService } from 'src/app/services/upload-file.service';
+import { ViewDetailComponent } from './components/view-detail/view-detail.component';
 
 @Component({
   selector: 'app-details-course',
@@ -64,7 +65,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    console.log(`Id Customer get : ${this.uidCourse}`);
+    // console.log(`Id Customer get : ${this.uidCourse}`);
     this.loadDataPage();
     this.refreshWeeks();
     this.refreshPlanifications();
@@ -155,7 +156,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
 
 
-    console.log(this.courseFullModel);
+    // console.log(this.courseFullModel);
 
   }
 
@@ -169,7 +170,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
     this.courseFullModel.uid = respCourse.id;
 
-    console.log("cursos cargado");
+    // console.log("cursos cargado");
 
   }
 
@@ -197,12 +198,12 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
     this.courseFullModel.detailsCourse = detailsCourse;
 
-    console.log("details course cargado");
+    // console.log("details course cargado");
   }
 
    loadTeachers() {
 
-    console.log("loadTeachers", this.courseFullModel);
+    // console.log("loadTeachers", this.courseFullModel);
 
     // get teachers
    
@@ -239,7 +240,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
           return of(null);
         })
       ).subscribe();
-    console.log("teachers cargado");
+    // console.log("teachers cargado");
   }
 
 
@@ -348,7 +349,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   async changeNumberWeek(numberWeek: number) {
 
-    console.log("changeNumberWeeks", numberWeek);
+    // console.log("changeNumberWeeks", numberWeek);
 
     if (this.indexWeekCurrent !== numberWeek) {
       this.indexWeekCurrent = numberWeek;
@@ -563,7 +564,32 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
       };
 
     } else alert("No hay trimestres disponibles para planificar");
+  }
 
+  viewDetailPani(plani: any){
 
+    const ref = this.modal.open(ViewDetailComponent, { size: 'md', backdrop: 'static', keyboard: false, })
+    // Obtener los detalles de la planificacion actual o sleccionada
+    const details: any[] = plani.details_planification;
+
+    if (details && details.length>0 ){
+
+      // Obtener el uid del teacher actual logeado
+
+      const userCurrent = JSON.parse(this.tokenService.getToken() || "{}").uid;
+
+      // Obtener el uid del detalle de la planificacion del teacher actual logeado
+      const uidDetails = details.find((item: any) => item.teacher_uid === userCurrent)?.details_uid;
+
+      
+      console.log("uidDetails ecninstrado", uidDetails);  
+      ref.componentInstance.uidDetailsPlani = uidDetails;
+      
+    }else this.toaster.warning("No se encontro el detalle de la planificacion");
+
+    
+  
+    
+    // console.log("uid", uid);
   }
 }

@@ -21,7 +21,7 @@ export class ReviewService implements OnInit {
    */
   findDetailsPlanificationByUid(uid: string) {
 
-    return this.afs.collection(COLLECTION_NAME, ref => ref.where('planification', '==', uid)).get();
+    return this.afs.collection(COLLECTION_NAME, ref => ref.where('planification', '==', uid)).snapshotChanges();
 
   }
 
@@ -45,5 +45,9 @@ export class ReviewService implements OnInit {
       return this.afs.collection(COLLECTION_NAME).doc(uid).delete();
     }
 
+    updateStatus(uid: string, status: boolean) {
+
+      return this.afs.collection(COLLECTION_NAME).doc(uid).update({ status: status });
+    }
 
 }

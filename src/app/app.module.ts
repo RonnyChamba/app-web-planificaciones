@@ -42,6 +42,7 @@ import { ProfileComponent } from './modules/profile/page/profile.component';
 import { PersonalInfoComponent } from './modules/profile/components/personal-info/personal-info.component';
 import { InformationComponent } from './modules/information/page/information.component';
 import { ChangePasswordComponent } from './modules/auth/components/change-password/change-password.component';
+import { ViewDetailComponent } from './modules/admin/components/details-course/components/view-detail/view-detail.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { ChangePasswordComponent } from './modules/auth/components/change-passwo
     ProfileComponent,
     PersonalInfoComponent,
     InformationComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ViewDetailComponent
   ],
   imports: [
     BrowserModule,
