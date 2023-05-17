@@ -29,4 +29,37 @@ export class TokenService implements OnInit{
     this.setToken('null');
   }
 
+
+  setCourse(course: any) {
+    localStorage.setItem('course', JSON.stringify(course));
+  }
+
+  getCourse() {
+    return localStorage.getItem('course');
+  }
+
+  clearLocalStorage() {
+    localStorage.clear();
+  }
+
+  isLogged() {
+    return localStorage.getItem('user') ? true : false;
+  }
+
+  isLoggedAdmin() {
+      
+    if (this.isLogged()) {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    // console.log(user)
+    return user.rol == 'ADMIN' ? true : false;
+    }
+
+    return false;
+
+    }
+
+
+
+
+
 }

@@ -1,0 +1,43 @@
+<div class="card">
+    <div class="card-header d-flex  justify-content-between align-items-center ">
+        <h5 class="card-title">Información Planificación</h5>
+        <button type="button" class="btn-close" (click)="modal.close()" ></button>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row"  *ngIf="detailsPlanification">
+            <div class="col-sm-6">
+                <p class="my-1"><b>Fecha:</b></p>
+                <span>{{detailsPlanification.dateCreated}}</span>
+            </div>
+            <div class="col-sm-6">
+                <p class="my-1"> <b>Aprobado:</b></p>
+                <span  
+                [ngClass]="{'text-success': 
+                detailsPlanification.status, 'text-danger': !detailsPlanification.status}" >
+                
+                <b>{{detailsPlanification.status? 'SI': 'NO'}}</b>
+                </span>
+            </div>
+            <div class="col">
+                <p class="my-1"> <b>Observacion: </b></p>
+                <p>
+                    {{detailsPlanification.observation}}
+                </p>
+            </div>
+
+        </div>
+
+        <div    *ngIf="!detailsPlanification">
+
+            <p>Cargando datos.......</p>
+        </div>
+
+    </div>
+
+    <div class="card-footer d-flex justify-content-end   align-items-center">
+        <button type="button" class="btn btn-secondary"  (click)="modal.close()" >Cerrar</button>
+    </div>
+
+</div>

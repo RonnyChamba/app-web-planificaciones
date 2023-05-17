@@ -1,10 +1,13 @@
-<div class="">
+<app-sidebar class="nav-component"  [ngClass]="{ close: flagClose, '': !flagClose }" [open]="flagClose"> </app-sidebar>
 
-    <app-navba></app-navba>
+<section class="home-section">
+
+    <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
+    <div class="home-body">
+        <div class="home-content p-3">
+            <app-details-course [uidCourse]="uidCourse"  ></app-details-course>
     
-    <app-details-course [uidCourse]="uidCourse"  ></app-details-course>
+        </div>
+    </div>
 
-    <!-- <app-list-course></app-list-course> -->
-
-</div>
-
+</section>

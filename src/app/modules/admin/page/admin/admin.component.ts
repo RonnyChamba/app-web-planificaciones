@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
-import { ModelBaseTeacher } from 'src/app/modules/teacher/models/teacher';
 import { FormCourseComponent } from '../../components/form-course/form-course.component';
 
 @Component({
@@ -13,10 +12,17 @@ import { FormCourseComponent } from '../../components/form-course/form-course.co
 })
 export class AdminComponent  implements OnInit{
 
-  constructor(private tokenService: TokenService,
+  flagClose = true;
+
+  isAdmin: boolean = false;
+  constructor(
+    private tokenService: TokenService,
     private router: Router,
     private toaster: ToastrService,
-    private modalService: NgbModal,) { }
+    private modalService: NgbModal,) {
+
+    this.isAdmin = this.tokenService.isLoggedAdmin();
+     }
 
   ngOnInit(): void {
 
@@ -30,9 +36,15 @@ export class AdminComponent  implements OnInit{
   openCourse() {
    
    
-    this.modalService.open(FormCourseComponent, { size: 'lg' });
+    this.modalService.open(FormCourseComponent, { size: 'md' });
   }
 
+  onClickMenu(value:boolean){  
+
+    this.flagClose = value;
+
+    // this.tokenService.setFlagClose(this.flagClose);
+  }
 
 
 

@@ -1,0 +1,9 @@
+// import de los estilos 
+// @use '../../../../../assets/scss/styleParentSidebar';
+@use '../../../../../assets/scss/styleParentSidebar';
+button i{
+     color: #fff;
+     font-size: 25px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+}

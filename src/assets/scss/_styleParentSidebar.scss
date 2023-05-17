@@ -1,0 +1,72 @@
+/*Archivo donde se define los estilos para el wrapper que envolvera  al sidebar y al componente 
+hermano o componente donde va el contenido principal*/
+
+@import './Constantes.scss';
+@import './Colors.scss';
+
+.nav-component{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: $sidebar-width;
+    z-index: 100;
+    transition: all 0.5s ease;
+}
+.nav-component.close{
+    width: $sidebar-width-close;
+}
+
+
+.home-section{
+    position: relative;
+    // background: #E4E9F7;
+    // height: 100vh;
+    left: $sidebar-width;
+    // left: 260px;
+    // width: calc(100% - 260px);
+    width: calc(100% - $sidebar-width);
+    transition: all 0.5s ease;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+
+    //  
+  }
+
+
+  .nav-component.close ~ .home-section{
+    left: $sidebar-width-close;
+    // left: 78px;
+    // width: calc(100% - 78px);
+    width: calc(100% - $sidebar-width-close);
+  }
+
+  .home-section .home-body{
+    padding:  0 20px;
+  }
+  
+ @media (max-width: 400px) {
+  
+
+    .nav-component{
+     width: $sidebar-width-close;
+     //  width: 78px;
+    }
+
+    .nav-component.close{
+      width: 0;
+    }
+    .home-section{
+     left: $sidebar-width-close;
+     //  left: 78px;
+      width: calc(100% - $sidebar-width-close);
+      z-index: 100;
+    }
+    .nav-component.close ~ .home-section{
+      width: 100%;
+      left: 0;
+    }
+  }

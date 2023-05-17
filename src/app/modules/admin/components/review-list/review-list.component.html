@@ -1,0 +1,74 @@
+<div class="mt-2">
+
+
+    <div class="card">
+
+        <div class="card-header">
+            <h5>Planificaciones recibidas</h5>
+        </div>
+
+        <div class="card-body">
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nro</th>
+                        <th>Foto</th>
+                        <th>Fecha</th>
+                        <th>Docente</th>
+                        <th>Recurso</th>
+                        <th>Observaci&oacute;n</th>
+                        <th>Aprobado</th>
+                        <th class="text-end"></th>
+                    </tr>
+                </thead>
+        
+                <tbody>
+                
+                    <tr *ngFor="let item of listDetailsPlanification; index as i">
+
+                        <td>{{i+1}}</td>
+                        <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
+                        <td>{{item.dateCreated | date:'dd/MM/yyyy'}}</td>
+                        <td>{{item.teacher.fullName}}</td>
+                        <td>
+
+                            <a class="btn btn-primary me-2" title="Abrir recurso" role="button"
+                                [href]="item.resource.url"
+                                target="_blank">
+
+                                <i class="fa-solid fa-link"></i> Abrir
+                            </a>
+                            <button class="btn btn-danger" role="button"  (click)="dowloadFile(item.resource)">
+                                <i class="fa-solid fa-file-arrow-down"></i> Descargar
+
+                            </button>
+
+
+                            
+                        </td>
+                        <td> {{ item.observation +'' | trimText: 20 }} </td>
+                        <td> 
+                        
+                            <input type="checkbox" class="form-check-input" [checked]="item.status" (change)="onChangeStatus($event, item)"  >
+                            <!-- {{ item.status }}  -->
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-primary" (click)="openObservation(item)"><i
+                                    class="fa-solid fa-plus"></i> </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-warning" *ngIf="listDetailsPlanification.length <1">
+                <p class="text-center">No hay planificaciones recibadas a&uacute;n</p>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>

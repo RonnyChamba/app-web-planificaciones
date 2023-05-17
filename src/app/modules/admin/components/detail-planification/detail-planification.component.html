@@ -1,0 +1,56 @@
+<!-- <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel"> -->
+<div style="max-width: 450px; min-width: 350px;" class="m-auto card">
+  <div class="offcanvas-header card-header">
+    <h5 id="offcanvasTopLabel">{{action =='details'? 'Detalles Planificación': 'Subir Planificación' }}</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body card-body" *ngIf="planification">
+
+    <h6>Descripci&oacute;n</h6>
+    <p *ngIf="planification.details"> {{planification.details}} </p>
+    <p *ngIf="!planification.details"> Esta planificación no tiene detalles</p>
+
+    <div class="details" *ngIf="action=='details'">
+      <h6>Recursos</h6>
+      <!-- <div> -->
+      <p *ngIf="!planification.resource ||  planification.resource.length<1">No tiene recursos</p>
+
+      <p *ngFor="let item of planification.resource; index as i">
+        <!-- {{item | json}} -->
+        <span>
+          <i class="fa-solid fa-file-pdf text-danger" *ngIf="item.type=='pdf'"></i>
+          <i class="fa-sharp fa-solid fa-file-word text-primary" *ngIf="item.type !='pdf'"></i>
+          <a [href]="item.url" download="{{item.name}}" target="_blank" class="ms-2">{{item.name}}</a>
+        </span>
+      </p>
+      <!-- </div> -->
+      <div class="text-end">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="offcanvas" aria-label="">Aceptar</button>
+      </div>
+    </div>
+
+    <div class="upload" *ngIf="action=='upload'">
+
+
+      <form [formGroup]="formGroup">
+        <div class="d-flex ">
+          <input type="text"  class="flex-grow-1 me-1" formControlName ="nameFile"  >
+          
+          <label for="file" class="btn btn-success p-1">Seleccionar</label>
+          <input type="file" id="file" class="d-none" (change)="onFileSelected($event)" formControlName="resource"
+            accept=".pdf,.doc,.docx" />
+        </div>
+
+        <div class="text-end mt-5">
+          <button type="button" class="btn btn-secondary me-1" data-bs-dismiss="offcanvas" aria-label=""
+            (click)="cancel()">CANCELAR</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="offcanvas" aria-label=""
+          [disabled]="statusDisabledButton" (click)="uploadFile()" >SUBIR</button>
+        </div>
+      </form>
+
+    </div>
+
+
+  </div>
+</div>

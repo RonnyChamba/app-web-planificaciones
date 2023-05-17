@@ -2,11 +2,9 @@
 import { Injectable } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ModelBaseTeacher, ModelTeacher } from '../models/teacher';
+import {  ModelTeacher } from '../models/teacher';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'teachers';
 @Injectable({
@@ -15,11 +13,14 @@ const COLLECTION_NAME = 'teachers';
 export class RegisterService  implements OnInit{
 
 
+  passwordSession = '';
+
   constructor(private firestore: AngularFirestore) { }
 
+
+
   ngOnInit() {
-  
-    
+
   }
 
 
@@ -47,6 +48,17 @@ export class RegisterService  implements OnInit{
   }
 
 
+  findAllTeachersOnChanges(): Observable<any> {
+    
+    return this.firestore.collection(COLLECTION_NAME).snapshotChanges();
+  }
+
+  findAllTeachersByCourseOnChanges(course: any): Observable<any> {
+    
+  
+    return this.firestore.collection(COLLECTION_NAME, ref => ref.where('courses', 'in', [course])).snapshotChanges();
+  }
+
   findAllTeachers(): Observable<any> {
     return this.firestore.collection(COLLECTION_NAME).get();
   }
@@ -54,6 +66,23 @@ export class RegisterService  implements OnInit{
   updateTeacher(teacher: ModelTeacher): Promise<any> {
     return this.firestore.collection(COLLECTION_NAME).doc(teacher.dni).update(teacher);
   }
+
+  updateTeacherPart(teacher: ModelTeacher, uid: string): Promise<any> {
+    return this.firestore.collection(COLLECTION_NAME).doc(uid).update({
+      displayName: teacher.displayName,
+      lastName: teacher.lastName,
+      phoneNumber: teacher.phoneNumber,
+      titles: teacher.titles,
+
+    } );
+  }
+
+  updateStatusTeacher(uid: string, status: boolean): Promise<any> {
+    
+    return this.firestore.collection(COLLECTION_NAME).doc(uid).update({ status });
+  }
+
+  
 
   findTeacherById(id: string): Observable<any> {
     return this.firestore.collection(COLLECTION_NAME).doc(id).get();
@@ -66,4 +95,85 @@ export class RegisterService  implements OnInit{
 
     return this.firestore.collection(COLLECTION_NAME, ref => ref.where('uid', 'in', ids)).get();
   }
+
+
+  get password(): string {
+
+    return this.passwordSession;
+  }
+
+  set password(password: string) {
+
+    this.passwordSession = password;
+  }
+  
+
+  async updateCoursesTeacher(uidTeacher: string, newCourse: any) {
+
+
+    try {
+      const teacherDocRef = this.firestore.collection(COLLECTION_NAME).doc(uidTeacher);
+      // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
+      await this.firestore.firestore.runTransaction(async (transaction) => {
+
+        const userDoc = await transaction.get(teacherDocRef.ref);
+
+        // Obtener el arreglo actual de curso del docente, se pasa el campo a leer 
+        const items = userDoc.get('courses') || [];
+
+        // Agregar el nuevo curso al arreglo
+        items.push(newCourse);
+
+        // Actualizar el documento con el nuevo arreglo de cursos del docente
+        transaction.update(teacherDocRef.ref, { courses: items});
+
+
+      })
+      return Promise.resolve(true);
+
+    } catch (error) {
+      return Promise.reject(error);
+
+    }
+  }
+
+  async updateRemoveCoursesTeacher(uidTeacher: string, uidCourse: any) {
+
+
+    try {
+      const teacherDocRef = this.firestore.collection(COLLECTION_NAME).doc(uidTeacher);
+      // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
+      await this.firestore.firestore.runTransaction(async (transaction) => {
+
+        const userDoc = await transaction.get(teacherDocRef.ref);
+
+        // Obtener el arreglo actual de curso del docente, se pasa el campo a leer 
+        const items = userDoc.get('courses') || [];
+        
+        // Agregar el nuevo curso al arreglo
+
+
+        const index = items.indexOf(uidCourse);
+
+        if (index > -1) {
+
+          items.splice(index, 1);
+        }
+
+        // items.push(newCourse);
+
+        // Actualizar el documento con el nuevo arreglo de cursos del docente
+        transaction.update(teacherDocRef.ref, { courses: items});
+
+
+      })
+      return Promise.resolve(true);
+
+    } catch (error) {
+      return Promise.reject(error);
+
+    }
+  }
+
+
 }

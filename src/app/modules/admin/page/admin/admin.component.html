@@ -1,25 +1,18 @@
-<div class="">
+<app-sidebar class="nav-component"  [ngClass]="{ close: flagClose, '': !flagClose }" [open]="flagClose"> </app-sidebar>
 
-    <app-navba></app-navba>
-    <div>
+<section class="home-section">
+    
+    <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
+    <div class="home-body">
+        <div class="home-content p-3">
+            <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button>
 
-
-        <ul class=" d-flex justify-content-space-between align-items-center" style="list-style-type: none;">
-
-            <!-- list the buttons    -->
-
-            <li> 
-            <button (click)="openCourse()"  class="btn btn-primary">Nuevo Curso</button>
-            
-            </li>
-            <!-- <li><a routerLink="/admin/usuarios">Docente</a></li> -->
-            <!-- <li><a routerLink="/admin/roles">Roles</a></li> -->
-            <!-- <li><a routerLink="/admin/permisos">Permisos</a></li>
-            <li><a routerLink="/admin/permisos-roles">Permisos Roles</a></li>
-            <li><a routerLink="/admin/usuarios-roles">Usuarios Roles</a></li> -->
-        </ul>
+            <p *ngIf="!isAdmin" style="font-weight: 500;">
+                A continuación se muestra la lista de cursos asignados por el administrador
+            </p>
+            <app-list-course></app-list-course>
+    
+        </div>
     </div>
 
-    <app-list-course></app-list-course>
-
-</div>
+</section>

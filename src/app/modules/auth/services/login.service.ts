@@ -2,7 +2,6 @@ import { Injectable, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ModelTeacher } from '../../teacher/models/teacher';
-import { TokenService } from './token.service';
 const COLLECTION_NAME = 'teachers';
 @Injectable({
   providedIn: 'root'
@@ -55,6 +54,8 @@ export class LoginService implements OnInit {
   async createAccount(email: string, password: string) {
 
     try {
+
+
       const result = await this.afAuth.createUserWithEmailAndPassword(
         email, password as string);
 
@@ -68,6 +69,24 @@ export class LoginService implements OnInit {
       throw new Error(error.message);
     }
 
+  }
+
+  getUserCurrent() {
+    return this.afAuth.currentUser;
+  }
+
+  deleteUser(uid: any) {
 
   }
+  logOut() {
+
+    return this.afAuth.signOut();
+
+  }
+
+  resetPassword(email: string) {
+
+    return this.afAuth.sendPasswordResetEmail(email);
+  }
+
 }

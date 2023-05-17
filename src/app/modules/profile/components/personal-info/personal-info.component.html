@@ -1,0 +1,202 @@
+<div class="card">
+
+
+    <div class="card-header d-flex    d-flex justify-content-between align-items-center">
+        <h4 class="card-title"> {{action=='REGISTER'?'Registro de Docente': 'Mis Datos Personales'}}</h4>
+        <button type="button" class="btn btn-primary" (click)="onSubmit()">ACTUALIZAR</button>
+    </div>
+    <div class="card-body">
+
+        <form [formGroup]="formGroup">
+
+            <div class="row">
+
+
+                <div class="mb-3  col-sm-6">
+                    <label for="dni" class="form-label">C&eacute;dula <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="dni" formControlName="dni">
+
+                    <div *ngIf="
+        formGroup.controls['dni'].invalid &&
+        (formGroup.controls['dni'].dirty ||
+        formGroup.controls['dni'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.cedula">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('dni')?.hasError(validation.type) &&
+            (formGroup.get('dni')?.dirty ||
+            formGroup.get('dni')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+
+                        <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('dni')?.hasError('fieldExists') &&
+            (formGroup.get('dni')?.dirty ||
+            formGroup.get('dni')?.touched)
+          ">
+                            {{ formGroup.get("dni")?.getError("fieldExists") }}
+                        </div>
+
+                        <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('dni')?.hasError('incorrectDni') &&
+            (formGroup.get('dni')?.dirty ||
+            formGroup.get('dni')?.touched)
+          ">
+                            {{ formGroup.get("dni")?.getError("incorrectDni") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 col-sm-6">
+                    <label for="email" class="form-label">Email <span style="color: red;">*</span></label>
+                    <input type="email" class="form-control" id="email" formControlName="email">
+
+
+                    <div *ngIf="
+            formGroup.controls['email'].invalid &&
+            (formGroup.controls['email'].dirty ||
+            formGroup.controls['email'].touched)
+          " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.correo">
+                            <div style="font-size: smaller !important" *ngIf="
+          formGroup.get('email')?.hasError(validation.type) &&
+                (formGroup.get('email')?.dirty ||
+                formGroup.get('email')?.touched)
+              ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+
+                        <div style="font-size: smaller !important" *ngIf="
+                formGroup.get('email')?.hasError('fieldExists') &&
+                (formGroup.get('email')?.dirty ||
+                formGroup.get('email')?.touched)
+              ">
+                            {{ formGroup.get("email")?.getError("fieldExists") }}
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="mb-3 col-sm-6">
+                    <label for="displayName" class="form-label">Nombres <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="displayName" formControlName="displayName">
+
+                    <div *ngIf="
+        formGroup.controls['displayName'].invalid &&
+        (formGroup.controls['displayName'].dirty ||
+        formGroup.controls['displayName'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.nombres">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('displayName')?.hasError(validation.type) &&
+            (formGroup.get('displayName')?.dirty ||
+            formGroup.get('displayName')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 col-sm-6">
+                    <label for="lastName" class="form-label">Apellidos <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName">
+
+                    <div *ngIf="
+        formGroup.controls['lastName'].invalid &&
+        (formGroup.controls['lastName'].dirty ||
+        formGroup.controls['lastName'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.apellidos">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('displayName')?.hasError(validation.type) &&
+            (formGroup.get('lastName')?.dirty ||
+            formGroup.get('lastName')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="mb-3 col-sm-6">
+                    <label for="phoneNumber" class="form-label">Tel&eacute;fono</label>
+                    <input type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber">
+
+                    <div *ngIf="
+        formGroup.controls['phoneNumber'].invalid &&
+        (formGroup.controls['phoneNumber'].dirty ||
+        formGroup.controls['phoneNumber'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.celular">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('phoneNumber')?.hasError(validation.type) &&
+            (formGroup.get('phoneNumber')?.dirty ||
+            formGroup.get('phoneNumber')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mb-3 col-sm-6">
+
+                    <label for="flagTitulo" class="form-label">Titulos</label>
+                    <div class="d-flex ">
+                        <input type="text" #miInput class="form-control" formControlName="flagTitulo" />
+                        <button type="button" 
+                        (click)="agregarTexto(miInput.value)" 
+                        [disabled]="miInput.value==''"
+                        class="btn btn-info ms-1"><i
+                                class="fa-sharp fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="mt-1">
+                        <p *ngFor="let item of arrayTitulos; index as i"> <span> {{item}}</span>
+                            <button (click)="eliminarTitulo(i)" class="btn btn-danger ms-2">X</button>
+                        </p>
+                    </div>
+                </div>
+
+
+
+
+                <div class="mb-3 col-sm-6" *ngIf="action=='REGISTER'">
+                    <label for="password" class="form-label">Contraseña <span style="color: red;">*</span></label>
+                    <input type="password" class="form-control" id="password" formControlName="password">
+
+
+                    <div *ngIf="
+            formGroup.controls['password'].invalid &&
+            (formGroup.controls['password'].dirty ||
+            formGroup.controls['password'].touched)
+          " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.password">
+                            <div style="font-size: smaller !important" *ngIf="
+          formGroup.get('password')?.hasError(validation.type) &&
+                (formGroup.get('password')?.dirty ||
+                formGroup.get('password')?.touched)
+              ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- <div class="d-flex  justify-content-end align-items-center">
+                <button type="button" class="btn btn-secondary me-2" (click)="modal.dismiss()"  >CANCELAR</button>
+                <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid">GUARDAR</button>
+            </div> -->
+        </form>
+    </div>
+
+</div>

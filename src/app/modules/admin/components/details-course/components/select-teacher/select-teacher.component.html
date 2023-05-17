@@ -1,0 +1,75 @@
+<div class="modal-header p-2 px-3" style="background-color: #f8f9fa;">
+    <h4 class="modal-title">Lista de Docentes</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+
+    <!-- <div class=" modal-body"> -->
+
+    <div class="d-flex justify-content-end">
+        <input type="text" class="form-control" placeholder="Buscar" [formControl]="searchValue" name="searchTerm"
+            style="max-width: 350px;" />
+
+    </div>
+
+    <table class="table table-hover mt-3">
+        <thead class="table-light">
+            <tr>
+                <th>Nro</th>
+                <th></th>
+                <th>Foto</th>
+                <th>Nombres</th>
+                <th>Dni</th>
+
+                <th>Estado</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let item of listDataFilter; index as i" style="cursor:pointer;">
+
+                <td>{{i+1}}</td>
+                <td>
+                    <input type="checkbox" class="form-check-input"  (change)="selectRow($event, item.uid)">
+                </td>
+                <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
+
+
+                <td>{{item.displayName + ' ' + item.lastName}}</td>
+
+
+                <td>{{item.dni}}</td>
+
+                <td class=""> {{ item.status ? 'Activo': 'Inactivo'}} </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div class="alert alert-warning" *ngIf="listData.length <1">
+        <p>No hay docentes registrados</p>
+    </div>
+    <!-- </div> -->
+
+
+
+
+
+</div>
+<div class="modal-footer justify-content-between">
+
+    <span>Seleccionados {{listSelected.length}}</span>
+    <div>
+        <button type="button" class="btn btn-secondary me-1" (click)="modal.close('Close click')">Cerrar</button>
+        <button type="button" 
+        class="btn btn-primary" 
+        [disabled]="listSelected.length < 1"
+        (click)="asignar()">Asignar</button>
+
+    </div>
+
+</div>
+

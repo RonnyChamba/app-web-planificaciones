@@ -16,7 +16,7 @@ export class WeekService  implements OnInit{
 
 
   saveWeek(week: WeekModelBase){
-    console.log('saveWeek', week);
+    // console.log('saveWeek', week);
 
     // const tareasRef = this.afs.firestore().collection('tareas');
 
@@ -26,7 +26,7 @@ export class WeekService  implements OnInit{
 
 
   findWeeksByCourseId(courseId: string) {
-    console.log('findWeeksByCourseId', courseId);
+    // console.log('findWeeksByCourseId', courseId);
     // return this.afs.collection(COLLECTION_NAME, ref => ref.where('course', '==', courseId)).get();
 
     return this.afs.collection(COLLECTION_NAME, ref => ref.where('course', '==', courseId).orderBy('timestamp', 'asc')  ).get();

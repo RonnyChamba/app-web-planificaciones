@@ -1,0 +1,69 @@
+<div class="sidebar" [ngClass]="{'close': flagClose, '': !flagClose}" > 
+    <div class="logo-details">
+      <!-- <i class="bx bxl-c-plus-plus"></i> -->
+      <!-- <span class="logo_name" >U.E DR.  LUIS AVEIGA BARBER&Aacute;N</span> -->
+      <span class="logo_name" >U.E DR. LUIS AVEIGA B.</span>
+    </div>
+    <ul class="nav-links">
+      
+      
+      <li>
+        <a href="#" [routerLink]="['/perfil']" >
+          <!-- <i class="bx bx-grid-alt"></i> -->
+          <i class="fa-solid fa-user"></i>
+          <span class="link_name">{{menuOptions.get('PROFILE')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['/perfil']" >{{menuOptions.get('PROFILE')}}</a></li>
+        </ul>
+      </li>
+      
+      <li>
+        <a href="#" [routerLink]="['']" >
+          <!-- <i class="bx bx-grid-alt"></i> -->
+          <i class="fa-solid fa-book"></i>
+          <span class="link_name">{{menuOptions.get('HOME')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['']" >{{menuOptions.get('HOME')}}</a></li>
+        </ul>
+      </li>
+
+      <li *ngIf="isAdmin">
+        <a href="#" [routerLink]="['/docentes']">
+          
+            <i class="fa-solid fa-chalkboard-user"></i>
+          <span class="link_name">{{menuOptions.get('DOCENTES')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['/docentes']" >{{menuOptions.get('DOCENTES')}}</a></li>
+        </ul>
+      </li>
+
+      <li >
+        <a href="#" [routerLink]="['/informacion']">
+          
+            <!-- <i class="fa-solid fa-chalkboard-user"></i> -->
+            <i class="fa-solid fa-circle-info"></i>
+          <span class="link_name">{{menuOptions.get('ABOUT')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['/informacion']" >{{menuOptions.get('ABOUT')}}</a></li>
+        </ul>
+      </li>
+<!--     
+      <li>
+        <div class="profile-details">
+          <div class="profile-content">
+      
+          </div>
+          <div class="name-job">
+            <div class="profile_name">Ronny Chamba</div>
+            <div class="job">Software Developer</div>
+          </div>
+      
+        </div>
+      </li> -->
+    </ul>
+  </div>
+  
