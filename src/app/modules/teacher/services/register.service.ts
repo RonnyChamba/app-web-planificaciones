@@ -62,7 +62,7 @@ export class RegisterService  implements OnInit{
   findAllTeachers(): Observable<any> {
     return this.firestore.collection(COLLECTION_NAME).get();
   }
-
+  
   updateTeacher(teacher: ModelTeacher): Promise<any> {
     return this.firestore.collection(COLLECTION_NAME).doc(teacher.dni).update(teacher);
   }

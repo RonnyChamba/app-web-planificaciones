@@ -10,6 +10,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CourseModel } from '../../models/course.model';
 import { WeekModelBase } from '../../models/week.model';
 import * as dayjs from 'dayjs';
+import { TokenService } from 'src/app/modules/auth/services/token.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-form-course',
@@ -30,7 +32,10 @@ export class FormCourseComponent implements OnInit {
     private teacherService: RegisterService,
     private courseService: CourseService,
     private weekService: WeekService,
-    public modal: NgbActiveModal,) { }
+    public modal: NgbActiveModal,
+    private tokenService: TokenService,
+
+    ) { }
 
   ngOnInit(): void {
 
@@ -86,9 +91,27 @@ export class FormCourseComponent implements OnInit {
 
   onSubmit() {
 
+
     // console.log(this.formGroup.value);
     if (this.formGroup.valid) {
 
+
+      // console.log(this.tokenService.getCurrentPeriodo());
+
+      const periodo = JSON.parse(this.tokenService.getCurrentPeriodo() as string);
+  
+      console.log(periodo);
+  
+      if (!periodo) {
+        
+        Swal.fire({
+          icon: 'info',
+          title: 'Oops...',
+          text: 'No se ha seleccionado un periodo académico actual, por favor seleccione uno',
+        });
+
+        return;
+      }
 
       try {
 
@@ -120,6 +143,7 @@ export class FormCourseComponent implements OnInit {
                 };
               }
 
+              course.periodo = periodo.id;
 
               const resp = await this.courseService.saveCourse(course);
               console.log(resp, resp.id);

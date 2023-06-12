@@ -7,6 +7,7 @@ import { LoginService } from 'src/app/modules/auth/services/login.service';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
 import { ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
 import { MIN_CEDULA, MIN_NAME, MAX_NAME, MIN_PASSWORD, MAX_PASSWORD, MAX_EMAIL, MAX_TELEPHONE } from 'src/app/util/constantes-values';
 import { validatorDni } from 'src/app/util/group-validacion';
 import { validMessagesError } from 'src/app/util/mensajes-validacion';
@@ -30,14 +31,17 @@ export class PersonalInfoComponent implements OnInit {
     private registerService: RegisterService,
     private tokenService: TokenService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private messageService: MensajesServiceService
   ) { }
 
   ngOnInit() {
+    this.messageService.loading(true, "Cargando datos");
     this.createForm();
     this.upperCase();
     this.setStatusControlsWhenActionIsUpdate();
     this.setDataWhenActionIsUpdate();
+    this.messageService.loading(false);
 
 
   }
@@ -112,6 +116,7 @@ export class PersonalInfoComponent implements OnInit {
               console.log(error);
               this.toastr.error('Surgio un error, intentelo más tarde', 'Error', { timeOut: 3000, });
 
+              this.messageService.loading(false);
               return of(null);
             }
             )

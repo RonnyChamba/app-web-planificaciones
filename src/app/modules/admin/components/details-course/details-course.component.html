@@ -85,12 +85,13 @@
                         </h4>
                         <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
 
-                        <div *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)">
+                        <!-- && teacherAlreadyUploadPlanification(plani.uid) -->
+                        <div *ngIf="!isAdmin">
 
-                            <span (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')" class="me-3"
+                            <!-- <span (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')" class="me-3"
                                 style="text-decoration: underline; cursor: pointer;">
                                 <i class="fa-solid fa-file-arrow-down"></i> 
-                            </span>
+                            </span> -->
                             <span  
                             style="text-decoration: underline; cursor: pointer;"
                             (click)="viewDetailPani(plani)">
@@ -111,12 +112,16 @@
                     <!-- <button class="btn btn-success" (click)="uploadFilePlanification(i)">Subir</button> -->
 
 
-                    <a *ngIf="!isAdmin && !teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-primary"
+                    <!-- && !teacherAlreadyUploadPlanification(plani.uid)" -->
+                    <button *ngIf="!isAdmin"  class="btn btn-primary"
                         data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
-                        role="button" (click)="uploadFilePlanification(i)">Subir</a>
+                        role="button" 
+                        (click)="uploadFilePlanification(i)"
+                       [disabled]="teacherAlreadyUploadPlanification(plani.uid)"
+                        >Subir</button>
 
-                    <a *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-danger"
-                        role="button" (click)="deleteOrDownloadPlanification(plani.uid, 'DELETE')">ELIMINAR</a>
+                    <!-- <a *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-danger"
+                        role="button" (click)="deleteOrDownloadPlanification(plani.uid, 'DELETE')">ELIMINAR</a> -->
                 </div>
 
 

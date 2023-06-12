@@ -40,6 +40,19 @@
         </ul>
       </li>
 
+      <li  *ngIf="isAdmin">
+        <a href="#" [routerLink]="['/periodos']">
+          
+            <!-- <i class="fa-solid fa-chalkboard-user"></i> -->
+            <!-- <i class="fa-solid fa-circle-info"></i> -->
+            <i class="fa-solid fa-calendar"></i>
+          <span class="link_name">{{menuOptions.get('PERIODOS')}}</span>
+        </a>
+        <ul class="sub-menu blank">
+          <li><a class="link_name" href="#" [routerLink]="['/periodos']" >{{menuOptions.get('PERIODOS')}}</a></li>
+        </ul>
+      </li>
+
       <li >
         <a href="#" [routerLink]="['/informacion']">
           

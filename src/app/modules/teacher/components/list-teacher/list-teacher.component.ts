@@ -7,6 +7,7 @@ import { UtilDetailsService } from 'src/app/modules/admin/services/util-details.
 import { LoginService } from 'src/app/modules/auth/services/login.service';
 import Swal from 'sweetalert2';
 import { FormControl } from '@angular/forms';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
 
 @Component({
   selector: 'app-list-teacher',
@@ -25,9 +26,8 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
   constructor(
     private teacherService: RegisterService,
     private toaster: ToastrService,
-    private loginService: LoginService
-
-
+    private loginService: LoginService,
+    private messageService: MensajesServiceService
   ) { }
 
 
@@ -69,6 +69,7 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
   findAllTeachers() {
 
+    this.messageService.loading(true, 'Cargando docentes');
     this.subscription = this.teacherService.findAllTeachersOnChanges()
       .pipe(
         tap( async ( data) => {
@@ -90,10 +91,12 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
           });
 
           this.listDataFilter = this.listData;
+          this.messageService.loading(false);
         })
         ,
         catchError(err => {
           console.log(err);
+          this.messageService.loading(false);
           this.toaster.error('Error al cargar los docentes', 'Error');
           // return [];
           return of(null);

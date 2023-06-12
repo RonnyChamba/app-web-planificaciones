@@ -11,6 +11,8 @@ import { AuthCredential } from '../models/auth.model';
 import { ModelTeacher } from '../../teacher/models/teacher';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ResetPasswordComponent } from '../components/reset-password/reset-password.component';
+import Swal from 'sweetalert2';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +31,8 @@ export class LoginComponent implements OnInit {
     private tokenService: TokenService,
     private registerService: RegisterService,
     private router: Router,
-    private modal: NgbModal
+    private modal: NgbModal,
+    private mensajeService: MensajesServiceService
     ) { }
 
   ngOnInit(): void {
@@ -50,6 +53,8 @@ export class LoginComponent implements OnInit {
   async onSubmit() {
 
     // console.log(this.formGroup.value);
+
+    this.mensajeService.loading(true, "Verificando credenciales");
 
     if (this.formGroup.valid) {
 
@@ -94,22 +99,22 @@ export class LoginComponent implements OnInit {
 
         this.tokenService.setToken(JSON.stringify(this.token));
 
-
+        // Si el usuario es admin se guarda la contraseña en el servicio para que pueda ser usada en el componente
+        // de crear usuario y poder loguearse  automaticamente
         if (teacherData.rol == 'ADMIN') {
           this.registerService.passwordSession = this.formGroup.value.password;
         }
-
-        
-
-        
         this.updateProfile(teacherData);
         // this.toastr.success('Bienvenido', 'Login');
+
+        this.mensajeService.loading(false);
 
         this.router.navigate(['/']);
 
 
       } catch (error) {
         this.tokenService.clearLocalStorage();
+        this.mensajeService.loading(false);
         this.toastr.error('Error de credenciales', 'Login');
 
       }

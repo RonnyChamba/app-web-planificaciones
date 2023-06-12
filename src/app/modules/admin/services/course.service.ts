@@ -25,13 +25,18 @@ export class CourseService implements OnInit {
   findCouseByNameAndParalelo(name: string, paralelo: string) {
     return this.afs.collection(COLLECTION_NAME, ref => ref.where('name', '==', name).where('parallel', '==', paralelo)).get();
   }
-
-
-
+  
   findAllCourses(): any {
 
     // snapshotChanges EMIte un evento cada vez que hay un cambio en la base de datos, HAY QUE TENER CUIDADO CON ESTO Y HACER UNSUBSCRIBE
     return this.afs.collection(COLLECTION_NAME).snapshotChanges();
+  }
+
+  
+  findAllCoursesByPeriodo(idPeriodo: string): any {
+
+    // snapshotChanges EMIte un evento cada vez que hay un cambio en la base de datos, HAY QUE TENER CUIDADO CON ESTO Y HACER UNSUBSCRIBE
+    return this.afs.collection(COLLECTION_NAME, ref => ref.where('periodo', '==', idPeriodo)).snapshotChanges();
   }
   
   findCourseById(uid: string) {

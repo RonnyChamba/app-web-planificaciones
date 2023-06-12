@@ -7,6 +7,10 @@ import { ReviewNoteComponent } from '../review-note/review-note.component';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { ToastrService } from 'ngx-toastr';
 import { UploadFileService } from 'src/app/services/upload-file.service';
+import { ListPlaniTeacherComponent } from '../list-plani-teacher/list-plani-teacher.component';
+import { PlanificationService } from '../../services/planification.service';
+import Swal from 'sweetalert2';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
 
 @Component({
   selector: 'app-review-list',
@@ -28,24 +32,24 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     private modal: NgbModal,
     private utilDetailsService: UtilDetailsService,
     private uploadFileService: UploadFileService,
-    private toaster: ToastrService
+    private planificationService: PlanificationService,
+    private toaster: ToastrService,
+    private messageService: MensajesServiceService
   ) { }
 
   ngOnInit() {
+
     this.getDetailsPlanification();
 
     // this.addSubscription();
   }
 
   ngOnDestroy(): void {
-
-
-
     this.subcription.unsubscribe();
   }
   getDetailsPlanification() {
 
-  this.subcription =     this.reviewService.findDetailsPlanificationByUid(this.planificationModel.uid as string)
+    this.subcription = this.reviewService.findDetailsPlanificationByUid(this.planificationModel.uid as string)
       .pipe(
 
         tap(details => {
@@ -63,20 +67,33 @@ export class ReviewListComponent implements OnInit, OnDestroy {
 
           details.forEach(doc => {
 
-            const data = doc.payload.doc.data()  as DetailsPlanification;
-            data.uid =  doc.payload.doc.id;
+            const data = doc.payload.doc.data() as DetailsPlanification;
+            data.uid = doc.payload.doc.id;
             // const id = doc.id;
 
             // console.log(doc.id, '=>', doc.data());
             // console.log(data);
             // console.log(id);
+            console.log(data);
 
             this.listDetailsPlanification.push(data);
+            // console.log(this.listDetailsPlanification);
 
           })
 
+          // cuando entra al componente padre de este componente(osea la page)  se muestra el mensaje de cargando
+          Swal.close();
+
         }),
-        catchError(error => of(`Error : ${error}`))
+        catchError(error => {
+
+          // cuando entra al componente padre de este componente(osea la page)  se muestra el mensaje de cargando
+          Swal.close();
+          this.toaster.error('Error al cargar los detalles de la planificación');
+          return of(`Error : ${error}`)
+        }
+
+        )
 
       ).subscribe();
   }
@@ -102,31 +119,69 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     // console.log(resource);
 
     try {
-     
+
       const resp = await this.uploadFileService.dowloadFile(resource);
 
     } catch (error) {
-    
+
       this.toaster.error('Error al descargar el archivo');
     }
   }
+  /**
+   * 
+   * @param event 
+   * @param itemDetails 
+   */
+  async onChangeStatus(event: any, itemDetails: any) {
 
-  async onChangeStatus(  event: any,   itemDetails: any) {
-  
-    
-    const uid = itemDetails.uid;
-    const status = event.target.checked;
-    // console.log(uid);
 
-    try {
+    this.messageService.loading(true, "Actualizando estado ...");
+
+    // quiero que hagas un pausa de medio segundo con setTimeout
+     setTimeout( async () => {
+   
+      try {
+        console.log(this.planificationModel);
+        // return;
+        const uid = itemDetails.uid;
+        const status = event.target.checked;
+        // console.log(uid);
   
-       await this.reviewService.updateStatus(uid, status);
-       this.toaster.info('Se actualizo el estado correctamente');
-    } catch (error) {
-      
-      this.toaster.error('Error al actualizar el estado');
-    }
+        // actualizar el estado en la tabla detils_planificacion
+        await this.reviewService.updateStatus(uid, status);
+  
+        // actualizar el estado en la tabla planification del campo details_planification del item seleccionado
+        await this.planificationService.updateStatusDetailsPlanification(this.planificationModel.uid as string, uid, status);
+  
+        this.messageService.loading(false);
+        this.toaster.info('Se actualizo el estado correctamente');
+      } catch (error) {
+  
+        this.messageService.loading(false);
+        this.toaster.error('Error al actualizar el estado');
+      }
+
+    }, 500);
+
+
+
+
     
-    
+
+
+   
+  }
+
+  openDetails(itemDetails: any) {
+
+    const ref = this.modal.open(ListPlaniTeacherComponent,
+      {
+        size: 'xl',
+        scrollable: true,
+        backdrop: 'static',
+        keyboard: false,
+      });
+
+    ref.componentInstance.uidDetailPlanification = itemDetails.uid;
   }
 }

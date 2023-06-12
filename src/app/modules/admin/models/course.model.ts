@@ -7,6 +7,7 @@ export interface CourseModel {
     parallel: string;
     // sera un objeto  con los datos del profesor, fullName y su uid
     tutor?: any;
+    periodo?: string;
 }
 
 

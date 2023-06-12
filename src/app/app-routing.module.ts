@@ -9,6 +9,7 @@ import { ProfileComponent } from './modules/profile/page/profile.component';
 import { InformationComponent } from './modules/information/page/information.component';
 import { GuardAccessGuard } from './guards/guard-access.guard';
 import { GuardLoginGuard } from './guards/guard-login.guard';
+import { PeriodoComponent } from './modules/periodo/page/periodo/periodo.component';
 
 const routes: Routes = [
 
@@ -41,6 +42,12 @@ const routes: Routes = [
     canActivate: [GuardAccessGuard],
     data: { expectedRol: ['admin', 'user'] }
 
+  },
+  {
+    path: "periodos", component: PeriodoComponent,
+    title: 'Planificaciones | Periodos ',
+    canActivate: [GuardAccessGuard],
+    data: { expectedRol: ['admin'] }
   },
   {
     path: "informacion", component: InformationComponent,

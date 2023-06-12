@@ -12,6 +12,10 @@
           </div>
         </div>
       </div>
+      
+      <div class="col col-12 alert alert-warning"  *ngIf="courses && courses.length<1">
+        No hay cursos registrados para el periodo acad&eacute;mico seleccionado.
+      </div>
 
  
       <!-- More cards here -->

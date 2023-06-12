@@ -1,0 +1,55 @@
+<div class="mt-2">
+
+    <div class="card">
+
+        <div class="card-header d-flex  align-items-center justify-content-between ">
+            <!-- <h5>Lista de Periodos</h5>
+            <input type="text" 
+            class="form-control" 
+            placeholder="Buscar"  
+            [formControl]="searchValue"
+                        name="searchTerm" 
+            style="max-width: 350px;" /> -->
+        </div>
+
+        <div class="card-body">
+            <table class="table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nro</th>
+                        <th>Titulo</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <!-- <th>Actual</th> -->
+                        <!-- <th>Descripci&oacute;n</th> -->
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+                                    
+                    <tr *ngFor="let item of data; index as i">
+
+                        <td>{{i+1}}</td>
+                        <td>{{item.title?? ""}}</td>
+                        <td>{{item.dateBegin??""}}</td>
+                        <td>{{item.dateEnd??""}}</td>
+
+                        <!-- <td [ngClass]="{'text-success': item.current, 'text-info': !item.current}"> {{ item.current? 'Si': 'No'}} </td> -->
+                        <td class="text-end">
+
+                            <button class="btn btn-warning p-1"  (click)="editar(item)" ><i class="fa-solid fa-user-xmark" style="font-size: 1rem;"></i> </button>
+                            <button class="btn btn-danger p-1"  (click)="delete(item)" ><i class="fa-solid fa-user-xmark" style="font-size: 1rem;"></i> </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div class="alert alert-warning" *ngIf="data.length <1">
+                <p>No hay periodos acad&eacute;micos registrados</p>
+            </div>
+        </div>
+    </div>

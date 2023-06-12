@@ -36,6 +36,7 @@ export class SidebarComponent  implements OnInit {
     this.menuOptions.set("DOCENTES", "Docentes");
     this.menuOptions.set("PROFILE", "Perfil");
     this.menuOptions.set("ABOUT", "Información");
+    this.menuOptions.set("PERIODOS", "Periodos Académicos");
   }
 
 

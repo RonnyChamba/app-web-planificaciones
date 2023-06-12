@@ -43,6 +43,10 @@ import { PersonalInfoComponent } from './modules/profile/components/personal-inf
 import { InformationComponent } from './modules/information/page/information.component';
 import { ChangePasswordComponent } from './modules/auth/components/change-password/change-password.component';
 import { ViewDetailComponent } from './modules/admin/components/details-course/components/view-detail/view-detail.component';
+import { RegisterPeriodosComponent } from './modules/periodo/components/register-periodos/register-periodos.component';
+import { ListPeriodosComponent } from './modules/periodo/components/list-periodos/list-periodos.component';
+import { PeriodoComponent } from './modules/periodo/page/periodo/periodo.component';
+import { ListPlaniTeacherComponent } from './modules/admin/components/list-plani-teacher/list-plani-teacher.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +80,11 @@ import { ViewDetailComponent } from './modules/admin/components/details-course/c
     PersonalInfoComponent,
     InformationComponent,
     ChangePasswordComponent,
-    ViewDetailComponent
+    ViewDetailComponent,
+    RegisterPeriodosComponent,
+    ListPeriodosComponent,
+    PeriodoComponent,
+    ListPlaniTeacherComponent
   ],
   imports: [
     BrowserModule,
