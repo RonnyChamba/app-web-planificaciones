@@ -153,58 +153,24 @@ export class FormPlanificationComponent implements OnInit {
 
   async onSubmit() {
 
-    console.log(this.files);
-
-    // show loader by upload files
-    // this.loading = true;
-
-
-    // upload files
-
     if (this.dataInput.action == 'EDIT') {
-
       this.deleteWhenEdit();
     }
-
-
-
-
     const resources = await this.onUpload();
-
-    console.log(resources);
-
-
     if (resources) this.formGroup.value.resource = resources;
 
-    // estos campos se llenan automaticamente, sin embargo cuando es una edición se debe mantener el valor actual,
-    // por ende cuando se actualiza no son tomados en cuenta
     const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
     this.formGroup.value.dateCreated = dateCurrent
     this.formGroup.value.timestamp = Date.now();
     this.formGroup.value.status = this.formGroup.value.status === "true" ? true : false;
-
-    
-
-
-    // this.formGroup.value.weeeks =  this.weekModel.uid;
-
-    console.log(this.formGroup.value);
-
-    // validate form before submit
-
     if (this.formGroup.valid) {
 
       try {
 
-
         if(this.dataInput.action == 'EDIT'){
-      
          await this.updatePlanification();
           return;
         } 
-
-
-        // return;
         const resp = await this.planiService.savePlanification(this.formGroup.value);
         this.toastr.success('Planificación creada correctamente', 'Planificación');
         this.modal.close('ok');
@@ -217,12 +183,10 @@ export class FormPlanificationComponent implements OnInit {
       } catch (error) {
         this.toastr.error('Error al crear la planificación', 'Planificación');
 
-
       }
     } else {
       this.toastr.error('Formulario no válido', 'Planificación');
     }
-
 
   }
 

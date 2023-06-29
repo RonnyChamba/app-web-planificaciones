@@ -82,8 +82,8 @@ export class FormCourseComponent implements OnInit {
 
   createForm() {
     this.formGroup = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
-      parallel: new FormControl('', [Validators.required]),
+      name: new FormControl(null, [Validators.required, Validators.minLength(5),Validators.maxLength(25)]),
+      parallel: new FormControl('', [Validators.required, Validators.minLength(1),Validators.maxLength(1)]),
       tutor: new FormControl('', []),
     });
   }

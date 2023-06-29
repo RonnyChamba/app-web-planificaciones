@@ -137,17 +137,16 @@ export class ReviewListComponent implements OnInit, OnDestroy {
 
     this.messageService.loading(true, "Actualizando estado ...");
 
-    // quiero que hagas un pausa de medio segundo con setTimeout
+    // hacer una pausa de medio segundo
      setTimeout( async () => {
    
       try {
         console.log(this.planificationModel);
-        // return;
+
         const uid = itemDetails.uid;
         const status = event.target.checked;
-        // console.log(uid);
   
-        // actualizar el estado en la tabla detils_planificacion
+        // actualizar el estado en la tabla details_planificacion
         await this.reviewService.updateStatus(uid, status);
   
         // actualizar el estado en la tabla planification del campo details_planification del item seleccionado
@@ -162,14 +161,6 @@ export class ReviewListComponent implements OnInit, OnDestroy {
       }
 
     }, 500);
-
-
-
-
-    
-
-
-   
   }
 
   openDetails(itemDetails: any) {

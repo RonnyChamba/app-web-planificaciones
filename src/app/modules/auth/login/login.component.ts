@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from '../services/login.service';
 import { ToastrService } from 'ngx-toastr';
 import { validMessagesError } from 'src/app/util/mensajes-validacion';
-import { MAX_EMAIL, MIN_EMAIL } from 'src/app/util/constantes-values';
+import { MAX_EMAIL, MAX_PASSWORD, MIN_EMAIL, MIN_PASSWORD } from 'src/app/util/constantes-values';
 import { Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 import { RegisterService } from '../../teacher/services/register.service';
@@ -33,19 +33,46 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private modal: NgbModal,
     private mensajeService: MensajesServiceService
-    ) { }
+  ) { }
 
   ngOnInit(): void {
 
     this.createForm();
-
+    this.onValidField();
   }
 
   createForm() {
     this.formGroup = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$'), Validators.maxLength(MAX_EMAIL)],),
-      password: new FormControl('', [Validators.required, Validators.minLength(MIN_EMAIL)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(MIN_PASSWORD), Validators.maxLength(MAX_PASSWORD)]),
     });
+
+  }
+
+  private onValidField() {
+
+    // limita los espacios en blanco
+    this.formGroup.controls['email'].valueChanges.subscribe((value) => {
+      if (value) {
+
+        const email = value.trim();
+        this.formGroup.controls['email'].setValue(email, { emitEvent: false });
+
+    
+      }
+    }
+    );
+    this.formGroup.controls['password'].valueChanges.subscribe((value) => {
+
+      if (value) {
+
+        const password = value.trim();
+        
+        this.formGroup.controls['password'].setValue(password, { emitEvent: false });
+      }
+    }
+    );
+
 
   }
 
@@ -62,12 +89,12 @@ export class LoginComponent implements OnInit {
 
 
         const res = await this.loginService.login(this.formGroup.value.email, this.formGroup.value.password);
-        
+
         // Obtener los roles del usuario
-        const  teacher = this.registerService.findTeacherById(res.user?.uid!);
+        const teacher = this.registerService.findTeacherById(res.user?.uid!);
 
         let teacherData: ModelTeacher | undefined;
-        
+
         await teacher.forEach(async (resp) => {
 
           if (resp.exists) {
@@ -85,7 +112,7 @@ export class LoginComponent implements OnInit {
 
         // usuario no existe en la base de datos
         if (!teacherData) {
-        
+
           await this.errorLogin("Error de credenciales");
           return;
         }
@@ -130,7 +157,7 @@ export class LoginComponent implements OnInit {
   async updateProfile(teacherData: ModelTeacher) {
 
     const user = await this.loginService.getUserCurrent();
-  
+
     console.log(user);
     if (user) {
       console.log(user.displayName);
@@ -151,22 +178,22 @@ export class LoginComponent implements OnInit {
   }
 
   async errorLogin(error: string) {
-  
-       // Si no existe el usuario en la base de datos se cierra la sesión que fue abierta
-       await this.loginService.logOut();
-       this.tokenService.clearLocalStorage();
-       this.toastr.error(error, 'Login');
-       this.registerService.passwordSession = '';
-       this.router.navigate(['/auth']);
+
+    // Si no existe el usuario en la base de datos se cierra la sesión que fue abierta
+    await this.loginService.logOut();
+    this.tokenService.clearLocalStorage();
+    this.toastr.error(error, 'Login');
+    this.registerService.passwordSession = '';
+    this.router.navigate(['/auth']);
   }
 
-  resetPassword(){
+  resetPassword() {
 
     // alert("Se envio un correo para restablecer la contraseña");
 
-    this.modal.open( ResetPasswordComponent, { size: 'md' });
+    this.modal.open(ResetPasswordComponent, { size: 'md' });
 
-    
+
 
   }
 }

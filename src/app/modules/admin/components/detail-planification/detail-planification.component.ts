@@ -96,21 +96,6 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
 
   async uploadFile() {
 
-    // console.log("uploadFile", this.file);
-    // console.log("uploadFile", this.file?.name);
-
-
-    console.log(this.planification);
-
-    // return  "hola";
-    /**
-     * verificar si  este nuevo registro es el primero de la planificación, osea si no tiene detalles,
-     * si es asi, no tiene el campo details_planification, entonces se crea el campo details_planification
-     * o si tiene el campo details_planification, pero no tiene ningun detalle, entonces se crea el campo details_planification
-     * 
-     */
-
-
     if (this.file && this.file?.size > 0) {
 
       if (this.validFile()) {
@@ -123,7 +108,6 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
           const user = await this.loginService.getUserCurrent();
 
           const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
-
 
           /**
            * Si a la planificacion actual ya se le ah subido un archivos, entonces ahora hay que actualizar el campo items en 
@@ -144,7 +128,6 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
            * 
            */
 
-
           let isNew = (this.planification?.details_planification
             &&
             this.planification?.details_planification.length > 0);
@@ -155,8 +138,6 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
           }
 
           if (isNew) {
-
-
             // obtener el objeto que corresponde al usuario actual, es decir, el objeto que tiene el campo teacher_uid
             // igual al uid del usuario actual
             const dataDetails = this.planification?.details_planification?.find((item: DataDetails) => item.teacher_uid == user?.uid);
@@ -228,10 +209,6 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
         }
       }
     } else alert("No se ha seleccionado ningún archivo");
-
-
-
-
   }
 
   private validFile(): boolean {
