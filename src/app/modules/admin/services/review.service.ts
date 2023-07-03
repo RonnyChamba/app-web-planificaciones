@@ -1,5 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ReportService } from './report.service';
 
 const COLLECTION_NAME = 'details_planification';
 
@@ -9,7 +10,8 @@ const COLLECTION_NAME = 'details_planification';
 export class ReviewService implements OnInit {
 
 
-  constructor(private afs: AngularFirestore) { }
+  constructor(private afs: AngularFirestore,
+    private reporteService: ReportService) { }
 
   ngOnInit(): void {
   }
@@ -57,13 +59,13 @@ export class ReviewService implements OnInit {
   }
 
 
-/**
- * 
- * @param request  un objeto con la data a actualizar o guardar
- * @returns 
- */
+  /**
+   * 
+   * @param request  un objeto con la data a actualizar o guardar
+   * @returns 
+   */
   async updateItemsDetailsPlanification(
-   request: any) {
+    request: any) {
     // return;
     try {
       const planiDocRef = this.afs.collection(COLLECTION_NAME).doc(request.uid);
@@ -76,11 +78,17 @@ export class ReviewService implements OnInit {
         // Obtener el arreglo actual, se pasa el campo a leer 
         const items = userDoc.get('items') || [];
 
+        // Obtener el campo planificacion
+        const uidPlanification = userDoc.get('planification') || null;
+
+        console.log("uidPlanification transaction", uidPlanification);
+
         // Determinar si se va a agregar un nuevo item o actualizar un item existente
 
         if (request.operation == 'add') {
           // Agregar el nuevo elemento al arreglo
           items.push(request.data);
+
         } else {
           // obtener el indice del elemento a actualizar, la fecha son unicos, corresposden al momento en que 
           // se creo el item en la base de datos, por lo tanto se puede usar para identificar el item a actualizar
@@ -90,9 +98,11 @@ export class ReviewService implements OnInit {
           if (index !== -1) {
             // actualizar el item en el arreglo, solo se actualiza la observacion y el status
             items[index].observation = request.data.observation;
-            items[index].status =  request.data.status;
+            items[index].status = request.data.status;
           }
         }
+
+        const numeroItems = items.length || 0;
 
         //  const items = userDoc.data()?.details_planification || [];
 
@@ -101,6 +111,49 @@ export class ReviewService implements OnInit {
 
         // Actualizar el documento con el nuevo arreglo
         transaction.update(planiDocRef.ref, { items });
+
+
+        // actualizar en la collection reportes
+
+
+        // obtener el documento que se encuentra en la collection reportes que tiene el campo planification igual al uid de la planificacion
+
+      
+        this.reporteService.findDataReportByUidPlanificacion(uidPlanification  || "").subscribe((resp) => {
+
+          console.log("resp");
+          console.log(resp); 
+  
+          if (resp.docs.length > 0) {
+  
+            const data = resp.docs[0].data() as any;
+
+            data.uid = resp.docs[0].id;
+
+            
+
+            request.itemReport.countUpload = numeroItems;
+            request.itemReport.status = request.data.status;
+
+            this.reporteService.updateDetailsPlanificationStatusCountUploadReport(data.uid, request).then((resp) => {
+
+              console.log("resp updateDetailsPlanificationReporte", resp);
+              
+            }
+            ).catch((error) => {
+              console.log("error updateDetailsPlanificationReporte", error);
+              
+            }
+            );
+
+
+
+          }
+  
+        });
+
+
+        // ------------------------------ ----------------------------
 
       })
       return Promise.resolve(true);

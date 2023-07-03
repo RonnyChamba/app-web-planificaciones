@@ -32,6 +32,7 @@ export class ListCourseComponent implements OnInit, OnDestroy {
     private token: TokenService,
     private roter: Router,
     private utilService: UtilDetailsService,
+    private tokenService: TokenService,
     private messageService: MensajesServiceService) { }
 
   ngOnInit(): void {
@@ -102,9 +103,17 @@ export class ListCourseComponent implements OnInit, OnDestroy {
       ).subscribe();
   }
 
-  viewCourse(uid: string) {
+  viewCourse(course: any) {
     // console.log(uid);
-    this.roter.navigate(['/course', uid]);
+    this.roter.navigate(['/course', course.uid]);
+
+    
+    const courseFull = {
+      uid: course.uid,
+      name: `${course.name} ${course.parallel}`
+    }
+
+    this.tokenService.setCourse(courseFull);
   }
 
   async getTeacherCurrent(): Promise<any> {

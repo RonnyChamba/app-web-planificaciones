@@ -10,6 +10,7 @@ import { ReviewService } from '../../services/review.service';
 import * as dayjs from 'dayjs';
 import { PlanificationService } from '../../services/planification.service';
 import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
+import { ReportService } from '../../services/report.service';
 
 @Component({
   selector: 'app-detail-planification',
@@ -36,7 +37,8 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
     private uploadFileService: UploadFileService,
     private loginService: LoginService,
     private planificationService: PlanificationService,
-    private messageService: MensajesServiceService
+    private messageService: MensajesServiceService,
+    private reportService: ReportService
   ) { }
 
 
@@ -107,6 +109,8 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
           const resource = await this.uploadFileService.uploadFile(this.file);
           const user = await this.loginService.getUserCurrent();
 
+          const dateTime = Date.now();
+
           const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
           /**
@@ -123,22 +127,24 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
            * 3) De ese arreglo, obtener el objeto que corresponde al usuario actual, es decir, el objeto que tiene el campo teacher_uid 
            *   igual al uid del usuario actual
            * 
-           * 4) Si el objeto existe, entonces agregar una nuevo item al campo items de details_planification
+           * 4) Si el objeto existe, entonces agregar una nuevo item al campo items de la coleccion details_planification
            * 5) En caso que no existe el objeto, entonces crear un nuevo objeto con los campos details_uid, teacher_uid, status(hacer lo mismo que en el bloque else)
            * 
            */
 
+          // averigua si la planificacion actual ya tiene una details_planification subido por cualquier teacher
           let isNew = (this.planification?.details_planification
             &&
             this.planification?.details_planification.length > 0);
 
           if (isNew) {
+
             // averigua si el usuario actual ya subio un archivo en la planificacion actual
             isNew = this.planification?.details_planification?.some((item: DataDetails) => item.teacher_uid == user?.uid);
           }
 
           if (isNew) {
-            // obtener el objeto que corresponde al usuario actual, es decir, el objeto que tiene el campo teacher_uid
+            // obtener del arreglo details_planification el objeto que corresponde al usuario actual, es decir, el objeto que tiene el campo teacher_uid
             // igual al uid del usuario actual
             const dataDetails = this.planification?.details_planification?.find((item: DataDetails) => item.teacher_uid == user?.uid);
 
@@ -158,6 +164,19 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
                 uid: dataDetails?.details_uid,
                 operation: 'add',
                 data: newItem,
+
+                  // esto me sirve para actualizar en el campo details_planification del reporte, no se crea uno nuevo, se actualizar 
+                  // el countUpload nada maz, sin embargo paso el uid_teacher para saber que tiene se debe actualizar 
+                itemReport :  {
+                  dateCreated: dateCurrent,
+                  dateCreatedTime: dateTime,
+                  fullName: user?.displayName,
+                  status: false,
+                  uid_teacher: user?.uid,
+                }
+                
+              
+              
                });
 
             // cuando es la primera vez que cualquier teacher sube un archivo, el campo details_planification esta como  arreglo vacio o no existe
@@ -197,8 +216,62 @@ export class DetailPlanificationComponent implements OnInit, OnDestroy {
             await this.planificationService.updateDetailsPlanification(this.planification.uid as string, detailPlani);
 
             console.log("respose detalle", respose);
+
+            // --------------------- CREAR EN REPORTE ------------------------------
+
+            this.reportService.findDataReportByUidPlanificacion(this.planification.uid  || "").subscribe((resp) => {
+
+              console.log("resp");
+              console.log(resp); 
+      
+              if (resp.docs.length > 0) {
+      
+                const data = resp.docs[0].data() as any;
+
+                data.uid = resp.docs[0].id;
+                
+                // item del campo details_planificación de un documento en reporte
+                const  newItemDetailsPlanification = {
+                  countUpload: "1",
+                  dateCreated: dateCurrent,
+                  dateCreatedTime: dateTime,
+                  fullName: user?.displayName,
+                  status: false,
+                  uid_teacher: user?.uid,
+                }
+
+
+                this.reportService.updateDetailsPlanificationReporte(data.uid, newItemDetailsPlanification).then((resp) => {
+
+                  console.log("resp updateDetailsPlanificationReporte", resp);
+                  
+                }
+                ).catch((error) => {
+                  console.log("error updateDetailsPlanificationReporte", error);
+                  
+                }
+                );
+
+
+
+              }
+      
+            });
+
+          
+            // ------------------------------- FIN CREAR EN REPORTE ----------------------------
+
           }
 
+
+          // agregar un nuevo item en la tabla reportes correspondiente a la planificacion actuaal, en unos de los dcumentos de la tabla reportes
+          // busca el documetno donde el uidPLanification sea igual al uid de la planificacion actual
+
+
+
+
+
+          
           this.messageService.loading(false);
           this.toaster.success("Planificación subida correctamente");
 

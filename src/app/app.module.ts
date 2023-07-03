@@ -48,6 +48,7 @@ import { ListPeriodosComponent } from './modules/periodo/components/list-periodo
 import { PeriodoComponent } from './modules/periodo/page/periodo/periodo.component';
 import { ListPlaniTeacherComponent } from './modules/admin/components/list-plani-teacher/list-plani-teacher.component';
 import { ReportComponent } from './modules/report/page/report/report.component';
+import { FilterComponent } from './modules/report/components/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { ReportComponent } from './modules/report/page/report/report.component';
     ListPeriodosComponent,
     PeriodoComponent,
     ListPlaniTeacherComponent,
-    ReportComponent
+    ReportComponent,
+    FilterComponent
   ],
   imports: [
     BrowserModule,

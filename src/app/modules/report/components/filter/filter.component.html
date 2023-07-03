@@ -1,0 +1,95 @@
+<div>
+
+    <form action="" [formGroup]="formGroup" >
+        <div class="row">
+            <div class="mb-3 col-sm-4">
+                <label for="exampleFormControlInput1" class="form-label">Periodos</label>
+                <select class="form-select" 
+                formControlName="periodo"
+                style="max-width: 250px;">
+                <option [value]="item.id"  *ngFor="let item of periodos" >
+
+                    {{item.title}} ({{item.dateBegin}} - {{item.dateEnd}})
+                </option>
+                </select>
+            </div>
+
+            <div class="mb-3 col-sm-4">
+                <label for="exampleFormControlInput1" class="form-label">Cursos</label>
+                <select class="form-select" 
+                formControlName="curso"
+                style="max-width: 250px;">
+                <option [value]="item.uid"  *ngFor="let item of courses" >
+
+                    {{item.name}} {{item.parallel}} 
+                </option>
+                </select>
+            </div>
+            <div class="mb-3 col-sm-4">
+                <label for="exampleFormControlInput1" class="form-label">Docente</label>
+                <select class="form-select" 
+                formControlName="docente"
+                style="max-width: 250px;">
+                    <option value="">Todos</option>
+                    <option [value]="item.uid"  *ngFor="let item of teachers" >
+
+                        {{item.displayName}} {{item?.lastName}}
+                    </option>
+                </select>
+            </div>
+            <div class="my-3 col-12 text-center">
+                <button class="btn btn-danger"(click)="onClickedFilter()" >Generar Reporte</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mt-2">
+        <div class="card">
+    
+            <div class="card-header">
+                <h5>Lista de Docentes</h5>
+            </div>
+    
+            <div class="card-body">
+                <table class="table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nro</th>
+                            <th>Periodo</th>
+                            <th>Curso</th>
+                            <th>Docente</th>
+                            <th>Aprobadas</th>
+                            <th>No Aprobadas</th>
+                        </tr>
+                    </thead>
+    
+                    <!-- <tbody>
+                                        
+                        <tr *ngFor="let item of listDataFilter; index as i">
+    
+                            <td>{{i+1}}</td>
+                            <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
+    
+                            <td>{{item.displayName + ' ' + item.lastName}}</td>
+                    
+                            
+                            <td>{{item.dni}}</td>
+                            <td>{{item.phoneNumber}}</td>
+    
+                            <td> {{ item.titles}} </td>
+                            <td   class="" > {{ item.status ? 'Activo': 'Inactivo'}} </td>
+                
+    
+                        </tr>
+                    </tbody> -->
+                </table>
+    
+    
+                <!-- <div class="alert alert-warning" *ngIf="listData.length <1">
+                    <p>No hay docentes registrados</p>
+            </div> -->
+        </div>
+    </div>
+    
+
+</div>

@@ -11,6 +11,8 @@ import { ListPlaniTeacherComponent } from '../list-plani-teacher/list-plani-teac
 import { PlanificationService } from '../../services/planification.service';
 import Swal from 'sweetalert2';
 import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
+import { ReportService } from '../../services/report.service';
+import { TokenService } from 'src/app/modules/auth/services/token.service';
 
 @Component({
   selector: 'app-review-list',
@@ -34,7 +36,8 @@ export class ReviewListComponent implements OnInit, OnDestroy {
     private uploadFileService: UploadFileService,
     private planificationService: PlanificationService,
     private toaster: ToastrService,
-    private messageService: MensajesServiceService
+    private messageService: MensajesServiceService,
+    private reportService: ReportService
   ) { }
 
   ngOnInit() {
@@ -134,6 +137,10 @@ export class ReviewListComponent implements OnInit, OnDestroy {
    */
   async onChangeStatus(event: any, itemDetails: any) {
 
+    console.log(itemDetails);
+
+    // return;
+
 
     this.messageService.loading(true, "Actualizando estado ...");
 
@@ -151,6 +158,13 @@ export class ReviewListComponent implements OnInit, OnDestroy {
   
         // actualizar el estado en la tabla planification del campo details_planification del item seleccionado
         await this.planificationService.updateStatusDetailsPlanification(this.planificationModel.uid as string, uid, status);
+
+        // actualizar el estado en un  documentode reporte que pertenece a la planificación, buscar el item mediante el uid_teacher_actual
+
+        this.updateStatusPlanificationReport(status, itemDetails);
+
+
+
   
         this.messageService.loading(false);
         this.toaster.info('Se actualizo el estado correctamente');
@@ -174,5 +188,45 @@ export class ReviewListComponent implements OnInit, OnDestroy {
       });
 
     ref.componentInstance.uidDetailPlanification = itemDetails.uid;
+  }
+
+  private updateStatusPlanificationReport(status: boolean, itemDetails: any){
+
+
+    this.reportService.findDataReportByUidPlanificacion(this.planificationModel.uid  || "").subscribe((resp) => {
+
+      console.log("resp");
+      console.log(resp); 
+
+      if (resp.docs.length > 0) {
+
+        const data = resp.docs[0].data() as any;
+
+        data.uid = resp.docs[0].id;
+      
+        const  newStatus = {
+          uid_teacher: itemDetails.teacher.uid ||  "",
+          status
+        }
+        this.reportService.updateDetailsPlanificationStatusReport(data.uid, newStatus).then((resp) => {
+
+          console.log("resp updateDetailsPlanificationReporte", resp);
+          
+        }
+        ).catch((error) => {
+          console.log("error updateDetailsPlanificationReporte", error);
+          
+        }
+        );
+
+
+
+      }
+
+    });
+
+
+
+
   }
 }
