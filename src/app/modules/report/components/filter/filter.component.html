@@ -1,95 +1,92 @@
 <div>
 
-    <form action="" [formGroup]="formGroup" >
+    <form action="" [formGroup]="formGroup">
         <div class="row">
             <div class="mb-3 col-sm-4">
                 <label for="exampleFormControlInput1" class="form-label">Periodos</label>
-                <select class="form-select" 
-                formControlName="periodo"
-                style="max-width: 250px;">
-                <option [value]="item.id"  *ngFor="let item of periodos" >
+                <select class="form-select" formControlName="periodo" style="max-width: 250px;">
+                    <option [value]="item.id" *ngFor="let item of periodos">
 
-                    {{item.title}} ({{item.dateBegin}} - {{item.dateEnd}})
-                </option>
+                        {{item.title}} ({{item.dateBegin}} - {{item.dateEnd}})
+                    </option>
                 </select>
             </div>
 
             <div class="mb-3 col-sm-4">
                 <label for="exampleFormControlInput1" class="form-label">Cursos</label>
-                <select class="form-select" 
-                formControlName="curso"
-                style="max-width: 250px;">
-                <option [value]="item.uid"  *ngFor="let item of courses" >
+                <select class="form-select" formControlName="curso" style="max-width: 250px;">
 
-                    {{item.name}} {{item.parallel}} 
-                </option>
+                    <option value="">Todos</option>
+                    <option [value]="item.uid" *ngFor="let item of courses">
+
+                        {{item.name}} {{item.parallel}}
+                    </option>
                 </select>
             </div>
             <div class="mb-3 col-sm-4">
-                <label for="exampleFormControlInput1" class="form-label">Docente</label>
-                <select class="form-select" 
-                formControlName="docente"
-                style="max-width: 250px;">
+                <label for="exampleFormControlInput1" class="form-label">Trimestres</label>
+                <select class="form-select" formControlName="trimestre" style="max-width: 250px;">
                     <option value="">Todos</option>
-                    <option [value]="item.uid"  *ngFor="let item of teachers" >
-
-                        {{item.displayName}} {{item?.lastName}}
+                    <option [value]="item.id" *ngFor="let item of trimestres">
+                         {{item?.name}}
                     </option>
                 </select>
             </div>
             <div class="my-3 col-12 text-center">
-                <button class="btn btn-danger"(click)="onClickedFilter()" >Generar Reporte</button>
+                <button class="btn btn-success" (click)="onClickedFilter()">Consultar Datos</button>
+                
             </div>
         </div>
     </form>
 
     <div class="mt-2">
         <div class="card">
-    
-            <div class="card-header">
-                <h5>Lista de Docentes</h5>
+
+            <div class="card-header d-flex justify-content-between">
+                <h5>Lista de Planificaciones</h5>
+                <!-- <button class="btn btn-danger" (click)="generatePDF()">Generar PDF</button> -->
             </div>
-    
+
             <div class="card-body">
                 <table class="table">
                     <thead class="table-light">
                         <tr>
                             <th>Nro</th>
                             <th>Periodo</th>
+                            <th>Trimestre</th>
+                            <th>Planificación</th>
                             <th>Curso</th>
-                            <th>Docente</th>
+                            <th>#Docentes</th>
+                            <th>#Subidas</th>
                             <th>Aprobadas</th>
                             <th>No Aprobadas</th>
+                            <th>Operaciones</th>
                         </tr>
                     </thead>
-    
-                    <!-- <tbody>
-                                        
-                        <tr *ngFor="let item of listDataFilter; index as i">
-    
-                            <td>{{i+1}}</td>
-                            <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
-    
-                            <td>{{item.displayName + ' ' + item.lastName}}</td>
-                    
-                            
-                            <td>{{item.dni}}</td>
-                            <td>{{item.phoneNumber}}</td>
-    
-                            <td> {{ item.titles}} </td>
-                            <td   class="" > {{ item.status ? 'Activo': 'Inactivo'}} </td>
-                
-    
-                        </tr>
-                    </tbody> -->
-                </table>
-    
-    
-                <!-- <div class="alert alert-warning" *ngIf="listData.length <1">
-                    <p>No hay docentes registrados</p>
-            </div> -->
-        </div>
-    </div>
-    
 
-</div>
+                    <tbody>
+
+                        <tr *ngFor="let item of dataList; index as i">
+
+                            <td>{{i+1}}</td>
+                            <td> {{item.descriptionPerido}} </td>
+                            <td> {{item.descriptionTrimestre}} </td>
+                            <td>{{item.titlePlanification}}</td>
+                            <td>{{item.descriptionCurso}}</td>
+                            <td>{{item.details_planification? item.details_planification.length: 0}}</td>
+                            <td>{{item.details_planification|countUploadPlanification:'countUpload'}}</td>
+                            <td>{{item.details_planification|countUploadPlanification:'countSuccess'}}</td>
+                            <td>{{item.details_planification|countUploadPlanification:'countWrong'}}</td>
+                            <td  > <button class="btn btn-info" (click) ="viewTeacherAlreadyUpload(item)" >Ver Docentes</button> </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+    
+        </div>
+
+
+    </div>

@@ -23,7 +23,7 @@ import { NavbaComponent } from './components/navba/navba.component';
 import { ListCourseComponent } from './modules/admin/components/list-course/list-course.component';
 import { CourseComponent } from './modules/admin/page/course/course.component';
 import { DetailsCourseComponent } from './modules/admin/components/details-course/details-course.component';
-import { FormatDatePipe, TrimText } from './modules/pipes/format-date.pipe';
+import { CountUploadPlanification, FormatDatePipe, TrimText } from './modules/pipes/format-date.pipe';
 import { WeekComponent } from './modules/admin/components/week/week.component';
 import { DetailPlanificationComponent } from './modules/admin/components/detail-planification/detail-planification.component';
 import { ReviewComponent } from './modules/admin/page/review/review.component';
@@ -49,6 +49,7 @@ import { PeriodoComponent } from './modules/periodo/page/periodo/periodo.compone
 import { ListPlaniTeacherComponent } from './modules/admin/components/list-plani-teacher/list-plani-teacher.component';
 import { ReportComponent } from './modules/report/page/report/report.component';
 import { FilterComponent } from './modules/report/components/filter/filter.component';
+import { ViewDetailReportComponent } from './modules/report/components/view-detail-report/view-detail-report.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,9 @@ import { FilterComponent } from './modules/report/components/filter/filter.compo
     PeriodoComponent,
     ListPlaniTeacherComponent,
     ReportComponent,
-    FilterComponent
+    FilterComponent,
+    CountUploadPlanification,
+    ViewDetailReportComponent
   ],
   imports: [
     BrowserModule,

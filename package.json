@@ -23,6 +23,7 @@
     "bootstrap": "^5.2.3",
     "dayjs": "^1.11.7",
     "firebase": "^9.19.1",
+    "jspdf": "^2.5.1",
     "ngx-toastr": "^16.1.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.7.5",

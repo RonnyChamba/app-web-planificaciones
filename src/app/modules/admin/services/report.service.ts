@@ -195,4 +195,8 @@ async updateDetailsPlanificationStatusReport(reporIde: string, data: any) {
 }
 
 
+findAllReportByPeriodo(periodoId: string) {
+  return this.afs.collection(COLLECTION_NAME_REPORT, ref => ref.where('uidPeriodo', '==', periodoId)).get();
+
+}
 }
