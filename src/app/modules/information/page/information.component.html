@@ -1,16 +1,46 @@
-<app-sidebar class="nav-component"  [ngClass]="{ close: flagClose, '': !flagClose }" [open]="flagClose"> </app-sidebar>
+<app-sidebar
+  class="nav-component"
+  [ngClass]="{ close: flagClose, '': !flagClose }"
+  [open]="flagClose"
+>
+</app-sidebar>
 
 <section class="home-section">
-    
-    <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
-    <div class="home-body">
-        <div class="home-content p-3">
-            <!-- <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button> -->
-            
-            <!-- <app-personal-info></app-personal-info> -->
-    
-        </div>
-    </div>
+  <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
+  <div class="home-body">
+    <div class="home-content p-3">
+      <!-- <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button> -->
 
+      <!-- <app-personal-info></app-personal-info> -->
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Misi&oacute;n</h3>
+        </div>
+        <div class="card-body">
+          <p>
+            Unidad Educativa “Dr. Luis Aveiga Barberán” Misión “Somos una
+            institución educativa pionera, con la responsabilidad de dar una
+            formación integral, innovadora, creativa, con pensamiento crítico;
+            capaz de trabajar en equipo con la comunidad, respetando el entorno
+            natural y social; para dar respuesta a las necesidades del mundo
+            contemporáneo”.
+          </p>
+        </div>
+      </div>
+
+      <div class="card mt-5" >
+        <div class="card-header">
+          <h3>Visi&oacute;n</h3>
+        </div>
+        <div class="card-body">
+          <p>
+            “Ser una institución con autenticidad pedagógica, con docentes altamente capacitados, 
+            estudiantes con pensamiento crítico, comprometidos con el desarrollo de la comunidad y el medio 
+            ambiente, mediante la práctica pertinente, responsable, alcanzando los retos del siglo XXI”
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
- 

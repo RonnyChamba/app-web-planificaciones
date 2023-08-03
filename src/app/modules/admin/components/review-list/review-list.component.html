@@ -28,7 +28,7 @@
                     <tr *ngFor="let item of listDetailsPlanification; index as i">
 
                         <td>{{i+1}}</td>
-                        <td  (click)="openDetails(item)"><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
+                        <td  (click)="openDetails(item)"><img src="../../../../../assets/img/eyes.png" alt="" class="img-fluid profile view-point"></td>
                         <td>{{item.dateCreated | date:'dd/MM/yyyy'}}</td>
                         <td>{{item.teacher.fullName}}</td>
                         <!-- <td>
