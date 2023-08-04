@@ -214,6 +214,45 @@ import {
        
     ],
 
+    titlePeriodo: [
+      {
+        type: 'required',
+        message: `Campo obligatorio.`,
+      },
+      {
+        type: 'minlength',
+        message: `Ingrese minimo 5 caracteres.`,
+      },
+      {
+        type: 'maxlength',
+        message: `Solo puede ingresar hasta 50 caracteres.`,
+      },
+    ],
+    dateEndPeriodo: [
+       {
+
+        type: 'required',
+        message: `Campo obligatorio.`,
+       },
+      {
+        type: 'pattern',
+        message: `Formato fecha incorrecto`,
+      },
+    ],
+    dateBeginPeriodo: [
+      {
+        type: 'required',
+        message: `Campo obligatorio.`,
+      },
+      {
+        type: 'pattern',
+        message: `Formato fecha incorrecto`,
+      },
+    ],
+    
+
+
+
 
   };
   

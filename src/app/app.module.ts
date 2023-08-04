@@ -23,7 +23,7 @@ import { NavbaComponent } from './components/navba/navba.component';
 import { ListCourseComponent } from './modules/admin/components/list-course/list-course.component';
 import { CourseComponent } from './modules/admin/page/course/course.component';
 import { DetailsCourseComponent } from './modules/admin/components/details-course/details-course.component';
-import { FormatDatePipe, TrimText } from './modules/pipes/format-date.pipe';
+import { CountUploadPlanification, FormatDatePipe, TrimText } from './modules/pipes/format-date.pipe';
 import { WeekComponent } from './modules/admin/components/week/week.component';
 import { DetailPlanificationComponent } from './modules/admin/components/detail-planification/detail-planification.component';
 import { ReviewComponent } from './modules/admin/page/review/review.component';
@@ -43,6 +43,13 @@ import { PersonalInfoComponent } from './modules/profile/components/personal-inf
 import { InformationComponent } from './modules/information/page/information.component';
 import { ChangePasswordComponent } from './modules/auth/components/change-password/change-password.component';
 import { ViewDetailComponent } from './modules/admin/components/details-course/components/view-detail/view-detail.component';
+import { RegisterPeriodosComponent } from './modules/periodo/components/register-periodos/register-periodos.component';
+import { ListPeriodosComponent } from './modules/periodo/components/list-periodos/list-periodos.component';
+import { PeriodoComponent } from './modules/periodo/page/periodo/periodo.component';
+import { ListPlaniTeacherComponent } from './modules/admin/components/list-plani-teacher/list-plani-teacher.component';
+import { ReportComponent } from './modules/report/page/report/report.component';
+import { FilterComponent } from './modules/report/components/filter/filter.component';
+import { ViewDetailReportComponent } from './modules/report/components/view-detail-report/view-detail-report.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +83,15 @@ import { ViewDetailComponent } from './modules/admin/components/details-course/c
     PersonalInfoComponent,
     InformationComponent,
     ChangePasswordComponent,
-    ViewDetailComponent
+    ViewDetailComponent,
+    RegisterPeriodosComponent,
+    ListPeriodosComponent,
+    PeriodoComponent,
+    ListPlaniTeacherComponent,
+    ReportComponent,
+    FilterComponent,
+    CountUploadPlanification,
+    ViewDetailReportComponent
   ],
   imports: [
     BrowserModule,

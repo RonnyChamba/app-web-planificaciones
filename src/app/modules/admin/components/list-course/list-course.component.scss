@@ -1,0 +1,10 @@
+.card .grade {
+    max-width: 20%;
+}
+
+// crear una media quey para cuadno este a mas de 800px el .grade sea 15%
+@media (min-width: 800px) {
+    .card .grade {
+        max-width: 15%;
+    }
+}

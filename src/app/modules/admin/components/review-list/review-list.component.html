@@ -15,10 +15,11 @@
                         <th>Foto</th>
                         <th>Fecha</th>
                         <th>Docente</th>
-                        <th>Recurso</th>
-                        <th>Observaci&oacute;n</th>
-                        <th>Aprobado</th>
-                        <th class="text-end"></th>
+                        <!-- <th>Recurso</th> -->
+                        <th># revisiones</th>
+                        <!-- <th>Observaci&oacute;n Gneral</th> -->
+                        <th>Estado</th>
+                        <!-- <th class="text-end"></th> -->
                     </tr>
                 </thead>
         
@@ -27,10 +28,10 @@
                     <tr *ngFor="let item of listDetailsPlanification; index as i">
 
                         <td>{{i+1}}</td>
-                        <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
+                        <td  (click)="openDetails(item)"><img src="../../../../../assets/img/eyes.png" alt="" class="img-fluid profile view-point"></td>
                         <td>{{item.dateCreated | date:'dd/MM/yyyy'}}</td>
                         <td>{{item.teacher.fullName}}</td>
-                        <td>
+                        <!-- <td>
 
                             <a class="btn btn-primary me-2" title="Abrir recurso" role="button"
                                 [href]="item.resource.url"
@@ -45,17 +46,18 @@
 
 
                             
-                        </td>
-                        <td> {{ item.observation +'' | trimText: 20 }} </td>
+                        </td> -->
+                        <td>{{item.items?.length ?? 0}}</td>
+                        <!-- <td> {{ item.observation +'' | trimText: 20 }} </td> -->
                         <td> 
                         
                             <input type="checkbox" class="form-check-input" [checked]="item.status" (change)="onChangeStatus($event, item)"  >
                             <!-- {{ item.status }}  -->
                         </td>
-                        <td class="text-end">
+                        <!-- <td class="text-end">
                             <button class="btn btn-primary" (click)="openObservation(item)"><i
                                     class="fa-solid fa-plus"></i> </button>
-                        </td>
+                        </td> -->
 
                     </tr>
                 </tbody>

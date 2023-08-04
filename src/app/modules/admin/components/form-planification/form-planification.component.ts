@@ -9,6 +9,8 @@ import * as dayjs from 'dayjs';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { typeResource } from '../../models/planification.model';
 import { UploadFileService } from 'src/app/services/upload-file.service';
+import { TokenService } from 'src/app/modules/auth/services/token.service';
+import { ReportService } from '../../services/report.service';
 
 
 @Component({
@@ -41,6 +43,8 @@ export class FormPlanificationComponent implements OnInit {
     private toastr: ToastrService,
     public modal: NgbActiveModal,
     private uploadFileService: UploadFileService,
+    private tokenService: TokenService,
+    private reportService: ReportService,
     private utilDetailsService: UtilDetailsService) { }
 
   ngOnInit() {
@@ -153,76 +157,55 @@ export class FormPlanificationComponent implements OnInit {
 
   async onSubmit() {
 
-    console.log(this.files);
-
-    // show loader by upload files
-    // this.loading = true;
-
-
-    // upload files
-
     if (this.dataInput.action == 'EDIT') {
-
       this.deleteWhenEdit();
     }
-
-
-
-
     const resources = await this.onUpload();
-
-    console.log(resources);
-
-
     if (resources) this.formGroup.value.resource = resources;
 
-    // estos campos se llenan automaticamente, sin embargo cuando es una edición se debe mantener el valor actual,
-    // por ende cuando se actualiza no son tomados en cuenta
     const dateCurrent = dayjs().format('YYYY-MM-DD HH:mm:ss');
     this.formGroup.value.dateCreated = dateCurrent
     this.formGroup.value.timestamp = Date.now();
     this.formGroup.value.status = this.formGroup.value.status === "true" ? true : false;
-
-    
-
-
-    // this.formGroup.value.weeeks =  this.weekModel.uid;
-
-    console.log(this.formGroup.value);
-
-    // validate form before submit
-
     if (this.formGroup.valid) {
 
       try {
 
-
         if(this.dataInput.action == 'EDIT'){
-      
          await this.updatePlanification();
           return;
         } 
-
-
-        // return;
         const resp = await this.planiService.savePlanification(this.formGroup.value);
+
+        
+        // estrez los datos de larespuesta
         this.toastr.success('Planificación creada correctamente', 'Planificación');
         this.modal.close('ok');
         this.formGroup.reset();
         this.files = [];
 
+  
+        console.log("resp");
+         
+
+        const data = await resp.get();
+
+        const obj = data.data() as any;
+        obj.uid = data.id;
+  
+        this.registerDataReport( obj);
+
         // Emitir un evento para refrescar la lista de planificaciones del trimestre
         this.utilDetailsService.refreshDataPlanification.next();
 
       } catch (error) {
+        console.log(error);
         this.toastr.error('Error al crear la planificación', 'Planificación');
-
 
       }
     } else {
       this.toastr.error('Formulario no válido', 'Planificación');
     }
-
 
   }
 
@@ -276,9 +259,46 @@ export class FormPlanificationComponent implements OnInit {
     
       const resp = await this.planiService.updatePlanification( this.dataInput.data.uid, this.formGroup.value);
       this.toastr.info('Planificación actualizada correctamente');
+
+      const valueForm = this.formGroup.value;
       this.modal.close('ok');
       this.formGroup.reset();
       this.files = [];
+
+      // actualizar el registro de reporte de la planificación
+
+      this.reportService.findDataReportByUidPlanificacion(this.dataInput.data.uid).subscribe((resp) => {
+
+        console.log("resp");
+        console.log(resp); 
+
+        if (resp.docs.length > 0) {
+
+          const data = resp.docs[0].data() as any;
+
+          data.uid = resp.docs[0].id;
+
+          /**
+           * Actualizar el reporte de la planificación el titulo y los detalles
+           */
+          this.reportService.updateFieldReport(data.uid, valueForm).then((resp) => {
+
+            console.log("se actualizo el reporte");
+            console.log(resp);
+          }
+          ).catch((error) => {
+            this.toastr.warning('Error al actualizar el reporte para la planificación', 'Reporte');
+            console.log("error al actualizar el reporte");
+            console.log(error);
+          }
+          );
+        }
+
+      });
+
+
+
+
 
       // Emitir un evento para refrescar la lista de planificaciones del trimestre
       this.utilDetailsService.refreshDataPlanification.next();
@@ -292,5 +312,59 @@ export class FormPlanificationComponent implements OnInit {
  
   }
 
+
+  /**
+   * Cada vez que crear una nueva planificacion se debe crear un registro en la tabla de reportes,
+   * esto para poder generar el reporte de la planificación con mas facilidad sin tener que hacer un join 
+   * con la tabla de planificaciones
+   * @param planificacionSaved 
+   */
+  private registerDataReport(planificacionSaved: any){
+
+    console.log("planificacionSaved creando el reporte");
+    console.log(planificacionSaved);
+
+    const periodo =   JSON.parse(this.tokenService.getCurrentPeriodo() || '{}');
+    console.log(periodo);
+    const course = JSON.parse(this.tokenService.getCourse() || '{}');
+
+    console.log(course);
+    const dataReport = {
+
+      uidPeriodo: periodo?.id,
+      descriptionPerido: periodo?.title,
+      uidCurso: course?.uid,
+      descriptionCurso: course?.name,
+      uidPlanification: planificacionSaved?.uid,
+      descriptionPlanification: planificacionSaved?.details,
+      titlePlanification: planificacionSaved?.title,
+      uidTrimestre: this.dataInput.data.uid,
+      descriptionTrimestre: this.dataInput.data.title,
+      statusDeleted: false,
+      dateCreated: planificacionSaved?.dateCreated,
+      dateCreatedTimestamp: planificacionSaved?.timestamp,
+      details_planification: []
+  }
+  console.log("dataReport a insertar");
+  console.log(dataReport);
+
+
+  this.reportService.saveDataReport(dataReport).then((resp) => {
+
+    console.log("se guardo el reporte");
+    console.log(resp);
+  }
+  ).catch((error) => {
+    this.toastr.warning('Error al guardar el reporte para la planificación', 'Reporte');
+    console.log("error al guardar el reporte");
+    console.log(error);
+  }
+  );
+
+
+
+
+
+}
 
 }

@@ -31,3 +31,41 @@ export class TrimText implements PipeTransform {
   }
 
 }
+
+
+
+@Pipe({
+  name: 'countUploadPlanification'
+})
+export class CountUploadPlanification implements PipeTransform {
+
+  transform( detailsUpload: number[], operationType: string): number {
+
+    if (!detailsUpload) return 0;
+
+
+    let valueReturn = 0;
+
+    switch (operationType) {
+      case 'countUpload':
+
+          valueReturn  = detailsUpload.map((e: any) => e.countUpload).reduce((a: any, b: any) => parseInt(a) + parseInt(b), 0);
+      break;
+
+      case "countSuccess":
+      // filter by status and count the number of elements
+      valueReturn = detailsUpload.filter((e: any) => e.status).length;
+      break;
+
+      case "countWrong":
+      // filter by status and count the number of elements
+      valueReturn = detailsUpload.filter((e: any) => !e.status).length;
+      break;
+
+
+    }
+      return valueReturn;
+  
+  }
+
+}

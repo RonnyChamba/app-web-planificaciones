@@ -1,5 +1,5 @@
-<div class="bg-warning">
-    <div class="d-flex align-items-center bg-secondary p-2">
+<div class="card">
+    <div class="d-flex align-items-center p-2">
 
         <span class="me-3"><i class="fa-solid fa-user" style="font-size: 2rem;"></i></span>
         <div>
@@ -13,33 +13,26 @@
                      </p>
                 <!-- <p class="my-1"> {{courseFullModel.tutorTeacher.email}}</p> -->
             </div>
-
-
-
         </div>
 
     </div>
 
-    <div class="mt-3  d-flex align-items-center bg-secondary p-2">
-
+    <hr  class=""/>
+    <div class="d-flex align-items-center  p-2">
         <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span>
-
-        <div class="flex-grow-1 d-flex justify-content-between  align-items-center">
-            <div>
-                <h4>Docentes</h4>
+        <div class="flex-grow-1">
+        
+                <h4 class="">Docentes</h4>
                 <p>Docentes asignados a este curso</p>
-            </div>
-            <div>
-                <span style="font-size: 2rem;"> {{courseFullModel && courseFullModel.teachers ?
-                    courseFullModel.teachers.length : '0'}}</span><br>
-                <span>total</span>
-            </div>
+        </div>
+        <div>
+            <span style="font-size: 2rem;"> {{courseFullModel && courseFullModel.teachers ?
+                courseFullModel.teachers.length : '0'}}</span><br>
+            <span>total</span>
         </div>
     </div>
 
-
-
-
+    <hr />
     <div *ngIf="courseFullModel" class="">
 
         <div *ngFor="let teacher of courseFullModel.teachers" class="d-flex justify-content-between 

@@ -16,6 +16,7 @@ export interface DataDetails {
 
     details_uid: string;
     teacher_uid: string;
+    status?: boolean;
 
 }
 export interface PlanificationModel {
@@ -43,5 +44,6 @@ export interface DetailsPlanification{
     observation?: string;
     planification?: string;
     resource?:any
+    items?: any[]
 
 }

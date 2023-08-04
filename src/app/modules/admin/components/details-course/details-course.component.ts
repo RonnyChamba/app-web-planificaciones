@@ -21,6 +21,8 @@ import { ToastrService } from 'ngx-toastr';
 import { ReviewService } from '../../services/review.service';
 import { UploadFileService } from 'src/app/services/upload-file.service';
 import { ViewDetailComponent } from './components/view-detail/view-detail.component';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
+import { ListPlaniTeacherComponent } from '../list-plani-teacher/list-plani-teacher.component';
 
 @Component({
   selector: 'app-details-course',
@@ -58,19 +60,20 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     private teacherService: RegisterService,
     private toaster: ToastrService,
     private tokenService: TokenService,
-    private utilDetailsService: UtilDetailsService,) {
+    private utilDetailsService: UtilDetailsService,
+    private messageService: MensajesServiceService
+  ) {
 
     this.isAdmin = this.tokenService.isLoggedAdmin();
   }
 
   ngOnInit(): void {
 
+    this.messageService.loading(true, "Cargando información del curso");
     // console.log(`Id Customer get : ${this.uidCourse}`);
     this.loadDataPage();
     this.refreshWeeks();
     this.refreshPlanifications();
-
-
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -142,7 +145,7 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     // await this.loadDetailsCourse();
 
     // get teachers
-     this.loadTeachers();
+    this.loadTeachers();
 
     // get tutor, no es necesario  esperar  porque se puede obtener del teacher que se obtiene en el paso anterior
     // this.loadTutor();
@@ -201,38 +204,38 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     // console.log("details course cargado");
   }
 
-   loadTeachers() {
+  loadTeachers() {
 
     // console.log("loadTeachers", this.courseFullModel);
 
     // get teachers
-   
 
-    this.subsLoadTeacher =   this.teacherService.findAllTeachersOnChanges()
+
+    this.subsLoadTeacher = this.teacherService.findAllTeachersOnChanges()
 
       .pipe(
         tap((resp: any) => {
 
           // this.courseFullModel.teachers = [];
-     
-          const  teachers: ModelTeacher[] = [];
-            
-            resp.forEach((element: any) => {
-  
-              const teacher: ModelTeacher = element.payload.doc.data() as ModelTeacher;
-              teacher.uid = element.payload.doc.id;
 
-              if (teacher.courses?.includes(this.courseFullModel.uid || "")) {
+          const teachers: ModelTeacher[] = [];
 
-                teachers.push(teacher);
+          resp.forEach((element: any) => {
 
-              }
-  
-            });
+            const teacher: ModelTeacher = element.payload.doc.data() as ModelTeacher;
+            teacher.uid = element.payload.doc.id;
 
-            this.courseFullModel.teachers = teachers;
-  
-            // console.log(teachers);
+            if (teacher.courses?.includes(this.courseFullModel.uid || "")) {
+
+              teachers.push(teacher);
+
+            }
+
+          });
+
+          this.courseFullModel.teachers = teachers;
+
+          // console.log(teachers);
 
         }),
         catchError((err: any) => {
@@ -304,6 +307,9 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
       // Asignar planificacion al trimestre actual
       this.courseFullModel.weeks[this.indexWeekCurrent].planifications = planification;
+
+
+      this.messageService.loading(false);
 
     } else console.log("No hay trimestre disponibles para planificar");
 
@@ -424,11 +430,9 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     const extractData = this.extractUidDetailsPlanification(uidPlani);
     const details_Upload = extractData.details_Upload;
     const uidTeacher = extractData.teacher_uid;
-
-    // console.log("planificatio subidia", details_Upload);
-
-    return details_Upload?.find((item: any) => item.teacher_uid === uidTeacher) ? true : false;
-
+    const detailsCurrent = details_Upload?.find((item: any) => item.teacher_uid === uidTeacher);
+  
+    return detailsCurrent?.status || false;
   }
 
   /**
@@ -464,7 +468,8 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
       }
 
-    } else this.toaster.warning("No se encontro el detalle de la planificacion");
+    } 
+    else this.toaster.warning("No se encontro el detalle de la planificacion");
 
   }
 
@@ -551,10 +556,10 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
 
   }
 
-  edit(plani: any){
+  edit(plani: any) {
 
     if (this.verifyIfExistWeeks) {
-    
+
 
       const ref = this.modal.open(FormPlanificationComponent, { size: 'md' })
 
@@ -566,30 +571,47 @@ export class DetailsCourseComponent implements OnInit, OnDestroy {
     } else alert("No hay trimestres disponibles para planificar");
   }
 
-  viewDetailPani(plani: any){
+  viewDetailPani(plani: any) {
 
-    const ref = this.modal.open(ViewDetailComponent, { size: 'md', backdrop: 'static', keyboard: false, })
+    console.log(plani);
+
+  
     // Obtener los detalles de la planificacion actual o sleccionada
     const details: any[] = plani.details_planification;
 
-    if (details && details.length>0 ){
+    if (details && details.length > 0) {
+
+      const ref = this.modal.open(ListPlaniTeacherComponent, { size: 'xl', backdrop: 'static', keyboard: false, })
 
       // Obtener el uid del teacher actual logeado
-
       const userCurrent = JSON.parse(this.tokenService.getToken() || "{}").uid;
 
       // Obtener el uid del detalle de la planificacion del teacher actual logeado
       const uidDetails = details.find((item: any) => item.teacher_uid === userCurrent)?.details_uid;
 
-      
-      console.log("uidDetails ecninstrado", uidDetails);  
-      ref.componentInstance.uidDetailsPlani = uidDetails;
-      
-    }else this.toaster.warning("No se encontro el detalle de la planificacion");
+      // console.log("uidDetails ecninstrado", uidDetails);  
+      ref.componentInstance.uidDetailPlanification = uidDetails;
 
-    
-  
-    
-    // console.log("uid", uid);
+    } else this.toaster.info("No hay detalles aún de la planificacion");
+
+
+    /* const ref = this.modal.open(ViewDetailComponent, { size: 'md', backdrop: 'static', keyboard: false, })
+     // Obtener los detalles de la planificacion actual o sleccionada
+     const details: any[] = plani.details_planification;
+ 
+     if (details && details.length>0 ){
+ 
+       // Obtener el uid del teacher actual logeado
+ 
+       const userCurrent = JSON.parse(this.tokenService.getToken() || "{}").uid;
+ 
+       // Obtener el uid del detalle de la planificacion del teacher actual logeado
+       const uidDetails = details.find((item: any) => item.teacher_uid === userCurrent)?.details_uid;
+ 
+       
+       console.log("uidDetails ecninstrado", uidDetails);  
+       ref.componentInstance.uidDetailsPlani = uidDetails;
+       
+     }else this.toaster.warning("No se encontro el detalle de la planificacion");*/
   }
 }

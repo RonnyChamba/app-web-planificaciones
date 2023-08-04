@@ -20,108 +20,116 @@
 
         <div class="col-6">
 
-            <div class="d-flex align-items-center p-2">
+            <div class="card">
 
-                <span style="font-size: 1.8rem;" class="me-3"> <i class="fa-solid fa-arrow-left"></i></span>
+                <div class="d-flex align-items-center p-2">
 
-                <div class="flex-grow-1 d-flex justify-content-between  align-items-start">
+                    <span style="font-size: 1.8rem;" class="me-3"> <i class="fa-solid fa-arrow-left"></i></span>
+
                     <div class="flex-grow-1">
                         <h4>Detalles Trimestre</h4>
-                        <!-- <p>{{courseFullModel.weeks[indexWeekCurrent].details}}</p> -->
-                    </div>
-                    <button class="btn btn-success" (click)="openModalPlanification()" *ngIf="isAdmin">+</button>
-
-                </div>
-
-            </div>
-
-            <div class="mt-3  d-flex align-items-center bg-secondary p-2">
-
-                <!-- <span class="me-3"><i class="fa-solid fa-users" style="font-size: 2rem;"></i></span> -->
-                <span class="me-3"> <i class="fa-solid fa-list" style="font-size: 1.3rem;"></i> </span>
-
-                <div class="flex-grow-1 d-flex justify-content-between  align-items-center">
-                    <div>
-                        <h4>Planificaciones</h4>
-                        <p>Planificaciones durante el trimestre</p>
-                    </div>
-
-
-                    <ng-template #sinRegistro>
                         <div>
-                            <span style="font-size: 2rem;">0</span><br>
-                            <span>total</span>
+
+                            <p class="my-1" style="opacity: 0;">datos</p>
                         </div>
-                    </ng-template>
 
-                    <div *ngIf="planificationExistByCurrentWeek; else sinRegistro">
-                        <span style="font-size: 2rem;">
-                            {{courseFullModel.weeks[indexWeekCurrent].planifications.length}}</span><br>
-                        <span>total</span>
+
                     </div>
+                    <button class="btn btn-info" (click)="openModalPlanification()" *ngIf="isAdmin">+</button>
+
                 </div>
-            </div>
 
+                <hr />
 
-            <ng-template #sinPlanificaciones>
-                <!-- <div class="alert alert-info"> -->
-
-                <!-- <h4></h4> -->
-                <p class="alert alert-info"> <b>No hay planificaciones</b></p>
-                <!-- </div> -->
-            </ng-template>
-
-            <div class="mt-3 bg-secondary p-2" *ngIf="planificationExistByCurrentWeek;  else sinPlanificaciones">
-
-                <div *ngFor=" let plani of  courseFullModel.weeks[indexWeekCurrent].planifications; index as i"
-                    class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center p-2">
                     <span class="me-3"> <i class="fa-solid fa-list" style="font-size: 1.3rem;"></i> </span>
 
                     <div class="flex-grow-1">
 
-                        <h4 class="title-plani">
-                            <span *ngIf="!isAdmin">{{plani.title}}</span>
-                            <span (click)="edit(plani)" *ngIf="isAdmin" class="title-plani__edit">{{plani.title}}</span>
-                        </h4>
-                        <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
+                        <h4>Planificaciones</h4>
+                        <p>Planificaciones durante el trimestre</p>
 
-                        <div *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)">
 
-                            <span (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')" class="me-3"
+
+                    </div>
+                    <ng-template #sinRegistro>
+
+                        <span style="font-size: 2rem;">0</span><br>
+                        <span>total</span>
+
+                    </ng-template>
+                    <div *ngIf="planificationExistByCurrentWeek; else sinRegistro">
+                        <span style="font-size: 2rem;">
+                            {{courseFullModel.weeks[indexWeekCurrent].planifications.length}}</span><br>
+                        <span>total</span>
+
+                    </div>
+                </div>
+
+                <hr />
+
+                <ng-template #sinPlanificaciones>
+                    <!-- <div class="alert alert-info"> -->
+
+                    <!-- <h4></h4> -->
+                    <p class="alert alert-info"> <b>No hay planificaciones</b></p>
+                    <!-- </div> -->
+                </ng-template>
+
+                <div class="p-2" *ngIf="planificationExistByCurrentWeek;  else sinPlanificaciones">
+
+                    <div 
+                    *ngFor=" let plani of  courseFullModel.weeks[indexWeekCurrent].planifications; index as i" 
+                    [ngClass]="{'mt-2': i!=0}"
+                        class="d-flex justify-content-between align-items-center">
+                        <span class="me-3"> <i class="fa-solid fa-list" style="font-size: 1.3rem;"></i> </span>
+
+                        <div class="flex-grow-1">
+
+                            <h6 class="title-plani">
+                                <span *ngIf="!isAdmin">{{plani.title}}</span>
+                                <span (click)="edit(plani)" *ngIf="isAdmin"
+                                    class="title-plani__edit">{{plani.title}}</span>
+                            </h6>
+                            <p class="my-1"> <i class="fa-solid fa-calendar"></i> {{plani.dateCreated}} </p>
+
+                            <!-- && teacherAlreadyUploadPlanification(plani.uid) -->
+                            <div *ngIf="!isAdmin">
+
+                                <!-- <span (click)="deleteOrDownloadPlanification(plani.uid, 'DOWNLOAD')" class="me-3"
                                 style="text-decoration: underline; cursor: pointer;">
                                 <i class="fa-solid fa-file-arrow-down"></i> 
-                            </span>
-                            <span  
-                            style="text-decoration: underline; cursor: pointer;"
-                            (click)="viewDetailPani(plani)">
-                            
-                            <i class="fa-solid fa-circle-info"></i> </span>
+                            </span> -->
+                                <span style="text-decoration: underline; cursor: pointer;"
+                                    (click)="viewDetailPani(plani)">
+
+                                    <i class="fa-solid fa-circle-info"></i> </span>
+
+                            </div>
+
+                            <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
+                                role="button" (click)="viewDetailsPlanification(i)">Ver Detalles</a>
 
                         </div>
 
+                        <button *ngIf="isAdmin" class="btn btn-success"
+                            (click)="reviewPlanification(plani.uid)">Revisar</button>
+                        <!-- <button class="btn btn-success" (click)="uploadFilePlanification(i)">Subir</button> -->
 
 
-                        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
-                            role="button" (click)="viewDetailsPlanification(i)">Ver Detalles</a>
+                        <!-- && !teacherAlreadyUploadPlanification(plani.uid)" -->
+                        <button *ngIf="!isAdmin" class="btn btn-primary" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" role="button"
+                            (click)="uploadFilePlanification(i)"
+                            [disabled]="teacherAlreadyUploadPlanification(plani.uid)">Subir</button>
 
+                        <!-- <a *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-danger"
+                        role="button" (click)="deleteOrDownloadPlanification(plani.uid, 'DELETE')">ELIMINAR</a> -->
                     </div>
 
-                    <button *ngIf="isAdmin" class="btn btn-success"
-                        (click)="reviewPlanification(plani.uid)">Revisar</button>
-                    <!-- <button class="btn btn-success" (click)="uploadFilePlanification(i)">Subir</button> -->
 
-
-                    <a *ngIf="!isAdmin && !teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-primary"
-                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop"
-                        role="button" (click)="uploadFilePlanification(i)">Subir</a>
-
-                    <a *ngIf="!isAdmin && teacherAlreadyUploadPlanification(plani.uid)" class="btn btn-danger"
-                        role="button" (click)="deleteOrDownloadPlanification(plani.uid, 'DELETE')">ELIMINAR</a>
                 </div>
-
-
             </div>
-
 
         </div>
 

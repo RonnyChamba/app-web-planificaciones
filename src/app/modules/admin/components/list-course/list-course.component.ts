@@ -8,6 +8,8 @@ import { ToastrService } from 'ngx-toastr';
 import { RegisterService } from 'src/app/modules/teacher/services/register.service';
 import { ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
+import { UtilDetailsService } from '../../services/util-details.service';
 
 @Component({
   selector: 'app-list-course',
@@ -28,10 +30,18 @@ export class ListCourseComponent implements OnInit, OnDestroy {
     private toaster: ToastrService,
     private register: RegisterService,
     private token: TokenService,
-    private roter: Router) { }
+    private roter: Router,
+    private utilService: UtilDetailsService,
+    private tokenService: TokenService,
+    private messageService: MensajesServiceService) { }
 
   ngOnInit(): void {
-    this.loadCourses();
+
+    this.utilService.refreshDataCurrentPeriodo.subscribe((idePeriodo: string) => {
+      console.log("resp periodo ...", idePeriodo);
+      this.loadCourses(idePeriodo);
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -42,13 +52,14 @@ export class ListCourseComponent implements OnInit, OnDestroy {
 
   }
 
-  loadCourses() {
+  loadCourses(idPeriodo: string) {
+
+    this.messageService.loading(true, "Cargando cursos");
 
     const uidUser = JSON.parse(this.token.getToken() || '{}').uid;
     const rol = JSON.parse(this.token.getToken() || '{}').rol;
 
-    this.subscriptionList = this.courseService.findAllCourses()
-
+    this.subscriptionList = this.courseService.findAllCoursesByPeriodo(idPeriodo)
       .pipe(
         tap( async  (resp: any) => {
 
@@ -58,7 +69,7 @@ export class ListCourseComponent implements OnInit, OnDestroy {
 
           const coursesByTeacher = userCurrent.data().courses;
 
-          console.log("userCurrent", coursesByTeacher);
+          // console.log("userCurrent", coursesByTeacher);
           this.courses = [];
           resp.forEach((item: any) => {
 
@@ -72,17 +83,19 @@ export class ListCourseComponent implements OnInit, OnDestroy {
               return;
             }
 
-            // Si es tutor, se muestran los cursos que tiene asignado
+            // Si es tutor, se muestran solo los cursos que tiene asignado
             if (coursesByTeacher.includes(course.uid)) {
               this.courses.push(course);
             }
 
             // console.log("course ---");
           });
+
+          this.messageService.loading(false);
         }),
         catchError((err) => {
           console.log(err);
-
+          this.messageService.loading(false);
           this.toaster.error("Error al cargar los cursos", "Error");
           return of(null);
         }
@@ -90,9 +103,17 @@ export class ListCourseComponent implements OnInit, OnDestroy {
       ).subscribe();
   }
 
-  viewCourse(uid: string) {
+  viewCourse(course: any) {
     // console.log(uid);
-    this.roter.navigate(['/course', uid]);
+    this.roter.navigate(['/course', course.uid]);
+
+    
+    const courseFull = {
+      uid: course.uid,
+      name: `${course.name} ${course.parallel}`
+    }
+
+    this.tokenService.setCourse(courseFull);
   }
 
   async getTeacherCurrent(): Promise<any> {

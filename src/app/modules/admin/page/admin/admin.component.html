@@ -5,11 +5,27 @@
     <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
     <div class="home-body">
         <div class="home-content p-3">
-            <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button>
+            <div class="d-flex justify-content-between align-items-start">
+                
+        
+                <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button>
+                <p *ngIf="!isAdmin" style="font-weight: 500;">
+                    A continuación se muestra la lista de cursos asignados por el administrador
+                </p>
+                
+                <select 
+                [formControl]="formControlPeriodo"
+                class="form-select" 
+                style="max-width: 300px" >
+                    <option [value]="item.id"  *ngFor="let item of periodos" >
 
-            <p *ngIf="!isAdmin" style="font-weight: 500;">
-                A continuación se muestra la lista de cursos asignados por el administrador
-            </p>
+                        {{item.title}} ({{item.dateBegin}} - {{item.dateEnd}})
+                    </option>
+                    
+                </select>
+            </div>
+
+          
             <app-list-course></app-list-course>
     
         </div>

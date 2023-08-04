@@ -9,6 +9,8 @@ import { ProfileComponent } from './modules/profile/page/profile.component';
 import { InformationComponent } from './modules/information/page/information.component';
 import { GuardAccessGuard } from './guards/guard-access.guard';
 import { GuardLoginGuard } from './guards/guard-login.guard';
+import { PeriodoComponent } from './modules/periodo/page/periodo/periodo.component';
+import { ReportComponent } from './modules/report/page/report/report.component';
 
 const routes: Routes = [
 
@@ -43,6 +45,12 @@ const routes: Routes = [
 
   },
   {
+    path: "periodos", component: PeriodoComponent,
+    title: 'Planificaciones | Periodos ',
+    canActivate: [GuardAccessGuard],
+    data: { expectedRol: ['admin'] }
+  },
+  {
     path: "informacion", component: InformationComponent,
     title: 'Planificaciones | Informacion',
     canActivate: [GuardAccessGuard],
@@ -52,6 +60,11 @@ const routes: Routes = [
     path: "", component: AdminComponent,
     title: 'Planificaciones | Home',
     canActivate: [GuardAccessGuard],
+    data: { expectedRol: ['admin', 'user'] }
+  },
+  {
+    path: "reportes", component: ReportComponent,
+    title: 'Planificaciones | Reportes', canActivate: [GuardAccessGuard],
     data: { expectedRol: ['admin', 'user'] }
   },
 

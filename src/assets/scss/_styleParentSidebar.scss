@@ -27,6 +27,7 @@ hermano o componente donde va el contenido principal*/
     // width: calc(100% - 260px);
     width: calc(100% - $sidebar-width);
     transition: all 0.5s ease;
+    background-color: #edf2f4;
 
     display: grid;
     grid-template-columns: 1fr;

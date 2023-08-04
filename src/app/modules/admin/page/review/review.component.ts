@@ -6,6 +6,7 @@ import { Subscription, catchError, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { UtilDetailsService } from '../../services/util-details.service';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
+import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
 
 @Component({
   selector: 'app-review',
@@ -30,17 +31,16 @@ export class ReviewComponent implements OnInit, OnDestroy {
     private planificationService: PlanificationService,
     private router: Router,
     private tokenService: TokenService,
-    private toaster: ToastrService
+    private toaster: ToastrService,
+    private messageService: MensajesServiceService
   ) {
-
-
     this.setNameCourse();
-
   }
 
 
   ngOnInit() {
 
+    this.messageService.loading(true, "Cargando información ...");
     this.uidPlanification = this.activePath.snapshot.params['uid'];
 
     this.activePath.params.subscribe(

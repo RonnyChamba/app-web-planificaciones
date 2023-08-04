@@ -1,0 +1,16 @@
+<app-sidebar class="nav-component"  [ngClass]="{ close: flagClose, '': !flagClose }" [open]="flagClose"> </app-sidebar>
+
+<section class="home-section">
+    
+    <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
+    <div class="home-body">
+        <div class="home-content p-3">
+            <!-- <button class="btn btn-primary mb-2" (click)="openCourse()" *ngIf="isAdmin">Nuevo Curso</button> -->
+            
+            <app-filter></app-filter>
+    
+        </div>
+    </div>
+
+</section>
+ 

@@ -1,0 +1,60 @@
+<!-- TEMPLATE PARA VISUALIZAR TODAS LOS DETALLES DE PLANIFICACIONES DE UN DOCENTE PARA UNA 
+PLANIFICACION EN PARTICULAR -->
+
+<div class="card" >
+
+    <div class="card-header ">
+        <div class="d-flex justify-content-between  align-items-start">
+            <h5>Planificaci&oacute;n: {{planificationsDetails.descriptionPlanification}} </h5>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+        </div>
+
+        <!-- <p>Estado: <span
+                [ngClass]="{'text-success': planificationsDetails.status, 'text-danger': !planificationsDetails.status}">
+                {{planificationsDetails.status ? 'Aprobada': 'No Aprobada'}}
+            </span></p> -->
+
+    </div>
+
+
+    <div class="card-body">
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                    <th>Nro</th>
+                    <th>Fecha</th>
+                    <th>Docente</th>
+                    <th># Correciones</th>
+                    <th>Estado</th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let item of planificationsDetails.details_planification; index as i">
+
+                    <td>{{i+1}}</td>
+                    <td>{{item.dateCreated}}</td>
+                    <td>{{item.fullName}}</td>
+                    <td>{{item.countUpload}}</td>
+
+                    <td>
+                        <span [ngClass]="{'text-success': item.status, 'text-danger': !item.status}">
+                            {{item.status? 'Aprobado' : 'No Apobado'}}
+                        </span>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="card" *ngIf="planificationsDetails.details_planification.length<=0">
+
+        <p class="alert alert-info"> No hay docentes que hayan subido planificaciones a&uacute;n</p>
+    </div>
+
+
+</div>

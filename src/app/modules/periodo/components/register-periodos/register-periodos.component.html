@@ -1,0 +1,160 @@
+<div class="card">
+
+
+    <div class="card-header d-flex    d-flex justify-content-between align-items-center">
+        <h4 class="card-title"> {{data?.action=='CREATE'?'Registro de Periodos': 'Actualizar Periodo Académico'}}</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+    </div>
+    <div class="card-body">
+
+        <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+
+            <div class="row">
+
+
+                <div class="mb-3  col-12">
+                    <label for="title" class="form-label">Titulo<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="title" formControlName="title">
+
+                    <div *ngIf="
+        formGroup.controls['title'].invalid &&
+        (formGroup.controls['title'].dirty ||
+        formGroup.controls['title'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.titlePeriodo">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('title')?.hasError(validation.type) &&
+            (formGroup.get('title')?.dirty ||
+            formGroup.get('title')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+
+                        <!-- <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('title')?.hasError('fieldExists') &&
+            (formGroup.get('title')?.dirty ||
+            formGroup.get('title')?.touched)
+          ">
+                            {{ formGroup.get("title")?.getError("fieldExists") }}
+                        </div> -->
+                    </div>
+                </div>
+
+                <div class="mb-3 col-sm-6">
+                    <label for="dateBegin" class="form-label">Fecha inicio<span style="color: red;">*</span></label>
+                    <input type="date" class="form-control" id="dateBegin" formControlName="dateBegin">
+
+                    <div *ngIf="
+        formGroup.controls['dateBegin'].invalid &&
+        (formGroup.controls['dateBegin'].dirty ||
+        formGroup.controls['dateBegin'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.dateBeginPeriodo">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('dateBegin')?.hasError(validation.type) &&
+            (formGroup.get('dateBegin')?.dirty ||
+            formGroup.get('dateBegin')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 col-sm-6">
+                    <label for="dateEnd" class="form-label">Fecha Fin <span style="color: red;">*</span></label>
+                    <input type="date" class="form-control" id="dateEnd" formControlName="dateEnd">
+
+                    <div *ngIf="
+        formGroup.controls['dateEnd'].invalid &&
+        (formGroup.controls['dateEnd'].dirty ||
+        formGroup.controls['dateEnd'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.dateEndPeriodo">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('dateBegin')?.hasError(validation.type) &&
+            (formGroup.get('dateEnd')?.dirty ||
+            formGroup.get('dateEnd')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+
+                        <div style="font-size: smaller !important" *ngIf="
+            formGroup.get('dateEnd')?.hasError('dateEndWrong') &&
+            (formGroup.get('dateEnd')?.dirty ||
+            formGroup.get('dateEnd')?.touched)
+          ">
+                            {{ formGroup.get("dateEnd")?.getError("dateEndWrong") }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- <div class="mb-3 col-sm-6">
+                    <label for="current" class="form-label">Actual</label>
+                    <div class="form-check form-switch">
+                        <input formControlName="current" class="form-check-input" type="checkbox" id="current">
+                        <label class="form-check-label" for="current">
+                            {{formGroup.controls['current'].value? 'Si':'No'}}
+                        </label>
+                    </div>
+
+                
+
+                    <div *ngIf="
+        formGroup.controls['current'].invalid &&
+        (formGroup.controls['current'].dirty ||
+        formGroup.controls['current'].touched)
+      " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.celular">
+                            <div style="font-size: smaller !important" *ngIf="
+      formGroup.get('current')?.hasError(validation.type) &&
+            (formGroup.get('current')?.dirty ||
+            formGroup.get('current')?.touched)
+          ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div> -->
+
+                <div class="mb-3 col-sm-12">
+                    <label for="description" class="form-label">Descripci&oacute;n</label>
+                    <textarea class="form-control" 
+                    formControlName="description" 
+                    placeholder="Alguna descripción sencilla" id="floatingTextarea"
+                        rows="5"></textarea>
+
+
+                    <div *ngIf="
+            formGroup.controls['description'].invalid &&
+            (formGroup.controls['description'].dirty ||
+            formGroup.controls['description'].touched)
+          " class="form-text text-danger">
+                        <div *ngFor="let validation of mensajesValidacion.correo">
+                            <div style="font-size: smaller !important" *ngIf="
+          formGroup.get('description')?.hasError(validation.type) &&
+                (formGroup.get('description')?.dirty ||
+                formGroup.get('description')?.touched)
+              ">
+                                {{ validation.message }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="d-flex  justify-content-end align-items-center">
+                <button type="button" class="btn btn-secondary me-2" (click)="modal.dismiss()">CANCELAR</button>
+                <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid">
+                    {{data?.action=='CREATE'?'REGISTRAR': 'ACTUALIZAR'}}
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

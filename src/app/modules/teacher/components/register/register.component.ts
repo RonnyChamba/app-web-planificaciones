@@ -10,6 +10,7 @@ import {
   MAX_PASSWORD,
   MAX_TELEPHONE,
   MIN_CEDULA,
+  MIN_EMAIL,
   MIN_NAME,
   MIN_PASSWORD,
 } from 'src/app/util/constantes-values';
@@ -88,11 +89,12 @@ export class RegisterComponent implements OnInit {
         [dniOrEmailValidator(this.registerService, 'DNI')]),
       displayName: new FormControl('', [Validators.required, Validators.minLength(MIN_NAME),
       Validators.maxLength(MAX_NAME)]),
-      lastName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required, Validators.minLength(MIN_NAME),
+        Validators.maxLength(MAX_NAME)]),
 
       password: new FormControl('', [Validators.required, Validators.minLength(MIN_PASSWORD), Validators.maxLength(MAX_PASSWORD)]),
       email: new FormControl('',
-        [Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$'), Validators.maxLength(MAX_EMAIL)],
+        [Validators.pattern('^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$'),  Validators.minLength(MIN_EMAIL), Validators.maxLength(MAX_EMAIL)],
         [dniOrEmailValidator(this.registerService, 'EMAIL')],
       ),
       phoneNumber: new FormControl('', [Validators.pattern(`^[0-9]{${MAX_TELEPHONE}}$`)]),
@@ -240,10 +242,6 @@ export class RegisterComponent implements OnInit {
 
         await this.auhtService.logOut();
 
-        // automaticamente se actualiza la lista de docentes, ya ue se encuentra suscrito
-
-
-
         // Autentico de nuevo al usuario actual
         const password = this.registerService.passwordSession;
         const email = JSON.parse(this.tokenService.getToken()!).email;
@@ -254,11 +252,8 @@ export class RegisterComponent implements OnInit {
       }
 
     } catch (error: any) {
-
       this.toastr.error(error.message, 'Error', { timeOut: 3000, });
-
     }
-
   }
 
   updateData() {
@@ -267,7 +262,7 @@ export class RegisterComponent implements OnInit {
 
     Swal.fire({
       title: '¿Estas seguro?',
-      text: "¿Desea actualizar sus datos?, devera iniciar sesion nuevamente",
+      text: "¿Desea actualizar sus datos?, tendrá que iniciar sesión nuevamente",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -299,9 +294,6 @@ export class RegisterComponent implements OnInit {
           
           this.toastr.error("Error al actualizar datos", 'Error', { timeOut: 3000, });
           this.modal.close();
-
-
-
         }
       }
     })

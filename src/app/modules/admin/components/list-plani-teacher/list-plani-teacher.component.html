@@ -1,0 +1,92 @@
+<!-- TEMPLATE PARA VISUALIZAR TODAS LOS DETALLES DE PLANIFICACIONES DE UN DOCENTE PARA UNA 
+PLANIFICACION EN PARTICULAR -->
+
+<div class="card" *ngIf="planificationsDetails" >
+
+    <div class="card-header ">
+        <div class="d-flex justify-content-between  align-items-start">
+            <h5>Docente: {{planificationsDetails.teacher.fullName}} </h5>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+        </div>
+        
+        <p>Estado: <span [ngClass]="{'text-success': planificationsDetails.status, 'text-danger': !planificationsDetails.status}">
+            {{planificationsDetails.status ? 'Aprobada': 'No Aprobada'}} 
+        </span></p>
+        
+    </div>
+
+    <div>
+
+    </div>
+
+    <div class="card-body">
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                    <th>Nro</th>
+
+                    <th>Fecha</th>
+
+                    <th>Recursos</th>
+
+                    <th>Observaci&oacute;n</th>
+                    <th>Estado</th>
+                    <th class="text-end" *ngIf="isAdmin" ></th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let item of planificationsDetails.items; index as i">
+
+                    <td>{{i+1}}</td>
+                    <td>{{item.dateUpload}}</td>
+                    <td>
+
+                        <a class="btn btn-primary me-2" title="Abrir recurso" role="button" [href]="item.url"
+                            target="_blank">
+
+                            <i class="fa-solid fa-link"></i> Abrir
+                        </a>
+                        <button class="btn btn-danger" role="button" (click)="dowloadFile(item)">
+                            <i class="fa-solid fa-file-arrow-down"></i> Descargar
+
+                        </button>
+                    </td>
+
+                    <td>
+                        <textarea 
+                        [readOnly]="!isAdmin"
+                        [disabled]="!isAdmin"
+                        #txtObservation 
+                        class="form-control" 
+                        rows="2">{{item.observation}}</textarea>
+                    </td>
+                    <td>
+                        <span *ngIf="!isAdmin"  [ngClass]="{'text-success': item.status, 'text-danger': !item.status}" >
+                            {{item.status? 'Aprobado' : 'No Apobado'}}
+                        </span>
+                        <input 
+                        *ngIf="isAdmin"
+                        type="checkbox" 
+                        class="form-check-input" 
+                        [checked]="item.status"
+                            (change)="item.status = onChangeStatus($event)"  />
+                    </td>
+                    <td class="text-end" *ngIf="isAdmin">
+                        <button class="btn btn-primary" (click)="openObservation(item, 
+                            txtObservation.value)"><i class="fa-solid fa-plus"></i> </button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    
+    </div>
+
+
+</div>
+<div class="card" *ngIf="!planificationsDetails">
+
+    <p class="alert alert-info"> Cargando informaci&oacute;n ......</p>
+</div>

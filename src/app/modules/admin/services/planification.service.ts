@@ -88,4 +88,49 @@ export class PlanificationService implements OnInit {
   }
 
 
+  /**
+   * Actualiza el campo estado de un items del campo detials_planification de la planificación
+   * @param planIde 
+   * @param newItem 
+   * @returns 
+   */
+  async updateStatusDetailsPlanification(
+    planIde: string,
+    details_uid: string,
+    status: any) {
+
+
+    try {
+      const planiDocRef = this.afs.collection(COLLECTION_NAME).doc(planIde);
+      // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
+      await this.afs.firestore.runTransaction(async (transaction) => {
+
+        const userDoc = await transaction.get(planiDocRef.ref);
+
+        // Obtener el arreglo actual, se pasa el campo a leer 
+        const items = userDoc.get('details_planification') || [];
+
+
+        const index = items.findIndex((item: any) => item.details_uid === details_uid);
+        // actualizar el estado del item
+        items[index].status =  status ;
+        
+        // Agregar el nuevo elemento al arreglo
+        // items.push(newItem);
+
+        // Actualizar el documento con el nuevo arreglo
+        transaction.update(planiDocRef.ref, { details_planification: items});
+
+
+      })
+      return Promise.resolve(true);
+
+    } catch (error) {
+      return Promise.reject(error);
+
+    }
+  }
+
+
+
 }

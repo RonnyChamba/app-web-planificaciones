@@ -1,0 +1,15 @@
+<app-sidebar class="nav-component"  [ngClass]="{ close: flagClose, '': !flagClose }" [open]="flagClose"> </app-sidebar>
+
+<section class="home-section">
+    
+    <app-navba (newItemEvent)="onClickMenu($event)"></app-navba>
+    <div class="home-body">
+        <div class="home-content p-3">
+            <button class="btn btn-primary" (click)="openModal()"> Nuevo Periodo</button>
+        </div>
+        <app-list-periodos></app-list-periodos>
+    </div>
+
+
+</section>
+ 

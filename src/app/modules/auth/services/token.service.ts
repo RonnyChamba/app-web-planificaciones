@@ -29,13 +29,20 @@ export class TokenService implements OnInit{
     this.setToken('null');
   }
 
-
   setCourse(course: any) {
     localStorage.setItem('course', JSON.stringify(course));
   }
 
   getCourse() {
     return localStorage.getItem('course');
+  }
+
+  setCurrentPeriodo(periodo: any) {
+    localStorage.setItem('periodo', JSON.stringify(periodo));
+  }
+
+  getCurrentPeriodo() {
+    return localStorage.getItem('periodo');
   }
 
   clearLocalStorage() {
