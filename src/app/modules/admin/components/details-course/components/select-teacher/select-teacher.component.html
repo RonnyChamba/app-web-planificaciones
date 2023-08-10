@@ -32,7 +32,10 @@
 
                 <td>{{i+1}}</td>
                 <td>
-                    <input type="checkbox" class="form-check-input"  (change)="selectRow($event, item.uid)">
+                    <input type="checkbox" 
+                    [disabled]="item.status == false"
+                    class="form-check-input"  
+                    (change)="selectRow($event, item.uid)">
                 </td>
                 <td><img src="../../../../../assets/img/profile.png" alt="" class="img-fluid profile"></td>
 
@@ -42,7 +45,9 @@
 
                 <td>{{item.dni}}</td>
 
-                <td class=""> {{ item.status ? 'Activo': 'Inactivo'}} </td>
+                <td class=""> 
+                    <span  [ngClass]="{'text-danger': !item.status , 'text-success': item.status}"  style="font-weight: bold;" > {{ item.status ? 'Activo': 'Inactivo'}} </span> 
+                    </td>
 
             </tr>
         </tbody>

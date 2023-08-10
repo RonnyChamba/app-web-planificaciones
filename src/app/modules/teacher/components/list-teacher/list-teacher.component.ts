@@ -115,7 +115,7 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
 
       Swal.fire({
         title: '¿Estas seguro?',
-        text: `Estas seguro de ${status ? 'desactivar' : 'activar'} el docente`,
+        text: `Estas seguro de ${status ? 'DESACTIVAR' : 'ACTIVAR'} el docente`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',

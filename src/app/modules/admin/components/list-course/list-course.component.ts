@@ -67,7 +67,7 @@ export class ListCourseComponent implements OnInit, OnDestroy {
 
           const userCurrent = await this.register.findTeacherById(uidUser).toPromise();
 
-          const coursesByTeacher = userCurrent.data().courses;
+          const coursesByTeacher = userCurrent.data().courses || [];
 
           // console.log("userCurrent", coursesByTeacher);
           this.courses = [];
