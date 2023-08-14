@@ -21,6 +21,17 @@ export class CourseService implements OnInit {
     return this.afs.collection(COLLECTION_NAME).add(data);
   }
 
+  updateCourse(uid: string, data: CourseModel) {
+    return this.afs.collection(COLLECTION_NAME)
+    .doc(uid)  
+    .update({
+      name: data.name,
+      parallel: data.parallel,
+      tutor: data.tutor,
+    });
+  
+  }
+
 
   findCouseByNameAndParalelo(name: string, paralelo: string) {
     return this.afs.collection(COLLECTION_NAME, ref => ref.where('name', '==', name).where('parallel', '==', paralelo)).get();

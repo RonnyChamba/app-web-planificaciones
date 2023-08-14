@@ -1,5 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { CourseModel } from '../models/course.model';
 
 
 const COLLECTION_NAME_WEEKS = 'weeks';
@@ -199,4 +200,48 @@ findAllReportByPeriodo(periodoId: string) {
   return this.afs.collection(COLLECTION_NAME_REPORT, ref => ref.where('uidPeriodo', '==', periodoId)).get();
 
 }
+
+
+/**
+ * Este methodo actualiza el nombre del curso en los reportes, cuando se actualiza un curso, tambien se actualiza en los reportes
+ * @param uidCourse 
+ * @param data 
+ * @returns 
+ */
+
+async updateNameCourse(uidCourse: string, data: CourseModel) {
+
+
+  try {
+
+    // const reporteDocRef = this.afs.collection("reportes").doc(uidCourse);
+    const reporteDocRef = this.afs.collection("reportes").ref;
+    // const planiDocRef = this.afs.collection(COLLECTION_NAME_REPORT, ref => ref.where("uidPlanification", "==", planIde)).doc();
+
+    // Use una transacción para asegurarse de que ningún otro proceso modifique el arreglo al mismo tiempo
+    await this.afs.firestore.runTransaction(async (transaction) => {
+
+      // const userDoc = await transaction.get(reporteDocRef.where("uidCourse", "==", uidCourse));
+      const querySnapshot = await reporteDocRef.where("uidCurso", "==", uidCourse).get();
+
+      // Actualizar los documentos dentro de la transacción
+      querySnapshot.forEach(documentSnapshot => {
+        const docRef = reporteDocRef.doc(documentSnapshot.id);
+
+        transaction.update(docRef, { descriptionCurso: data.name + ' ' + data.parallel});
+      });
+
+    })
+    return Promise.resolve(true);
+
+  } catch (error) {
+    return Promise.reject(error);
+
+  }
+}
+
+
+
+
+
 }

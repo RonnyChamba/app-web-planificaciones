@@ -1,30 +1,43 @@
 <div class="">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div class="col" *ngFor="let item of courses" >
-        <div class="card">
-          <div class="card-body">
-            
-            <div class="d-flex align-items-center mb-3">
-              <img src="../../../../../assets/img/grade_icon.png" class="card-img-top  img-fluid grade" alt="...">
-              <h5 class="card-title">{{item.name}} {{item.parallel}} </h5>
-            </div>
-            <button  class="btn btn-primary"  (click)="viewCourse(item || '')" >Ver Planificaciones</button>
-            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-        
-            
-            <p class="mt-2">      <i class="fa-solid fa-chalkboard-user"></i> {{item.tutor}} </p>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col" *ngFor="let item of courses">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <img
+              src="../../../../../assets/img/grade_icon.png"
+              class="card-img-top img-fluid grade"
+              alt="..."
+            />
+            <h5 class="card-title">{{ item.name }} {{ item.parallel }}</h5>
+          </div>
+          <button class="btn btn-primary" (click)="viewCourse(item || '')">
+            Ver Planificaciones
+          </button>
+          <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+
+          <div class="d-flex  ">
+            <p class="mt-2 flex-grow-1">
+              <i class="fa-solid fa-chalkboard-user"></i> {{ item.tutor.fullName}}
+            </p>
+
+            <p class="mt-2"  *ngIf="isAdmin" >
+              <button class="btn btn-warning"  (click)="editCourse(item)"><i class="fa-solid fa-pen-to-square"></i></button>
+            </p>
           </div>
         </div>
       </div>
-      
-      <div class="col col-12 alert alert-warning"  *ngIf="courses && courses.length<1">
-        No hay cursos registrados para el periodo acad&eacute;mico seleccionado.
-      </div>
-
- 
-      <!-- More cards here -->
     </div>
 
-    <!-- {{courses | json}} -->
+    <div
+      class="col col-12 alert alert-warning"
+      *ngIf="courses && courses.length < 1"
+    >
+      No hay cursos registrados para el periodo acad&eacute;mico seleccionado.
+    </div>
+
+    <!-- More cards here -->
   </div>
-  
+
+  <!-- {{courses | json}} -->
+</div>

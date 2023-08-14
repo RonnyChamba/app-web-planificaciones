@@ -10,18 +10,21 @@ import { ModelTeacher } from 'src/app/modules/teacher/models/teacher';
 import { TokenService } from 'src/app/modules/auth/services/token.service';
 import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
 import { UtilDetailsService } from '../../services/util-details.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormCourseComponent } from '../form-course/form-course.component';
 
 @Component({
   selector: 'app-list-course',
   templateUrl: './list-course.component.html',
-  styleUrls: ['./list-course.component.scss']
+  styleUrls: ['./list-course.component.scss'],
 })
 export class ListCourseComponent implements OnInit, OnDestroy {
-
-
   courses: CourseModel[] = [];
 
   private subscriptionList: Subscription;
+
+  isAdmin: boolean = false;
+  
 
   constructor(
     private courseService: CourseService,
@@ -33,50 +36,57 @@ export class ListCourseComponent implements OnInit, OnDestroy {
     private roter: Router,
     private utilService: UtilDetailsService,
     private tokenService: TokenService,
-    private messageService: MensajesServiceService) { }
+    private modalService: NgbModal,
+    private messageService: MensajesServiceService
+  ) {
+    this.isAdmin = this.tokenService.isLoggedAdmin();
+  }
 
   ngOnInit(): void {
-
-    this.utilService.refreshDataCurrentPeriodo.subscribe((idePeriodo: string) => {
-      console.log("resp periodo ...", idePeriodo);
-      this.loadCourses(idePeriodo);
-    });
-
+    this.utilService.refreshDataCurrentPeriodo.subscribe(
+      (idePeriodo: string) => {
+        console.log('resp periodo ...', idePeriodo);
+        this.loadCourses(idePeriodo);
+      }
+    );
   }
 
   ngOnDestroy(): void {
-
     if (this.subscriptionList) {
       this.subscriptionList.unsubscribe();
     }
-
   }
 
   loadCourses(idPeriodo: string) {
-
-    this.messageService.loading(true, "Cargando cursos");
+    this.messageService.loading(true, 'Cargando cursos');
 
     const uidUser = JSON.parse(this.token.getToken() || '{}').uid;
     const rol = JSON.parse(this.token.getToken() || '{}').rol;
 
-    this.subscriptionList = this.courseService.findAllCoursesByPeriodo(idPeriodo)
+    this.subscriptionList = this.courseService
+      .findAllCoursesByPeriodo(idPeriodo)
       .pipe(
-        tap( async  (resp: any) => {
-
-
-
-          const userCurrent = await this.register.findTeacherById(uidUser).toPromise();
+        tap(async (resp: any) => {
+          const userCurrent = await this.register
+            .findTeacherById(uidUser)
+            .toPromise();
 
           const coursesByTeacher = userCurrent.data().courses || [];
 
           // console.log("userCurrent", coursesByTeacher);
           this.courses = [];
           resp.forEach((item: any) => {
-
             const course: CourseModel = item.payload.doc.data() as CourseModel;
             course.uid = item.payload.doc.id;
-            course.tutor = course.tutor.fullName || "NO ASIGNADO";
+
+            // course.tutor =  course.tutor.fullName || 'NO ASIGNADO';
             
+            course.tutor =   {
+              fullName: course.tutor.fullName || 'NO ASIGNADO',
+              uid: course.tutor.uid || '',
+            }
+            
+
             // Si es admin, se muestran todos los cursos
             if (rol == 'ADMIN') {
               this.courses.push(course);
@@ -96,61 +106,55 @@ export class ListCourseComponent implements OnInit, OnDestroy {
         catchError((err) => {
           console.log(err);
           this.messageService.loading(false);
-          this.toaster.error("Error al cargar los cursos", "Error");
+          this.toaster.error('Error al cargar los cursos', 'Error');
           return of(null);
-        }
-        )
-      ).subscribe();
+        })
+      )
+      .subscribe();
   }
 
   viewCourse(course: any) {
     // console.log(uid);
     this.roter.navigate(['/course', course.uid]);
 
-    
     const courseFull = {
       uid: course.uid,
-      name: `${course.name} ${course.parallel}`
-    }
+      name: `${course.name} ${course.parallel}`,
+    };
 
     this.tokenService.setCourse(courseFull);
   }
 
   async getTeacherCurrent(): Promise<any> {
-
-
     try {
-
-
       const userCurrent = await this.auth.getUserCurrent();
 
       // console.log("userCurrent", userCurrent);
       return userCurrent?.uid;
-
     } catch (error) {
-
-      console.log("error", error);
+      console.log('error', error);
       return null;
     }
 
     return;
 
     return new Promise((resolve, reject) => {
-      this.auth.getUserCurrent()
+      this.auth
+        .getUserCurrent()
 
         .then((user) => {
+          console.log('user', user);
+          this.register
+            .findTeacherById(user!.uid)
 
-          console.log("user", user);
-          this.register.findTeacherById(user!.uid)
+            .subscribe(
+              (resp: any) => {
+                console.log('teacherResp', resp);
 
+                // const resp
 
-            .subscribe((resp: any) => {
-              console.log("teacherResp", resp);
-
-              // const resp 
-
-              resolve(resp);
-            },
+                resolve(resp);
+              },
 
               (err) => {
                 console.log(err);
@@ -164,15 +168,12 @@ export class ListCourseComponent implements OnInit, OnDestroy {
         });
     });
 
-
-
-
-
     const user = await this.auth.getUserCurrent();
-    this.register.findTeacherById(user!.uid)
+    this.register
+      .findTeacherById(user!.uid)
       .pipe(
         tap((resp: any) => {
-          console.log("teacherResp", resp);
+          console.log('teacherResp', resp);
 
           return Promise.resolve(resp);
         }),
@@ -180,19 +181,24 @@ export class ListCourseComponent implements OnInit, OnDestroy {
           console.log(err);
           return Promise.reject(err);
           return of(null);
-        }
-        )
-      ).subscribe();
+        })
+      )
+      .subscribe();
 
-
-    return Promise.reject("Error al cargar el tutor");
-
+    return Promise.reject('Error al cargar el tutor');
 
     // console.log("teacherResp", teacherResp);
 
     // return teacherResp;
-
-
   }
 
+  editCourse(item: any) {
+    console.log(item);
+    const refModal = this.modalService.open(FormCourseComponent, {
+      size: 'md',
+      backdrop: 'static',
+      keyboard: false,
+    });
+    refModal.componentInstance.courseEdit = item;
+  }
 }
