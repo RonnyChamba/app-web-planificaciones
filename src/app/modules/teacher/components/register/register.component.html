@@ -2,7 +2,7 @@
 
 
     <div class="card-header d-flex    d-flex justify-content-between align-items-center">
-        <h4 class="card-title"> {{action=='REGISTER'?'Registro de Docente': 'Actualizar Perfil'}}</h4>
+        <h4 class="card-title"> {{action=='REGISTER'?'Registro de Docente': 'Actualizar Docente'}}</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
     </div>
     <div class="card-body">
@@ -132,8 +132,8 @@
                     </div>
                 </div>
 
-                <div class="mb-3 col-sm-6">
-                    <label for="email" class="form-label">Email (sera su usuario) <span style="color: red;">*</span></label>
+                <div class="mb-3 "  [ngClass]="{'col-sm-6': action =='REGISTER', 'col-sm-12': action !='REGISTER'}" >
+                    <label for="email" class="form-label">Email {{action=='REGISTER' ? '(sera su usuario)':'(No editable)'}} <span style="color: red;">*</span></label>
                     <input type="email" class="form-control" id="email" formControlName="email">
     
     

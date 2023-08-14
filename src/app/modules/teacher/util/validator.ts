@@ -22,7 +22,7 @@ import { RegisterService } from '../services/register.service';
 export function dniOrEmailValidator(
     registerService: RegisterService,
     type: typeFilterField,
-    ide?: number
+    ide?: any
 ): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
         let field = control.value as string;
@@ -31,7 +31,7 @@ export function dniOrEmailValidator(
         if (field && (control.touched || control.dirty)) {
             if (type == 'DNI' && field.length == 10) {
 
-                return registerService.findTeacher(field)
+                return registerService.findTeacherByEmailOrDni( type, field, ide)
                 .pipe(
                     map((value) => !value.empty ? { fieldExists: 'Cedula ya esta registrado' } : null
 

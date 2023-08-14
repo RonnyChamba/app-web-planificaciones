@@ -8,6 +8,8 @@ import { LoginService } from 'src/app/modules/auth/services/login.service';
 import Swal from 'sweetalert2';
 import { FormControl } from '@angular/forms';
 import { MensajesServiceService } from 'src/app/services/mensajes-service.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RegisterComponent } from '../register/register.component';
 
 @Component({
   selector: 'app-list-teacher',
@@ -27,7 +29,8 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
     private teacherService: RegisterService,
     private toaster: ToastrService,
     private loginService: LoginService,
-    private messageService: MensajesServiceService
+    private messageService: MensajesServiceService,
+    private modal: NgbModal
   ) { }
 
 
@@ -166,4 +169,14 @@ export class ListTeacherComponent implements OnInit, OnDestroy {
   }
 
 
+  editTeacher(item: any){
+    const  modalRef = this.modal.open(RegisterComponent, {
+      size: 'md',
+      backdrop: 'static',
+      keyboard: false
+    });
+
+    modalRef.componentInstance.editTeacher = item;
+    modalRef.componentInstance.action = 'EDIT';
+  }
 }

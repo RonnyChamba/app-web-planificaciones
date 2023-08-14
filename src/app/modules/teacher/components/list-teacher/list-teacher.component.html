@@ -21,7 +21,7 @@
             <th>Nombres</th>
             <th>Dni</th>
             <th>Tel&eacute;fono</th>
-            <th>Titulos</th>
+            <th   style="max-width: 100px;" >Titulos</th>
             <th>Estado</th>
             <th class="text-end">Acciones</th>
           </tr>
@@ -44,13 +44,15 @@
             <td>{{ item.dni }}</td>
             <td>{{ item.phoneNumber }}</td>
 
-            <td>{{ item.titles }}</td>
+            <td  style="max-width: 200px;">{{ item.titles }}</td>
             <td class="">
               <span [ngClass]="{'bg-success': item.status, 'bg-danger': !item.status}" class="status">
                 {{ item.status ? "Activo" : "Inactivo" }}
               </span>
             </td>
-            <td class="text-end">
+            <td class="text-end bg-primary"  style="max-width: 100px;">
+
+              <button class="btn btn-warning p-1 me-1"  (click)="editTeacher(item)"><i class="fa-solid fa-pen-to-square"  style="font-size: 1rem"></i></button>
               <button
                 class="btn btn-danger p-1"
                 (click)="delete(item.uid, item.status)"
